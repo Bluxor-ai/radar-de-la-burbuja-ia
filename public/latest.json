@@ -1,0 +1,283 @@
+{
+  "generated_at": "2026-07-23T17:37:01-06:00",
+  "market_as_of": "2026-07-23",
+  "macro_as_of": "2026-07-17",
+  "bubble_score": 55.44062083548373,
+  "bubble_regime": "PREPARAR",
+  "structural_score": 79.45135740518427,
+  "confirmation_score": 42.51176268256805,
+  "capex_score": 17.153812507034264,
+  "capex_coverage": 0.35,
+  "structural_weight": 0.35,
+  "confirmation_weight": 0.65,
+  "capex_regime": "BAJO",
+  "blocks": [
+    {
+      "label": "Valuación y expectativas",
+      "score": 94.46280991735537,
+      "weight": 0.12,
+      "contribution": 11.335537190082643
+    },
+    {
+      "label": "Concentración y subida temática",
+      "score": 83.51010994151225,
+      "weight": 0.1,
+      "contribution": 8.351010994151226
+    },
+    {
+      "label": "Apalancamiento y reversión",
+      "score": 57.767836344757825,
+      "weight": 0.08,
+      "contribution": 4.621426907580626
+    },
+    {
+      "label": "Oferta de nuevas acciones",
+      "score": 70.0,
+      "weight": 0.05,
+      "contribution": 3.5
+    },
+    {
+      "label": "Crédito y financiamiento",
+      "score": 0.0,
+      "weight": 0.25,
+      "contribution": 0.0
+    },
+    {
+      "label": "Ruptura interna del mercado",
+      "score": 75.0,
+      "weight": 0.25,
+      "contribution": 18.75
+    },
+    {
+      "label": "Volatilidad y ventas forzadas",
+      "score": 59.21763829112822,
+      "weight": 0.15,
+      "contribution": 8.882645743669233
+    }
+  ],
+  "capex_rows": [
+    {
+      "key": "guidance",
+      "label": "Guía de las grandes tecnológicas",
+      "score": null,
+      "weight": 0.2,
+      "reading": "Sin lectura pública fechada incorporada.",
+      "mode": "manual",
+      "available": false,
+      "effective_weight": null,
+      "contribution": null
+    },
+    {
+      "key": "suppliers",
+      "label": "Pulso de proveedores y semiconductores",
+      "score": 0.0,
+      "weight": 0.2,
+      "reading": "Semiconductores vs hyperscalers, 20 días: -4.4 puntos porcentuales.",
+      "mode": "automatic",
+      "available": true,
+      "effective_weight": 0.5714285714285715,
+      "contribution": 0.0
+    },
+    {
+      "key": "physical_buildout",
+      "label": "Construcción, energía y cancelaciones",
+      "score": null,
+      "weight": 0.15,
+      "reading": "Sin lectura pública fechada incorporada.",
+      "mode": "manual",
+      "available": false,
+      "effective_weight": null,
+      "contribution": null
+    },
+    {
+      "key": "cloud_capacity",
+      "label": "Disponibilidad y precio de GPU en nube",
+      "score": null,
+      "weight": 0.1,
+      "reading": "Sin una fuente pública estable y redistribuible.",
+      "mode": "manual",
+      "available": false,
+      "effective_weight": null,
+      "contribution": null
+    },
+    {
+      "key": "cash_financing",
+      "label": "Caja y capacidad de financiar",
+      "score": 40.02556251641328,
+      "weight": 0.15,
+      "reading": "Cobertura mediana OCF/CapEx: 1.52x.",
+      "mode": "automatic",
+      "available": true,
+      "effective_weight": 0.4285714285714286,
+      "contribution": 17.153812507034264
+    },
+    {
+      "key": "roi_accounting",
+      "label": "Retorno y depreciación económica",
+      "score": null,
+      "weight": 0.15,
+      "reading": "Sin lectura pública fechada incorporada.",
+      "mode": "manual",
+      "available": false,
+      "effective_weight": null,
+      "contribution": null
+    },
+    {
+      "key": "financed_demand",
+      "label": "Demanda financiada y circularidad",
+      "score": null,
+      "weight": 0.05,
+      "reading": "Sin lectura pública fechada incorporada.",
+      "mode": "manual",
+      "available": false,
+      "effective_weight": null,
+      "contribution": null
+    }
+  ],
+  "inputs": {
+    "excess_return_pp": 92.03791228067095,
+    "relative_returns_2y_pp": {
+      "QQQ": 9.094507965376586,
+      "SMH": 92.02211403727844,
+      "SOXX": 92.03791228067095,
+      "NVDA": 35.95425367159641
+    },
+    "vix": 18.700000762939453,
+    "vix_5d_change": 0.1177526165335323,
+    "nfci": -0.552,
+    "nfci_4w_change": -0.050000000000000044,
+    "curve_10y_2y": 0.33999999999999986,
+    "pct_below_50dma": 0.8888888888888888,
+    "pct_below_200dma": 0.5555555555555556,
+    "qqq_below_200dma": false,
+    "smh_below_200dma": false,
+    "distribution_days_average": 5.555555555555555,
+    "distribution_days_max": 9.0,
+    "large_down_days_average": 4.222222222222222,
+    "distribution_score": 100.0,
+    "regime_score": 30.050392937682183,
+    "cash_coverage_details": {
+      "MSFT": {
+        "ocf_capex": 1.7499717150938545
+      },
+      "GOOGL": {
+        "ocf_capex": 1.4023579704234075
+      },
+      "AMZN": {
+        "ocf_capex": 0.9836294643152785
+      },
+      "META": {
+        "ocf_capex": 1.6370285291826738
+      },
+      "available_companies": 4,
+      "median_ocf_capex": 1.5196932498030407
+    }
+  },
+  "data_quality": {
+    "status": "Parcial",
+    "warnings": [
+      "FRED no respondió para VIX; se usó la lectura de mercado alterna.",
+      "FRED no respondió para la curva 10Y–2Y; se calculó con tasas oficiales del Tesoro de EE. UU.",
+      "El mosaico de CapEx tiene 35% de cobertura; los faltantes se muestran como N/D."
+    ],
+    "capex_coverage": 0.35
+  },
+  "sources": [
+    {
+      "label": "Mercado y fundamentales",
+      "provider": "Yahoo Finance vía yfinance",
+      "url": "https://finance.yahoo.com/",
+      "as_of": "2026-07-23",
+      "mode": "Automático",
+      "status": "Disponible",
+      "note": "No se redistribuyen series de cotizaciones."
+    },
+    {
+      "label": "Volatilidad implícita (VIX)",
+      "provider": "Yahoo Finance vía yfinance",
+      "url": "https://finance.yahoo.com/quote/%5EVIX/",
+      "as_of": "2026-07-23",
+      "mode": "Automático",
+      "status": "Fuente alterna"
+    },
+    {
+      "label": "Condiciones financieras (NFCI)",
+      "provider": "Reserva Federal de Chicago",
+      "url": "https://www.chicagofed.org/research/data/nfci/current-data",
+      "as_of": "2026-07-17",
+      "mode": "Automático",
+      "status": "Disponible"
+    },
+    {
+      "label": "Curva del Tesoro 10Y–2Y",
+      "provider": "Departamento del Tesoro de EE. UU.",
+      "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve",
+      "as_of": "2026-07-23",
+      "mode": "Automático",
+      "status": "Fuente alterna"
+    },
+    {
+      "label": "CAPE de Shiller",
+      "provider": "Fuente pública enlazada",
+      "url": "https://www.multpl.com/shiller-pe/table/by-month",
+      "as_of": "2026-07-17",
+      "mode": "Manual fechado",
+      "status": "Disponible",
+      "note": "Edad: 6 días; máximo: 45."
+    },
+    {
+      "label": "Capitalización bursátil / PIB",
+      "provider": "Fuente pública enlazada",
+      "url": "https://buffettindicator.org/",
+      "as_of": "2026-07-02",
+      "mode": "Manual fechado",
+      "status": "Disponible",
+      "note": "Edad: 21 días; máximo: 90."
+    },
+    {
+      "label": "Concentración del S&P 500",
+      "provider": "Fuente pública enlazada",
+      "url": "https://www.slickcharts.com/sp500/analysis",
+      "as_of": "2026-07-20",
+      "mode": "Manual fechado",
+      "status": "Disponible",
+      "note": "Edad: 3 días; máximo: 30."
+    },
+    {
+      "label": "Deuda de margen",
+      "provider": "Fuente pública enlazada",
+      "url": "https://www.finra.org/rules-guidance/key-topics/margin-accounts/margin-statistics",
+      "as_of": "2026-06",
+      "mode": "Manual fechado",
+      "status": "Disponible",
+      "note": "Edad: 23 días; máximo: 75."
+    },
+    {
+      "label": "Emisiones de acciones",
+      "provider": "Fuente pública enlazada",
+      "url": "https://www.spglobal.com/market-intelligence/en/news-insights/research/2026/07/mega-deals-push-h1-2026-us-equity-issuance-into-orbit",
+      "as_of": "2026-H1",
+      "mode": "Manual fechado",
+      "status": "Disponible",
+      "note": "Edad: 23 días; máximo: 220."
+    },
+    {
+      "label": "Prima por riesgo crediticio (EBP)",
+      "provider": "Fuente pública enlazada",
+      "url": "https://www.federalreserve.gov/econres/economic-research-data.htm",
+      "as_of": "2026-06",
+      "mode": "Manual fechado",
+      "status": "Disponible",
+      "note": "Edad: 23 días; máximo: 75."
+    }
+  ],
+  "slow_inputs_as_of": {
+    "cape": "2026-07-17",
+    "market_cap_gdp": "2026-07-02",
+    "concentration": "2026-07-20",
+    "margin_debt": "2026-06",
+    "equity_supply": "2026-H1",
+    "ebp": "2026-06"
+  },
+  "privacy": "Sitio público sin posiciones, cuentas, órdenes, correos ni datos personales."
+}

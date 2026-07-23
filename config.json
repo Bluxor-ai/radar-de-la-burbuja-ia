@@ -1,0 +1,150 @@
+{
+  "site": {
+    "title": "Radar de la Burbuja IA",
+    "subtitle": "Semáforo público de riesgo de ruptura y moderación del gasto en inteligencia artificial",
+    "timezone": "America/Mexico_City",
+    "disclaimer": "Índices de riesgo, no probabilidades exactas ni recomendaciones personalizadas."
+  },
+  "tickers": {
+    "market": [
+      "SPY",
+      "QQQ",
+      "RSP",
+      "SMH",
+      "SOXX",
+      "ARKK",
+      "NVDA"
+    ],
+    "leaders": [
+      "MSFT",
+      "GOOGL",
+      "AMZN",
+      "META",
+      "TSLA"
+    ],
+    "universe": [
+      "QQQ",
+      "SMH",
+      "SOXX",
+      "NVDA",
+      "MSFT",
+      "GOOGL",
+      "AMZN",
+      "META",
+      "TSLA"
+    ]
+  },
+  "valuation": {
+    "cape": {
+      "value": 41.52,
+      "low": 20.0,
+      "red": 44.2,
+      "as_of": "2026-07-17",
+      "max_age_days": 45,
+      "source": "https://www.multpl.com/shiller-pe/table/by-month"
+    },
+    "market_cap_gdp": {
+      "value": 2.38,
+      "low": 1.0,
+      "red": 2.2,
+      "as_of": "2026-07-02",
+      "max_age_days": 90,
+      "source": "https://buffettindicator.org/"
+    }
+  },
+  "concentration": {
+    "top10_share": {
+      "value": 0.3769,
+      "low": 0.2,
+      "red": 0.38,
+      "as_of": "2026-07-20",
+      "max_age_days": 30,
+      "source": "https://www.slickcharts.com/sp500/analysis"
+    }
+  },
+  "leverage": {
+    "margin_debt_trillion": 1.502072,
+    "free_credit_cash_trillion": 0.217441,
+    "free_credit_margin_trillion": 0.223412,
+    "previous_month_trillion": 1.415557,
+    "year_ago_trillion": 1.007961,
+    "rollover_score": 0.0,
+    "as_of": "2026-06",
+    "max_age_days": 75,
+    "source": "https://www.finra.org/rules-guidance/key-topics/margin-accounts/margin-statistics"
+  },
+  "equity_supply": {
+    "gross_issuance_score": 80.0,
+    "buyback_absorption_offset": -10.0,
+    "as_of": "2026-H1",
+    "max_age_days": 220,
+    "source": "https://www.spglobal.com/market-intelligence/en/news-insights/research/2026/07/mega-deals-push-h1-2026-us-equity-issuance-into-orbit"
+  },
+  "credit": {
+    "ebp_value": -0.39,
+    "ebp_risk_score": 0.0,
+    "as_of": "2026-06",
+    "max_age_days": 75,
+    "source": "https://www.federalreserve.gov/econres/economic-research-data.htm"
+  },
+  "weights": {
+    "valuation": 0.12,
+    "concentration_runup": 0.1,
+    "leverage": 0.08,
+    "equity_supply": 0.05,
+    "credit": 0.25,
+    "internal_break": 0.25,
+    "forced_selling": 0.15
+  },
+  "capex": {
+    "guidance": {
+      "score": null,
+      "weight": 0.2,
+      "label": "Guía de las grandes tecnológicas",
+      "reading": "Sin lectura pública fechada incorporada.",
+      "mode": "manual"
+    },
+    "suppliers": {
+      "score": null,
+      "weight": 0.2,
+      "label": "Pulso de proveedores y semiconductores",
+      "reading": "Proxy diario: semiconductores frente a hyperscalers.",
+      "mode": "automatic"
+    },
+    "physical_buildout": {
+      "score": null,
+      "weight": 0.15,
+      "label": "Construcción, energía y cancelaciones",
+      "reading": "Sin lectura pública fechada incorporada.",
+      "mode": "manual"
+    },
+    "cloud_capacity": {
+      "score": null,
+      "weight": 0.1,
+      "label": "Disponibilidad y precio de GPU en nube",
+      "reading": "Sin una fuente pública estable y redistribuible.",
+      "mode": "manual"
+    },
+    "cash_financing": {
+      "score": null,
+      "weight": 0.15,
+      "label": "Caja y capacidad de financiar",
+      "reading": "Proxy de cobertura de CapEx con flujo operativo.",
+      "mode": "automatic"
+    },
+    "roi_accounting": {
+      "score": null,
+      "weight": 0.15,
+      "label": "Retorno y depreciación económica",
+      "reading": "Sin lectura pública fechada incorporada.",
+      "mode": "manual"
+    },
+    "financed_demand": {
+      "score": null,
+      "weight": 0.05,
+      "label": "Demanda financiada y circularidad",
+      "reading": "Sin lectura pública fechada incorporada.",
+      "mode": "manual"
+    }
+  }
+}

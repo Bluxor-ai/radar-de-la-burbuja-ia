@@ -1,0 +1,4 @@
+numpy==2.5.1
+pandas==2.3.3
+requests==2.34.2
+yfinance==0.2.66

@@ -1,0 +1,130 @@
+name: Actualizar y publicar el Radar
+
+on:
+  push:
+    branches: ["main"]
+    paths-ignore:
+      - "data/**"
+      - "public/**"
+  schedule:
+    - cron: "17 6,18 * * *"
+      timezone: "America/Mexico_City"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: radar-de-la-burbuja-ia
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Preparar Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Instalar dependencias verificadas
+        run: |
+          python -m pip install --upgrade "pip==26.1.2"
+          python -m pip install --require-hashes -r requirements-lock.txt
+
+      - name: Ejecutar pruebas
+        run: python -m pytest -q
+
+      - name: Actualizar datos y construir sitio
+        run: python radar.py --config config.json --output public --data-dir data
+
+      - name: Verificar entregables
+        run: |
+          test -s public/index.html
+          test -s public/latest.json
+          test -s public/history.csv
+          test -s data/latest.json
+          test -s data/history.csv
+
+      - name: Empaquetar estado generado
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: radar-state
+          path: |
+            data/history.csv
+            data/latest.json
+            public
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Empaquetar sitio para Pages
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: public
+
+  persist:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Recuperar estado generado
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: radar-state
+          path: generated
+
+      - name: Guardar lectura e historial
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp -R generated/data/. data/
+          cp -R generated/public/. public/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          gh auth setup-git
+          git add data/history.csv data/latest.json public/
+          if git diff --cached --quiet; then
+            echo "Sin cambios en datos"
+          else
+            git commit -m "Actualizar historial del Radar [skip ci]"
+            git pull --rebase origin "$GITHUB_REF_NAME"
+            git push origin "HEAD:$GITHUB_REF_NAME"
+          fi
+
+  deploy:
+    needs: [build, persist]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      - name: Publicar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0

@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Índice público y reproducible de fragilidad, confirmación de ruptura y riesgo de moderación del gasto en inteligencia artificial.">
+<meta name="theme-color" content="#071018">
+<link rel="canonical" href="https://bluxor-ai.github.io/radar-de-la-burbuja-ia/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_MX">
+<meta property="og:title" content="Radar de la Burbuja IA">
+<meta property="og:description" content="Índice público y reproducible de fragilidad, confirmación de ruptura y riesgo de moderación del gasto en inteligencia artificial.">
+<meta property="og:url" content="https://bluxor-ai.github.io/radar-de-la-burbuja-ia/">
+<meta property="og:image" content="https://bluxor-ai.github.io/radar-de-la-burbuja-ia/og.png">
+<meta property="og:image:alt" content="Radar de la Burbuja IA: señales de fragilidad y ruptura">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Radar de la Burbuja IA">
+<meta name="twitter:description" content="Índice público y reproducible de fragilidad, confirmación de ruptura y riesgo de moderación del gasto en inteligencia artificial.">
+<meta name="twitter:image" content="https://bluxor-ai.github.io/radar-de-la-burbuja-ia/og.png">
+<title>Radar de la Burbuja IA</title>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"Radar de la Burbuja IA","description":"Índice público y reproducible de fragilidad, confirmación de ruptura y riesgo de moderación del gasto en inteligencia artificial.","url":"https://bluxor-ai.github.io/radar-de-la-burbuja-ia/","license":"https://opensource.org/license/mit","dateModified":"2026-07-23T17:37:01-06:00","creator":{"@type":"Organization","name":"Bluxor-ai"},"measurementTechnique":"Índice ponderado de siete bloques de valuación, concentración, apalancamiento, oferta, condiciones financieras, ruptura interna y ventas forzadas.","isBasedOn":["https://finance.yahoo.com/","https://finance.yahoo.com/quote/%5EVIX/","https://www.chicagofed.org/research/data/nfci/current-data","https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve","https://www.multpl.com/shiller-pe/table/by-month","https://buffettindicator.org/","https://www.slickcharts.com/sp500/analysis","https://www.finra.org/rules-guidance/key-topics/margin-accounts/margin-statistics","https://www.spglobal.com/market-intelligence/en/news-insights/research/2026/07/mega-deals-push-h1-2026-us-equity-issuance-into-orbit","https://www.federalreserve.gov/econres/economic-research-data.htm"],"distribution":[{"@type":"DataDownload","encodingFormat":"application/json","contentUrl":"https://bluxor-ai.github.io/radar-de-la-burbuja-ia/latest.json"},{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://bluxor-ai.github.io/radar-de-la-burbuja-ia/history.csv"}]}</script>
+<style>
+:root{--bg:#071018;--panel:#0d1a27;--panel2:#111f2e;--border:#26384b;--text:#f4f7fb;--muted:#a8b6c7;--cyan:#45e4c4;--cyan2:#36bffa;--amber:#fbbf24;--shadow:0 18px 60px rgba(0,0,0,.24)}
+*{box-sizing:border-box}
+html{color-scheme:dark;scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 82% -10%,rgba(54,191,250,.13),transparent 30%),var(--bg);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55}
+a{color:var(--cyan);text-underline-offset:3px}a:hover{color:#8bf3df}
+.wrap{width:min(1240px,calc(100% - 40px));margin:auto}
+.site-header{padding:34px 0 22px;border-bottom:1px solid rgba(148,163,184,.16)}
+.eyebrow,.label{margin:0;color:var(--cyan);font-size:.75rem;font-weight:850;text-transform:uppercase;letter-spacing:.13em}
+.brand-row{display:flex;justify-content:space-between;gap:28px;align-items:flex-start}
+h1{max-width:760px;margin:7px 0 5px;font-size:clamp(2rem,5vw,3.85rem);line-height:.98;letter-spacing:-.045em}
+.subtitle{max-width:760px;margin:14px 0 0;color:var(--muted);font-size:clamp(1rem,2vw,1.2rem)}
+.freshness{display:grid;gap:7px;min-width:250px;padding:14px 16px;background:rgba(13,26,39,.72);border:1px solid var(--border);border-radius:14px;font-size:.82rem;color:var(--muted)}
+.freshness strong{color:var(--text)}.quality-badge{display:inline-flex;width:max-content;padding:4px 9px;border:1px solid rgba(69,228,196,.35);border-radius:999px;color:var(--cyan);font-weight:800}
+main{padding:22px 0 44px}
+.data-alert{margin-bottom:16px;padding:13px 15px;border:1px solid #c76b2b;border-radius:12px;background:#3b2115;color:#fed7aa}
+.score-hero{display:grid;grid-template-columns:minmax(240px,.7fr) minmax(0,1.3fr);gap:28px;align-items:center;padding:clamp(22px,4vw,38px);border:1px solid var(--border);border-radius:22px;background:linear-gradient(135deg,rgba(17,31,46,.98),rgba(9,25,35,.96));box-shadow:var(--shadow)}
+.score-dial{display:flex;align-items:baseline;gap:6px}.score-number{font-size:clamp(4.5rem,12vw,8rem);font-weight:900;line-height:.82;letter-spacing:-.075em;font-variant-numeric:tabular-nums}.score-denom{color:var(--muted);font-size:1.15rem;font-weight:800}
+.regime{margin:10px 0 0;font-size:clamp(1.7rem,4vw,3rem);line-height:1;letter-spacing:-.03em}.not-probability{display:inline-flex;margin-top:14px;padding:6px 10px;border-radius:999px;background:rgba(251,191,36,.12);color:#fde68a;font-size:.8rem;font-weight:800}
+.summary{margin:14px 0 0;color:#dce5ef;font-size:1.06rem}.formula{margin:17px 0 0;padding:12px 14px;border-left:3px solid var(--cyan);background:rgba(69,228,196,.07);border-radius:0 10px 10px 0;color:var(--muted);font-size:.9rem}.formula strong{color:var(--text)}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:16px 0}
+.card,.panel{border:1px solid var(--border);background:rgba(13,26,39,.94);border-radius:16px}
+.card{padding:19px}.card .label{color:var(--muted)}.value{margin-top:7px;font-size:2.25rem;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}.sub{margin-top:8px;color:var(--muted);font-size:.88rem}
+.dashboard-grid{display:grid;grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);gap:16px;align-items:start}
+.panel{padding:22px;margin-bottom:16px;overflow:hidden}.panel h2{margin:0;font-size:1.28rem;letter-spacing:-.01em}.section-intro{margin:5px 0 18px;color:var(--muted);font-size:.9rem}
+.metric{display:grid;grid-template-columns:minmax(190px,1.35fr) minmax(120px,1fr) 58px 48px;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(148,163,184,.12)}.metric:last-child{border-bottom:0}.metric small,td small,th small,.source-card small{display:block;margin-top:3px;color:var(--muted);font-size:.78rem;font-weight:500;line-height:1.4}
+.track{height:10px;background:#1b2b3d;border-radius:999px;overflow:hidden}.track span{display:block;height:100%;border-radius:inherit}.number,.weight,.num{text-align:right;font-weight:850;font-variant-numeric:tabular-nums}.weight{color:var(--cyan2);font-size:.82rem}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.88rem}caption{padding:0 0 12px;text-align:left;color:var(--muted)}th,td{padding:12px 9px;border-bottom:1px solid rgba(148,163,184,.15);text-align:left;vertical-align:top}thead th{color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}tbody th{font-weight:750}
+.coverage{margin-top:13px;padding:11px 13px;background:var(--panel2);border-radius:10px;color:var(--muted);font-size:.84rem}.coverage strong{color:var(--text)}
+.spark{display:block;width:100%;height:auto;min-height:180px;background:var(--panel2);border-radius:12px}.chart-summary{display:flex;justify-content:space-between;gap:14px;margin-top:10px;color:var(--muted);font-size:.85rem}.chart-summary strong{color:var(--text)}
+.method-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.method-card{padding:18px;background:var(--panel2);border-radius:12px}.method-card h3{margin:0 0 8px;font-size:1rem}.method-card p{margin:0;color:var(--muted);font-size:.88rem}
+.bands{display:grid;gap:7px;margin-top:14px}.band{display:grid;grid-template-columns:72px 128px 1fr;gap:10px;align-items:center;font-size:.82rem}.band i{height:8px;border-radius:999px}
+.source-list{display:grid;gap:8px;padding:0;margin:0;list-style:none}.source-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;padding:13px 14px;background:var(--panel2);border-radius:11px}.source-card span{display:block;color:var(--muted);font-size:.82rem}.source-meta{display:grid;grid-template-columns:repeat(3,auto);gap:8px 14px;text-align:right}.source-meta span,.source-meta time{color:var(--muted);font-size:.76rem}
+.raw-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:15px}.raw-links a{padding:7px 10px;border:1px solid var(--border);border-radius:9px;text-decoration:none;font-size:.82rem}
+.notice{color:var(--muted);font-size:.82rem}.site-footer{padding:22px 0 34px;border-top:1px solid rgba(148,163,184,.16)}.site-footer p{margin:0}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+@media(max-width:1100px){.brand-row{display:grid}.freshness{min-width:0;grid-template-columns:repeat(3,minmax(0,1fr))}.quality-badge{grid-column:1/-1}.dashboard-grid{grid-template-columns:1fr}}
+@media(max-width:760px){.wrap{width:min(calc(100% - 24px),1240px)}.site-header{padding-top:24px}.score-hero{grid-template-columns:1fr;gap:18px}.kpis{grid-template-columns:1fr}.freshness{grid-template-columns:1fr}.method-grid{grid-template-columns:1fr}.source-card{grid-template-columns:1fr}.source-meta{grid-template-columns:repeat(3,1fr);text-align:left}.chart-summary{display:grid}}
+@media(max-width:620px){.panel{padding:17px}.metric{grid-template-columns:minmax(0,1fr) auto}.metric .track{grid-column:1/-1;grid-row:2}.metric .number{grid-column:2;grid-row:1}.metric .weight{display:none}.table-wrap{overflow:visible}thead{display:none}table,tbody,tr,th,td{display:block;width:100%}tbody tr{padding:11px 0;border-bottom:1px solid rgba(148,163,184,.18)}tbody th,tbody td{border:0;padding:4px 0}tbody td{display:flex;justify-content:space-between;gap:14px;text-align:right}tbody td::before{content:attr(data-label);color:var(--muted);font-weight:650}.band{grid-template-columns:60px 105px 1fr;font-size:.76rem}.source-meta{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="wrap brand-row">
+  <div>
+    <p class="eyebrow">Señales de mercado de Estados Unidos</p>
+    <h1>Radar de la Burbuja IA</h1>
+    <p class="subtitle">Semáforo público de riesgo de ruptura y moderación del gasto en inteligencia artificial</p>
+  </div>
+  <div class="freshness" aria-label="Frescura de los datos">
+    <span>Mercado <strong>2026-07-23</strong></span>
+    <span>Macro más rezagado <strong>2026-07-17</strong></span>
+    <span>Generado <time datetime="2026-07-23T17:37:01-06:00"><strong>23 jul 2026, 17:37</strong></time></span>
+    <span class="quality-badge">Datos: Parcial</span>
+  </div>
+</div></header>
+<main class="wrap">
+  <aside class="data-alert" aria-label="Aviso de calidad de datos"><strong>Calidad de datos:</strong> FRED no respondió para VIX; se usó la lectura de mercado alterna. FRED no respondió para la curva 10Y–2Y; se calculó con tasas oficiales del Tesoro de EE. UU. El mosaico de CapEx tiene 35% de cobertura; los faltantes se muestran como N/D.</aside>
+  <section class="score-hero" aria-labelledby="main-score-title">
+    <div>
+      <p class="label">Índice de riesgo de ruptura</p>
+      <div class="score-dial" style="color:#f59e0b">
+        <span class="score-number">55.4</span><span class="score-denom">/100</span>
+      </div>
+      <span class="not-probability">Índice, no probabilidad</span>
+    </div>
+    <div>
+      <h2 id="main-score-title" class="regime">PREPARAR</h2>
+      <p class="summary">El índice está en <strong>PREPARAR</strong> con <strong>55.4/100</strong>. La fragilidad estructural es alta (79.5) y la confirmación observable es moderada (42.5). El bloque de condiciones financieras marca 0.0/100 y la ruptura interna de la cesta IA, 75.0/100.</p>
+      <p class="formula"><strong>Composición:</strong> 35% × fragilidad 79.5 + 65% × confirmación 42.5 = 55.4.</p>
+    </div>
+  </section>
+
+  <section class="kpis" aria-label="Lecturas principales">
+    <article class="card">
+      <p class="label">Fragilidad estructural</p>
+      <div class="value" style="color:#fb923c">79.5</div>
+      <p class="sub">Qué tan vulnerable está la estructura, aunque todavía no esté rompiéndose.</p>
+    </article>
+    <article class="card">
+      <p class="label">Confirmación observable</p>
+      <div class="value" style="color:#eab308">42.5</div>
+      <p class="sub">Cuánto deterioro ya aparece en crédito, tendencia y ventas forzadas.</p>
+    </article>
+    <article class="card">
+      <p class="label">Riesgo de moderación de CapEx</p>
+      <div class="value" style="color:#22c55e">17.2</div>
+      <p class="sub">BAJO · Cobertura de señales 35%.</p>
+    </article>
+  </section>
+
+  <div class="dashboard-grid">
+    <section class="panel" aria-labelledby="blocks-title">
+      <h2 id="blocks-title">Siete bloques del índice</h2>
+      <p class="section-intro">Cada lectura va de 0 a 100; el peso muestra cuánto influye en el resultado agregado.</p>
+      <div class="metric">
+          <div class="metric-copy"><strong>Valuación y expectativas</strong>
+            <small>Aporte al índice: 11.3 puntos</small></div>
+          <div class="track" role="progressbar" aria-label="Valuación y expectativas"
+            aria-valuemin="0" aria-valuemax="100" aria-valuenow="94.5">
+            <span style="width:94.5%;background:#ef4444"></span></div>
+          <div class="number" style="color:#ef4444">94.5</div>
+          <div class="weight" title="Peso base">12%</div>
+        </div>
+        <div class="metric">
+          <div class="metric-copy"><strong>Concentración y subida temática</strong>
+            <small>Aporte al índice: 8.4 puntos</small></div>
+          <div class="track" role="progressbar" aria-label="Concentración y subida temática"
+            aria-valuemin="0" aria-valuemax="100" aria-valuenow="83.5">
+            <span style="width:83.5%;background:#ef4444"></span></div>
+          <div class="number" style="color:#ef4444">83.5</div>
+          <div class="weight" title="Peso base">10%</div>
+        </div>
+        <div class="metric">
+          <div class="metric-copy"><strong>Apalancamiento y reversión</strong>
+            <small>Aporte al índice: 4.6 puntos</small></div>
+          <div class="track" role="progressbar" aria-label="Apalancamiento y reversión"
+            aria-valuemin="0" aria-valuemax="100" aria-valuenow="57.8">
+            <span style="width:57.8%;background:#f59e0b"></span></div>
+          <div class="number" style="color:#f59e0b">57.8</div>
+          <div class="weight" title="Peso base">8%</div>
+        </div>
+        <div class="metric">
+          <div class="metric-copy"><strong>Oferta de nuevas acciones</strong>
+            <small>Aporte al índice: 3.5 puntos</small></div>
+          <div class="track" role="progressbar" aria-label="Oferta de nuevas acciones"
+            aria-valuemin="0" aria-valuemax="100" aria-valuenow="70.0">
+            <span style="width:70.0%;background:#fb923c"></span></div>
+          <div class="number" style="color:#fb923c">70.0</div>
+          <div class="weight" title="Peso base">5%</div>
+        </div>
+        <div class="metric">
+          <div class="metric-copy"><strong>Crédito y financiamiento</strong>
+            <small>Aporte al índice: 0.0 puntos</small></div>
+          <div class="track" role="progressbar" aria-label="Crédito y financiamiento"
+            aria-valuemin="0" aria-valuemax="100" aria-valuenow="0.0">
+            <span style="width:0.0%;background:#22c55e"></span></div>
+          <div class="number" style="color:#22c55e">0.0</div>
+          <div class="weight" title="Peso base">25%</div>
+        </div>
+        <div class="metric">
+          <div class="metric-copy"><strong>Ruptura interna del mercado</strong>
+            <small>Aporte al índice: 18.8 puntos</small></div>
+          <div class="track" role="progressbar" aria-label="Ruptura interna del mercado"
+            aria-valuemin="0" aria-valuemax="100" aria-valuenow="75.0">
+            <span style="width:75.0%;background:#fb923c"></span></div>
+          <div class="number" style="color:#fb923c">75.0</div>
+          <div class="weight" title="Peso base">25%</div>
+        </div>
+        <div class="metric">
+          <div class="metric-copy"><strong>Volatilidad y ventas forzadas</strong>
+            <small>Aporte al índice: 8.9 puntos</small></div>
+          <div class="track" role="progressbar" aria-label="Volatilidad y ventas forzadas"
+            aria-valuemin="0" aria-valuemax="100" aria-valuenow="59.2">
+            <span style="width:59.2%;background:#f59e0b"></span></div>
+          <div class="number" style="color:#f59e0b">59.2</div>
+          <div class="weight" title="Peso base">15%</div>
+        </div>
+    </section>
+    <section class="panel" aria-labelledby="capex-title">
+      <h2 id="capex-title">Mosaico de CapEx en IA</h2>
+      <p class="section-intro">CapEx significa inversión en centros de datos, chips, energía y capacidad de nube.</p>
+      <div class="table-wrap">
+        <table>
+          <caption>Señales automáticas y manuales con su peso base.</caption>
+          <thead><tr><th scope="col">Señal</th><th scope="col">Índice</th><th scope="col">Peso base</th><th scope="col">Aporte</th></tr></thead>
+          <tbody>
+        <tr>
+          <th scope="row"><strong>Guía de las grandes tecnológicas</strong>
+            <small>Sin lectura pública fechada incorporada. · Manual fechado · Sin dato; no se cuenta como cero</small></th>
+          <td data-label="Índice" class="num" style="color:#94a3b8">N/D</td>
+          <td data-label="Peso base" class="num weight">20%</td>
+          <td data-label="Aporte" class="num">—</td>
+        </tr>
+        <tr>
+          <th scope="row"><strong>Pulso de proveedores y semiconductores</strong>
+            <small>Semiconductores vs hyperscalers, 20 días: -4.4 puntos porcentuales. · Automático</small></th>
+          <td data-label="Índice" class="num" style="color:#22c55e">0.0</td>
+          <td data-label="Peso base" class="num weight">20%</td>
+          <td data-label="Aporte" class="num">0.0</td>
+        </tr>
+        <tr>
+          <th scope="row"><strong>Construcción, energía y cancelaciones</strong>
+            <small>Sin lectura pública fechada incorporada. · Manual fechado · Sin dato; no se cuenta como cero</small></th>
+          <td data-label="Índice" class="num" style="color:#94a3b8">N/D</td>
+          <td data-label="Peso base" class="num weight">15%</td>
+          <td data-label="Aporte" class="num">—</td>
+        </tr>
+        <tr>
+          <th scope="row"><strong>Disponibilidad y precio de GPU en nube</strong>
+            <small>Sin una fuente pública estable y redistribuible. · Manual fechado · Sin dato; no se cuenta como cero</small></th>
+          <td data-label="Índice" class="num" style="color:#94a3b8">N/D</td>
+          <td data-label="Peso base" class="num weight">10%</td>
+          <td data-label="Aporte" class="num">—</td>
+        </tr>
+        <tr>
+          <th scope="row"><strong>Caja y capacidad de financiar</strong>
+            <small>Cobertura mediana OCF/CapEx: 1.52x. · Automático</small></th>
+          <td data-label="Índice" class="num" style="color:#eab308">40.0</td>
+          <td data-label="Peso base" class="num weight">15%</td>
+          <td data-label="Aporte" class="num">17.2</td>
+        </tr>
+        <tr>
+          <th scope="row"><strong>Retorno y depreciación económica</strong>
+            <small>Sin lectura pública fechada incorporada. · Manual fechado · Sin dato; no se cuenta como cero</small></th>
+          <td data-label="Índice" class="num" style="color:#94a3b8">N/D</td>
+          <td data-label="Peso base" class="num weight">15%</td>
+          <td data-label="Aporte" class="num">—</td>
+        </tr>
+        <tr>
+          <th scope="row"><strong>Demanda financiada y circularidad</strong>
+            <small>Sin lectura pública fechada incorporada. · Manual fechado · Sin dato; no se cuenta como cero</small></th>
+          <td data-label="Índice" class="num" style="color:#94a3b8">N/D</td>
+          <td data-label="Peso base" class="num weight">5%</td>
+          <td data-label="Aporte" class="num">—</td>
+        </tr></tbody>
+        </table>
+      </div>
+      <p class="coverage"><strong>Cobertura 35%.</strong> Los faltantes aparecen como N/D y se excluyen; las señales disponibles se reponderan. Nunca se convierten silenciosamente en riesgo cero.</p>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="history-heading">
+    <h2 id="history-heading">Historial reciente</h2>
+    <p class="section-intro">Escala fija de 0 a 100 para no exagerar movimientos pequeños.</p>
+    <p class="notice">El historial comparable aparecerá después de dos actualizaciones válidas.</p>
+  </section>
+
+  <section class="panel" aria-labelledby="method-heading">
+    <h2 id="method-heading">Cómo leer el Radar</h2>
+    <p class="section-intro">El modelo observa proxies de mercado de Estados Unidos. No mide todo el ecosistema global de IA y no emite recomendaciones.</p>
+    <div class="method-grid">
+      <div class="method-card">
+        <h3>Índice de ruptura</h3>
+        <p>Valuación, concentración, apalancamiento y emisiones forman la fragilidad. Condiciones financieras, ruptura interna y ventas forzadas forman la confirmación.</p>
+        <div class="bands" aria-label="Bandas del índice de ruptura">
+          <div class="band"><i style="background:#22c55e"></i><strong>0–34</strong><span>Normal</span></div>
+          <div class="band"><i style="background:#eab308"></i><strong>35–49</strong><span>Monitorear</span></div>
+          <div class="band"><i style="background:#f59e0b"></i><strong>50–64</strong><span>Preparar</span></div>
+          <div class="band"><i style="background:#fb923c"></i><strong>65–79</strong><span>Alerta alta</span></div>
+          <div class="band"><i style="background:#ef4444"></i><strong>80–89</strong><span>Ruptura probable</span></div>
+          <div class="band"><i style="background:#b91c1c"></i><strong>90–100</strong><span>Ruptura aguda</span></div>
+        </div>
+      </div>
+      <div class="method-card">
+        <h3>Índice de CapEx</h3>
+        <p>Combina guía corporativa, pulso de proveedores, construcción física, capacidad de nube, caja, retorno contable y demanda financiada.</p>
+        <div class="bands" aria-label="Bandas del índice de CapEx">
+          <div class="band"><i style="background:#22c55e"></i><strong>0–34</strong><span>Bajo</span></div>
+          <div class="band"><i style="background:#eab308"></i><strong>35–54</strong><span>Vigilar</span></div>
+          <div class="band"><i style="background:#f59e0b"></i><strong>55–69</strong><span>Preparar</span></div>
+          <div class="band"><i style="background:#fb923c"></i><strong>70–84</strong><span>Alerta alta</span></div>
+          <div class="band"><i style="background:#ef4444"></i><strong>85–100</strong><span>Ciclo de recorte</span></div>
+        </div>
+        <p style="margin-top:14px"><strong>Lecturas rápidas:</strong> VIX 18.70 · NFCI -0.552 · curva 10Y–2Y 0.34%.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="sources-heading">
+    <h2 id="sources-heading">Fuentes y frescura</h2>
+    <p class="section-intro">Las entradas lentas conservan su fecha visible. NFCI sustituye un spread privado que no permite redistribución pública.</p>
+    <ul class="source-list">
+        <li class="source-card">
+          <div><strong>Mercado y fundamentales</strong>
+            <span><a href="https://finance.yahoo.com/" target="_blank" rel="noopener noreferrer">Yahoo Finance vía yfinance</a></span><small>No se redistribuyen series de cotizaciones.</small></div>
+          <div class="source-meta">
+            <span>Automático</span>
+            <time>2026-07-23</time>
+            <span>Disponible</span>
+          </div>
+        </li>
+        <li class="source-card">
+          <div><strong>Volatilidad implícita (VIX)</strong>
+            <span><a href="https://finance.yahoo.com/quote/%5EVIX/" target="_blank" rel="noopener noreferrer">Yahoo Finance vía yfinance</a></span></div>
+          <div class="source-meta">
+            <span>Automático</span>
+            <time>2026-07-23</time>
+            <span>Fuente alterna</span>
+          </div>
+        </li>
+        <li class="source-card">
+          <div><strong>Condiciones financieras (NFCI)</strong>
+            <span><a href="https://www.chicagofed.org/research/data/nfci/current-data" target="_blank" rel="noopener noreferrer">Reserva Federal de Chicago</a></span></div>
+          <div class="source-meta">
+            <span>Automático</span>
+            <time>2026-07-17</time>
+            <span>Disponible</span>
+          </div>
+        </li>
+        <li class="source-card">
+          <div><strong>Curva del Tesoro 10Y–2Y</strong>
+            <span><a href="https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve" target="_blank" rel="noopener noreferrer">Departamento del Tesoro de EE. UU.</a></span></div>
+          <div class="source-meta">
+            <span>Automático</span>
+            <time>2026-07-23</time>
+            <span>Fuente alterna</span>
+          </div>
+        </li>
+        <li class="source-card">
+          <div><strong>CAPE de Shiller</strong>
+            <span><a href="https://www.multpl.com/shiller-pe/table/by-month" target="_blank" rel="noopener noreferrer">Fuente pública enlazada</a></span><small>Edad: 6 días; máximo: 45.</small></div>
+          <div class="source-meta">
+            <span>Manual fechado</span>
+            <time>2026-07-17</time>
+            <span>Disponible</span>
+          </div>
+        </li>
+        <li class="source-card">
+          <div><strong>Capitalización bursátil / PIB</strong>
+            <span><a href="https://buffettindicator.org/" target="_blank" rel="noopener noreferrer">Fuente pública enlazada</a></span><small>Edad: 21 días; máximo: 90.</small></div>
+          <div class="source-meta">
+            <span>Manual fechado</span>
+            <time>2026-07-02</time>
+            <span>Disponible</span>
+          </div>
+        </li>
+        <li class="source-card">
+          <div><strong>Concentración del S&amp;P 500</strong>
+            <span><a href="https://www.slickcharts.com/sp500/analysis" target="_blank" rel="noopener noreferrer">Fuente pública enlazada</a></span><small>Edad: 3 días; máximo: 30.</small></div>
+          <div class="source-meta">
+            <span>Manual fechado</span>
+            <time>2026-07-20</time>
+            <span>Disponible</span>
+          </div>
+        </li>
+        <li class="source-card">
+          <div><strong>Deuda de margen</strong>
+            <span><a href="https://www.finra.org/rules-guidance/key-topics/margin-accounts/margin-statistics" target="_blank" rel="noopener noreferrer">Fuente pública enlazada</a></span><small>Edad: 23 días; máximo: 75.</small></div>
+          <div class="source-meta">
+            <span>Manual fechado</span>
+            <time>2026-06</time>
+            <span>Disponible</span>
+          </div>
+        </li>
+        <li class="source-card">
+          <div><strong>Emisiones de acciones</strong>
+            <span><a href="https://www.spglobal.com/market-intelligence/en/news-insights/research/2026/07/mega-deals-push-h1-2026-us-equity-issuance-into-orbit" target="_blank" rel="noopener noreferrer">Fuente pública enlazada</a></span><small>Edad: 23 días; máximo: 220.</small></div>
+          <div class="source-meta">
+            <span>Manual fechado</span>
+            <time>2026-H1</time>
+            <span>Disponible</span>
+          </div>
+        </li>
+        <li class="source-card">
+          <div><strong>Prima por riesgo crediticio (EBP)</strong>
+            <span><a href="https://www.federalreserve.gov/econres/economic-research-data.htm" target="_blank" rel="noopener noreferrer">Fuente pública enlazada</a></span><small>Edad: 23 días; máximo: 75.</small></div>
+          <div class="source-meta">
+            <span>Manual fechado</span>
+            <time>2026-06</time>
+            <span>Disponible</span>
+          </div>
+        </li></ul>
+    <div class="raw-links">
+      <a href="latest.json">Última lectura (JSON)</a>
+      <a href="history.csv">Historial (CSV)</a>
+      <a href="https://github.com/Bluxor-ai/radar-de-la-burbuja-ia">Código y metodología</a>
+    </div>
+  </section>
+</main>
+<footer class="site-footer"><div class="wrap">
+  <p class="notice">Sitio público sin posiciones, cuentas, órdenes, correos ni datos personales. Índices de riesgo, no probabilidades exactas ni recomendaciones personalizadas. Proyecto informativo y educativo; valida las fuentes antes de actuar.</p>
+</div></footer>
+</body></html>
