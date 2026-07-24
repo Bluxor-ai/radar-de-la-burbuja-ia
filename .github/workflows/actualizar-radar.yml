@@ -78,12 +78,14 @@ jobs:
           test -s public/index.html
           test -s public/latest.json
           test -s public/history.csv
+          test -s public/historical_reconstruction.json
           test -s public/gpu_price_history.csv
           test -s public/validation.json
           test -s public/validation.csv
           test -s public/model_versions.json
           test -s data/latest.json
           test -s data/history.csv
+          test -s data/historical_reconstruction.json
           test -s data/gpu_price_history.csv
 
       - name: Empaquetar estado generado

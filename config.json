@@ -76,6 +76,8 @@
   "equity_supply": {
     "gross_issuance_score": 80.0,
     "buyback_absorption_offset": -10.0,
+    "scoring_method": "manual_frozen",
+    "score_note": "Los datos base son públicos, pero su conversión a 70 de 100 es una decisión manual sin fórmula publicada.",
     "as_of": "2026-H1",
     "max_age_days": 220,
     "source": "https://www.spglobal.com/market-intelligence/en/news-insights/research/2026/07/mega-deals-push-h1-2026-us-equity-issuance-into-orbit"

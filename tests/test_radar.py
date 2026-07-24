@@ -181,7 +181,11 @@ def test_identical_history_readings_from_distinct_runs_are_preserved(tmp_path):
     assert "valuation_score" in rows[0]
     assert "capex_guidance_score" in rows[0]
     assert "census_fetched_at" in rows[0]
-    assert "2026-07-23T23:59:00-06:00" in rows[2]
+    assert any("2026-07-23T23:59:00-06:00" in row for row in rows[1:])
+    assert {row.split(",", 1)[0] for row in rows[1:]} == {
+        "run-1",
+        "run-2",
+    }
 
 
 def test_same_observation_id_is_deduplicated(tmp_path):
@@ -210,3 +214,52 @@ def test_history_chart_uses_fixed_zero_to_one_hundred_scale(tmp_path):
     assert ">0</text>" in chart
     assert ">100</text>" in chart
     assert "escala fija de cero a cien" in chart
+
+
+def test_history_chart_distinguishes_reconstruction_from_live_readings(
+    tmp_path,
+):
+    history = tmp_path / "history.csv"
+    history.write_text(
+        "observation_id,model_version,generated_at,bubble_score,"
+        "observation_type\n"
+        "reconstructed:2026-07-01,2.0.0,"
+        "2026-07-01T18:17:00-06:00,50,reconstructed\n"
+        "reconstructed:2026-07-02,2.0.0,"
+        "2026-07-02T18:17:00-06:00,51,reconstructed\n"
+        "run-1,2.0.0,2026-07-03T18:17:00-06:00,52,live\n",
+        encoding="utf-8",
+    )
+
+    chart = radar.history_chart(history)
+
+    assert 'stroke-dasharray="9 7"' in chart
+    assert "Reconstrucción parcial" in chart
+    assert "Lecturas guardadas automáticamente" in chart
+    assert "1 jul 2026" in chart
+    assert "contra una estimación reconstruida" in chart
+    assert chart.count("<polyline") == 1
+
+
+def test_history_uses_latest_reconstruction_version_and_keeps_live(
+    tmp_path,
+):
+    history = tmp_path / "history.csv"
+    history.write_text(
+        "observation_id,model_version,generated_at,bubble_score,"
+        "observation_type,reconstruction_version\n"
+        "reconstructed:1.0:2026-07-01,2.0.0,"
+        "2026-07-01T18:17:00-06:00,40,reconstructed,1.0\n"
+        "reconstructed:1.1:2026-07-01,2.0.0,"
+        "2026-07-01T18:17:00-06:00,41,reconstructed,1.1\n"
+        "run-1,2.0.0,2026-07-23T18:17:00-06:00,52,live,\n",
+        encoding="utf-8",
+    )
+
+    comparable = radar.comparable_history(history)
+
+    assert comparable["bubble_score"].tolist() == [41, 52]
+    assert comparable["observation_id"].tolist() == [
+        "reconstructed:1.1:2026-07-01",
+        "run-1",
+    ]

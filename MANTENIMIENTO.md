@@ -20,3 +20,8 @@ Antes de publicar cambios:
 9. confirma que GitHub Actions y GitHub Pages terminen correctamente.
 10. nunca reconstruyas el pasado con valores actuales: conserva
     `model_version`, `observation_id` y fechas reales de disponibilidad.
+11. una reconstrucción histórica debe usar un manifiesto fechado, eliminar
+    observaciones futuras en cada corte y conservar
+    `observation_type=reconstructed`; nunca debe reemplazar lecturas reales.
+12. si una fuente cambia materialmente el cálculo, o cambia una regla
+    histórica, sube la versión de la reconstrucción y conserva la anterior.
