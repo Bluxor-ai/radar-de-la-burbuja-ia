@@ -3,9 +3,11 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import hashlib
 import html
 import json
 import math
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -14,6 +16,22 @@ from zoneinfo import ZoneInfo
 import numpy as np
 import pandas as pd
 import requests
+
+from capex_signals import (
+    CENSUS_PRIVATE_NSA_URL,
+    fetch_azure_h100_snapshot,
+    fetch_census_data_center_signal,
+    fetch_yfinance_capex_signals,
+)
+from history_tools import (
+    LEGACY_VERSION,
+    MODEL_VERSION,
+    comparison_anchor,
+    history_window,
+    normalize_history,
+    observation_id,
+)
+from robustness import analyze_weight_robustness
 
 USER_AGENT = "radar-de-la-burbuja-ia/1.0 contact: public-dashboard"
 PUBLIC_URL = "https://bluxor-ai.github.io/radar-de-la-burbuja-ia/"
@@ -24,6 +42,17 @@ TREASURY_CURVE_URL = (
     "?type=daily_treasury_yield_curve"
     "&field_tdr_date_value={year}&page&_format=csv"
 )
+BLOCK_HISTORY_KEYS = (
+    "valuation_score",
+    "concentration_score",
+    "leverage_score",
+    "equity_supply_score",
+    "credit_score",
+    "internal_break_score",
+    "forced_selling_score",
+)
+RADAR_MODEL_VERSION = MODEL_VERSION
+CAPEX_MODEL_VERSION = "2.0.0"
 
 def clamp(value: float, low: float = 0.0, high: float = 100.0) -> float:
     return max(low, min(high, float(value)))
@@ -318,53 +347,6 @@ def distribution_stats(frame: pd.DataFrame) -> dict[str, float]:
         "return_20d": pct_return(data["Close"], 20),
     }
 
-def yfinance_cash_coverage(tickers: list[str]) -> tuple[float | None, dict[str, Any]]:
-    import yfinance as yf
-    ratios = []
-    details: dict[str, Any] = {}
-    for ticker in tickers:
-        try:
-            cashflow = yf.Ticker(ticker).quarterly_cashflow
-            if cashflow is None or cashflow.empty:
-                continue
-            operating_rows = [
-                "Operating Cash Flow",
-                "Total Cash From Operating Activities",
-            ]
-            capex_rows = [
-                "Capital Expenditure",
-                "Capital Expenditures",
-            ]
-            operating = None
-            capex = None
-            for row in operating_rows:
-                if row in cashflow.index:
-                    operating = cashflow.loc[row]
-                    break
-            for row in capex_rows:
-                if row in cashflow.index:
-                    capex = cashflow.loc[row]
-                    break
-            if operating is None or capex is None:
-                continue
-            operating_ttm = pd.to_numeric(operating, errors="coerce").dropna().head(4).sum()
-            capex_ttm = abs(pd.to_numeric(capex, errors="coerce").dropna().head(4).sum())
-            if capex_ttm <= 0:
-                continue
-            ratio = safe_float(operating_ttm / capex_ttm)
-            ratios.append(ratio)
-            details[ticker] = {"ocf_capex": ratio}
-        except Exception:
-            details[ticker] = {"status": "unavailable"}
-    details["available_companies"] = len(ratios)
-    if len(ratios) < 3:
-        return None, details
-    median_ratio = float(np.median(ratios))
-    # 2.0x o más = bajo riesgo; 0.8x o menos = alto riesgo.
-    score = 100.0 - scale(median_ratio, 0.8, 2.0)
-    details["median_ocf_capex"] = median_ratio
-    return score, details
-
 def aggregate_available_signals(
     rows: list[dict[str, Any]],
 ) -> tuple[float, float]:
@@ -477,9 +459,6 @@ def compute_live(
             vix_status = "Fuente alterna"
         if pd.isna(vix) or pd.isna(vix_5d_change):
             raise RuntimeError("No hay lectura de VIX disponible.") from exc
-        source_warnings.append(
-            "FRED no respondió para VIX; se usó la lectura de mercado alterna."
-        )
         sources.append({
             "label": "Volatilidad implícita (VIX)",
             "provider": "Yahoo Finance vía yfinance",
@@ -558,10 +537,6 @@ def compute_live(
                 "data-chart-center/interest-rates/"
                 "TextView?type=daily_treasury_yield_curve"
             )
-            source_warnings.append(
-                "FRED no respondió para la curva 10Y–2Y; se calculó con "
-                "tasas oficiales del Tesoro de EE. UU."
-            )
         except Exception:
             previous_curve = previous_inputs.get("curve_10y_2y")
             curve_10y_2y = (
@@ -578,10 +553,6 @@ def compute_live(
             )
             curve_provider = "Reserva Federal vía FRED"
             curve_url = "https://fred.stlouisfed.org/series/T10Y2Y"
-            source_warnings.append(
-                "FRED y el Tesoro no respondieron para la curva 10Y–2Y; "
-                "se conservó la lectura previa."
-            )
     sources.append({
         "label": "Curva del Tesoro 10Y–2Y",
         "provider": curve_provider,
@@ -590,9 +561,18 @@ def compute_live(
         "mode": "Automático",
         "status": curve_status,
     })
+    used_macro_dates: list[pd.Timestamp] = []
+    for value in (vix_as_of, nfci_as_of, curve_as_of):
+        try:
+            parsed = pd.Timestamp(value)
+            if not pd.isna(parsed):
+                used_macro_dates.append(parsed)
+        except Exception:
+            continue
     macro_as_of = (
-        str(min(macro_dates).date())
-        if macro_dates else str(previous.get("macro_as_of", "N/D"))
+        str(min(used_macro_dates).date())
+        if used_macro_dates
+        else str(previous.get("macro_as_of", "N/D"))
     )
 
     # Run-up relativo.
@@ -736,30 +716,240 @@ def compute_live(
     confirmation_score = sum(score * weight for _, score, weight in blocks[4:]) / confirmation_weight
 
     # CapEx automático + manual.
+    now = local_now(config["site"].get("timezone", "UTC"))
     hyperscalers = [ticker for ticker in ["MSFT", "GOOGL", "AMZN", "META"] if ticker in prices]
     semis = [ticker for ticker in ["SMH", "SOXX", "NVDA"] if ticker in prices]
     hyper_20 = float(np.mean([pct_return(prices[t], 20) for t in hyperscalers])) if hyperscalers else 0.0
     semi_20 = float(np.mean([pct_return(prices[t], 20) for t in semis])) if semis else 0.0
+    supplier_gap_pp = (semi_20 - hyper_20) * 100.0
     supplier_proxy = (
         scale((hyper_20 - semi_20) * 100.0, 5.0, 20.0)
         if len(hyperscalers) >= 2 and len(semis) >= 2 else None
     )
-    cash_score, cash_details = yfinance_cash_coverage(hyperscalers)
+    fundamental_signals: dict[str, Any] = {
+        "spending": None,
+        "cash_financing": None,
+        "roi_accounting": None,
+        "details": {},
+    }
+    financials_as_of = "N/D"
+    try:
+        fundamental_signals = fetch_yfinance_capex_signals(hyperscalers)
+        financial_periods = [
+            details.get("spending", {}).get("latest_period")
+            for details in (
+                fundamental_signals.get("details", {})
+                .get("companies", {})
+                .values()
+            )
+            if details.get("spending", {}).get("latest_period")
+        ]
+        financials_as_of = min(financial_periods) if financial_periods else "N/D"
+        available_financial_metrics = sum(
+            fundamental_signals.get(key) is not None
+            for key in ("spending", "cash_financing", "roi_accounting")
+        )
+        financial_max_age = min(
+            int(config["capex"][key].get("max_age_days", 150))
+            for key in ("guidance", "cash_financing", "roi_accounting")
+        )
+        financial_age = as_of_age_days(financials_as_of, now)
+        financial_expired = (
+            financial_age is not None
+            and financial_age > financial_max_age
+        )
+        if financial_expired:
+            for key in ("spending", "cash_financing", "roi_accounting"):
+                fundamental_signals[key] = None
+            financial_status = "Vencida"
+            source_warnings.append(
+                "CapEx: los estados financieros superan su edad máxima."
+            )
+        elif available_financial_metrics == 3:
+            financial_status = "Disponible"
+        elif available_financial_metrics > 0:
+            financial_status = "Parcial"
+            source_warnings.append(
+                "CapEx: faltan algunas métricas de estados financieros."
+            )
+        else:
+            financial_status = "No disponible"
+            source_warnings.append(
+                "CapEx: no hubo métricas financieras utilizables."
+            )
+        sources.append({
+            "label": "Gasto, caja y retorno contable",
+            "provider": "Estados financieros vía Yahoo Finance",
+            "url": "https://finance.yahoo.com/",
+            "as_of": financials_as_of,
+            "mode": "Automático",
+            "status": financial_status,
+            "note": (
+                "Proxies amplios de MSFT, GOOGL, AMZN y META; "
+                "no aíslan exclusivamente la inversión en IA. "
+                f"Edad máxima: {financial_max_age} días."
+            ),
+        })
+    except Exception:
+        source_warnings.append(
+            "CapEx: no se actualizaron los estados financieros."
+        )
+        sources.append({
+            "label": "Gasto, caja y retorno contable",
+            "provider": "Estados financieros vía Yahoo Finance",
+            "url": "https://finance.yahoo.com/",
+            "as_of": "N/D",
+            "mode": "Automático",
+            "status": "No disponible",
+        })
+
+    census_score: float | None = None
+    census_details: dict[str, Any] = {}
+    try:
+        census_score, census_details = fetch_census_data_center_signal()
+        census_as_of = census_details.get("as_of", "N/D")
+        census_max_age = int(
+            config["capex"]["physical_buildout"].get(
+                "max_age_days",
+                120,
+            )
+        )
+        census_age = as_of_age_days(census_as_of, now)
+        census_expired = (
+            census_age is not None and census_age > census_max_age
+        )
+        if census_expired:
+            census_score = None
+            census_status = "Vencida"
+            source_warnings.append(
+                "CapEx: la serie de construcción supera su edad máxima."
+            )
+        else:
+            census_status = "Disponible"
+        sources.append({
+            "label": "Construcción privada de centros de datos",
+            "provider": "U.S. Census Bureau",
+            "url": CENSUS_PRIVATE_NSA_URL,
+            "as_of": census_as_of,
+            "mode": "Automático mensual",
+            "status": census_status,
+            "note": (
+                "Gasto nominal en obra, sin racks ni servidores. Promedio "
+                "de tres meses frente a los mismos meses del año anterior. "
+                f"Edad máxima: {census_max_age} días."
+            ),
+        })
+    except Exception:
+        source_warnings.append(
+            "CapEx: Census no respondió o cambió su archivo."
+        )
+        sources.append({
+            "label": "Construcción privada de centros de datos",
+            "provider": "U.S. Census Bureau",
+            "url": CENSUS_PRIVATE_NSA_URL,
+            "as_of": "N/D",
+            "mode": "Automático mensual",
+            "status": "No disponible",
+        })
+
+    azure_snapshot: dict[str, Any] = {}
+    try:
+        azure_snapshot = fetch_azure_h100_snapshot()
+        sources.append({
+            "label": "Precios públicos de GPU H100",
+            "provider": "Microsoft Azure Retail Prices API",
+            "url": "https://learn.microsoft.com/rest/api/cost-management/retail-prices/azure-retail-prices",
+            "as_of": azure_snapshot.get("price_effective_as_of", "N/D"),
+            "mode": "Colector automático",
+            "status": "En observación",
+            "note": (
+                "Se archiva, pero no se puntúa: el precio de lista no "
+                "demuestra disponibilidad de capacidad."
+            ),
+        })
+    except Exception:
+        source_warnings.append(
+            "CapEx: no se pudo archivar el precio H100 de Azure."
+        )
+        sources.append({
+            "label": "Precios públicos de GPU H100",
+            "provider": "Microsoft Azure Retail Prices API",
+            "url": "https://learn.microsoft.com/rest/api/cost-management/retail-prices/azure-retail-prices",
+            "as_of": "N/D",
+            "mode": "Colector automático",
+            "status": "No disponible",
+        })
 
     capex_rows: list[dict[str, Any]] = []
     for key, item in config["capex"].items():
-        if key == "suppliers":
+        if key == "guidance":
+            score = fundamental_signals.get("spending")
+            spending_detail = (
+                fundamental_signals.get("details", {}).get("spending", {})
+            )
+            spending_growth = spending_detail.get(
+                "weighted_median_growth_yoy_percent"
+            )
+            reading = (
+                f"Frente al mismo trimestre del año anterior: "
+                f"{safe_float(spending_growth):+.1f}%; "
+                f"{spending_detail.get('available_companies', 0)} empresas."
+                if spending_growth is not None
+                else item["reading"]
+            )
+        elif key == "suppliers":
             score: float | None = supplier_proxy
             reading = (
-                f"Semiconductores vs hyperscalers, 20 días: "
-                f"{(semi_20 - hyper_20) * 100.0:.1f} puntos porcentuales."
+                f"En 20 días, semiconductores rindieron "
+                f"{abs(supplier_gap_pp):.1f} puntos "
+                f"{'más' if supplier_gap_pp >= 0 else 'menos'} que "
+                "las grandes tecnológicas."
+            )
+        elif key == "physical_buildout":
+            score = census_score
+            census_growth = census_details.get("growth_yoy_percent")
+            reading = (
+                f"Frente a los mismos tres meses del año anterior: "
+                f"{safe_float(census_growth):+.1f}%."
+                if census_growth is not None
+                else item["reading"]
+            )
+        elif key == "cloud_capacity":
+            score = None
+            azure_discount = azure_snapshot.get("median_discount_percent")
+            reading = (
+                f"{azure_snapshot.get('paired_region_count', 0)} regiones; "
+                f"descuento Spot mediano {safe_float(azure_discount):.1f}%. "
+                "Se archiva sin puntuar; todavía no existe una metodología "
+                "aprobada."
+                if azure_discount is not None
+                else item["reading"]
             )
         elif key == "cash_financing":
-            score = cash_score
-            median_ratio = cash_details.get("median_ocf_capex")
+            score = fundamental_signals.get("cash_financing")
+            cash_details = (
+                fundamental_signals.get("details", {})
+                .get("cash_financing", {})
+            )
+            median_ratio = cash_details.get("median_ocf_to_capex")
             reading = (
-                f"Cobertura mediana OCF/CapEx: {median_ratio:.2f}x."
+                f"El efectivo generado cubre {median_ratio:.2f} veces "
+                "el gasto de inversión."
                 if isinstance(median_ratio, (int, float)) else item["reading"]
+            )
+        elif key == "roi_accounting":
+            score = fundamental_signals.get("roi_accounting")
+            roi_details = (
+                fundamental_signals.get("details", {})
+                .get("roi_accounting", {})
+            )
+            reading = (
+                f"Estimación contable amplia del retorno: "
+                f"{safe_float(score):.1f}/100 en "
+                f"{roi_details.get('available_companies', 0)} empresas; "
+                "no aísla el retorno de IA."
+                if score is not None
+                else item["reading"]
             )
         else:
             raw_score = item.get("score")
@@ -789,7 +979,6 @@ def compute_live(
             f"{capex_available_weight:.0%} de cobertura; los faltantes se muestran como N/D."
         )
 
-    now = local_now(config["site"].get("timezone", "UTC"))
     slow_sources = [
         ("CAPE de Shiller", cape_cfg),
         ("Capitalización bursátil / PIB", mcgdp_cfg),
@@ -820,8 +1009,62 @@ def compute_live(
             ),
         })
 
+    config_hash = hashlib.sha256(
+        json.dumps(
+            config,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
+    source_fallback_count = sum(
+        str(source.get("status", "")).casefold()
+        in {"respaldo", "fuente alterna", "parcial", "vencida"}
+        for source in sources
+    )
+    data_quality_status = (
+        "Parcial"
+        if any("CapEx" not in warning for warning in source_warnings)
+        else "Completa"
+    )
+    block_rows = [
+        {
+            "label": label,
+            "score": score,
+            "weight": weight,
+            "contribution": score * weight,
+        }
+        for label, score, weight in blocks
+    ]
+    generated_at = now.isoformat(timespec="seconds")
+    weight_sensitivity = analyze_weight_robustness(block_rows)
+    weight_sensitivity["model_version"] = RADAR_MODEL_VERSION
+    weight_sensitivity["generated_at"] = generated_at
+    weight_sensitivity["market_as_of"] = market_as_of
+    weight_sensitivity["config_sha256"] = config_hash
+    weight_sensitivity["historical_validation"] = {
+        "status": "not_yet_available",
+        "prospective_start": "2026-07-23",
+        "reason": (
+            "Los insumos lentos anteriores no conservan todavía su fecha "
+            "real de disponibilidad y vintage. Usar el valor actual en el "
+            "pasado introduciría información futura."
+        ),
+        "next_step": (
+            "Comparar prospectivamente las bandas con drawdowns posteriores "
+            "de QQQ y SMH y construir un backtest solo con datos point-in-time."
+        ),
+    }
+
     return {
-        "generated_at": now.isoformat(timespec="seconds"),
+        "schema_version": 2,
+        "model_version": RADAR_MODEL_VERSION,
+        "radar_model_version": RADAR_MODEL_VERSION,
+        "capex_model_version": CAPEX_MODEL_VERSION,
+        "config_sha256": config_hash,
+        "code_revision": os.environ.get("GITHUB_SHA", "local"),
+        "observation_id": observation_id(generated_at),
+        "generated_at": generated_at,
         "market_as_of": market_as_of,
         "macro_as_of": macro_as_of,
         "bubble_score": bubble_score,
@@ -838,15 +1081,8 @@ def compute_live(
             else "DATOS INSUFICIENTES"
         ),
         "capex_preliminary_regime": preliminary_capex_level,
-        "blocks": [
-            {
-                "label": label,
-                "score": score,
-                "weight": weight,
-                "contribution": score * weight,
-            }
-            for label, score, weight in blocks
-        ],
+        "blocks": block_rows,
+        "weight_sensitivity": weight_sensitivity,
         "capex_rows": capex_rows,
         "inputs": {
             "excess_return_pp": excess_pp,
@@ -865,15 +1101,14 @@ def compute_live(
             "large_down_days_average": avg_large_down_days,
             "distribution_score": distribution_score,
             "regime_score": regime_score,
-            "cash_coverage_details": cash_details,
+            "capex_fundamentals": fundamental_signals.get("details", {}),
+            "census_data_center": census_details,
+            "cloud_gpu_snapshot": azure_snapshot,
         },
         "data_quality": {
-            "status": (
-                "Parcial"
-                if any("CapEx" not in warning for warning in source_warnings)
-                else "Completa"
-            ),
+            "status": data_quality_status,
             "warnings": source_warnings,
+            "source_fallback_count": source_fallback_count,
             "capex_coverage": capex_available_weight,
             "capex_status": (
                 "Suficiente"
@@ -899,7 +1134,7 @@ def load_fallback(path: Path, timezone_name: str = "UTC") -> dict[str, Any]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     payload["stale"] = True
     payload["stale_reason"] = "La actualización en vivo falló; se muestra la última lectura guardada."
-    payload["generated_at"] = local_now(timezone_name).isoformat(timespec="seconds")
+    payload["served_at"] = local_now(timezone_name).isoformat(timespec="seconds")
     payload["data_quality"] = {
         "status": "Respaldo",
         "warnings": [payload["stale_reason"]],
@@ -910,8 +1145,23 @@ def load_fallback(path: Path, timezone_name: str = "UTC") -> dict[str, Any]:
 def write_history(path: Path, result: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     row = {
+        "observation_id": result.get(
+            "observation_id",
+            observation_id(result["generated_at"]),
+        ),
+        "model_version": result.get(
+            "radar_model_version",
+            result.get("model_version", RADAR_MODEL_VERSION),
+        ),
+        "capex_model_version": result.get(
+            "capex_model_version",
+            CAPEX_MODEL_VERSION,
+        ),
+        "config_sha256": result.get("config_sha256"),
+        "code_revision": result.get("code_revision"),
         "generated_at": result["generated_at"],
         "market_as_of": result.get("market_as_of"),
+        "macro_as_of": result.get("macro_as_of"),
         "bubble_score": round(result["bubble_score"], 4),
         "structural_score": round(result["structural_score"], 4),
         "confirmation_score": round(result["confirmation_score"], 4),
@@ -925,32 +1175,177 @@ def write_history(path: Path, result: dict[str, Any]) -> None:
             "DATOS INSUFICIENTES",
         ),
         "regime": result["bubble_regime"],
+        "quality_status": result.get("data_quality", {}).get("status"),
+        "source_fallback_count": result.get(
+            "data_quality",
+            {},
+        ).get("source_fallback_count", 0),
+        "main_weights_json": json.dumps(
+            {
+                block.get("label"): block.get("weight")
+                for block in result.get("blocks", [])
+            },
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ),
+        "capex_weights_json": json.dumps(
+            {
+                item.get("key"): item.get("weight")
+                for item in result.get("capex_rows", [])
+            },
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ),
+        "slow_inputs_as_of_json": json.dumps(
+            result.get("slow_inputs_as_of", {}),
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ),
     }
+    for key, block in zip(BLOCK_HISTORY_KEYS, result.get("blocks", [])):
+        row[key] = round(safe_float(block.get("score")), 4)
+    for item in result.get("capex_rows", []):
+        key = str(item.get("key", "")).strip()
+        if not key:
+            continue
+        score = item.get("score")
+        row[f"capex_{key}_score"] = (
+            round(safe_float(score), 4) if score is not None else None
+        )
+        row[f"capex_{key}_available"] = score is not None
+    row["census_as_of"] = (
+        result.get("inputs", {})
+        .get("census_data_center", {})
+        .get("as_of")
+    )
+    row["census_fetched_at"] = (
+        result.get("inputs", {})
+        .get("census_data_center", {})
+        .get("fetched_at")
+    )
+    row["financials_as_of"] = next(
+        (
+            source.get("as_of")
+            for source in result.get("sources", [])
+            if source.get("label") == "Gasto, caja y retorno contable"
+        ),
+        None,
+    )
+
     frame = pd.DataFrame([row])
     if path.exists():
         previous = pd.read_csv(path)
         if not previous.empty:
+            if "model_version" not in previous:
+                previous["model_version"] = LEGACY_VERSION
+            else:
+                previous["model_version"] = previous["model_version"].fillna(
+                    LEGACY_VERSION
+                )
+            if "observation_id" not in previous:
+                previous["observation_id"] = (
+                    "legacy:" + previous["generated_at"].astype(str)
+                )
+            else:
+                missing_ids = (
+                    previous["observation_id"].isna()
+                    | previous["observation_id"].astype(str).str.strip().eq("")
+                )
+                previous.loc[missing_ids, "observation_id"] = (
+                    "legacy:"
+                    + previous.loc[missing_ids, "generated_at"].astype(str)
+                )
             frame = pd.concat([previous, frame], ignore_index=True)
-        fingerprint = [
-            "market_as_of",
-            "bubble_score",
-            "structural_score",
-            "confirmation_score",
-            "capex_score",
-            "capex_coverage",
-            "capex_regime",
-            "regime",
-        ]
-        frame = frame.drop_duplicates(subset=fingerprint, keep="last").tail(1000)
+        frame = frame.drop_duplicates(
+            subset=["observation_id"],
+            keep="last",
+        )
+        frame["_generated_sort"] = pd.to_datetime(
+            frame["generated_at"],
+            errors="coerce",
+            utc=True,
+        )
+        frame = (
+            frame.sort_values("_generated_sort", kind="stable")
+            .drop(columns=["_generated_sort"])
+            .tail(4000)
+        )
+    ordered_columns = list(row) + [
+        column for column in frame.columns if column not in row
+    ]
+    frame = frame.reindex(columns=ordered_columns)
     csv_text = frame.to_csv(index=False, lineterminator="\n")
     path.write_text(csv_text, encoding="utf-8", newline="\n")
 
-def history_trend_summary(history_path: Path) -> str:
+def write_gpu_price_history(path: Path, result: dict[str, Any]) -> None:
+    snapshot = (
+        result.get("inputs", {}).get("cloud_gpu_snapshot", {})
+    )
+    if not snapshot:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    row = {
+        "observation_id": result.get(
+            "observation_id",
+            observation_id(result.get("generated_at", "")),
+        ),
+        "model_version": result.get("model_version", MODEL_VERSION),
+        "generated_at": result.get("generated_at"),
+        "sku": snapshot.get("sku"),
+        "price_effective_as_of": snapshot.get("price_effective_as_of"),
+        "paired_region_count": snapshot.get("paired_region_count"),
+        "median_pay_as_you_go_usd_per_hour": snapshot.get(
+            "median_pay_as_you_go_usd_per_hour"
+        ),
+        "median_spot_usd_per_hour": snapshot.get(
+            "median_spot_usd_per_hour"
+        ),
+        "median_discount_percent": snapshot.get("median_discount_percent"),
+        "price_fingerprint_sha256": snapshot.get(
+            "price_fingerprint_sha256"
+        ),
+    }
+    frame = pd.DataFrame([row])
+    if path.exists():
+        previous = pd.read_csv(path)
+        frame = pd.concat([previous, frame], ignore_index=True)
+    frame = frame.drop_duplicates(
+        subset=["observation_id"],
+        keep="last",
+    ).tail(4000)
+    frame.to_csv(path, index=False, lineterminator="\n")
+
+def comparable_history(
+    history_path: Path,
+    model_version: str = MODEL_VERSION,
+) -> pd.DataFrame:
+    if not history_path.exists():
+        return pd.DataFrame()
+    try:
+        history = normalize_history(
+            pd.read_csv(history_path),
+            model_version,
+        )
+        history["bubble_score"] = pd.to_numeric(
+            history["bubble_score"],
+            errors="coerce",
+        )
+        return history.dropna(subset=["bubble_score"]).reset_index(drop=True)
+    except Exception:
+        return pd.DataFrame()
+
+def history_trend_summary(
+    history_path: Path,
+    model_version: str = MODEL_VERSION,
+) -> str:
     if not history_path.exists():
         return "Todavía no hay suficiente historial para hablar de tendencia."
     try:
-        history = pd.read_csv(history_path)
-        values = pd.to_numeric(history["bubble_score"], errors="coerce").dropna()
+        history = comparable_history(history_path, model_version)
+        values = history["bubble_score"]
         if len(values) < 2:
             return "Todavía no hay suficiente historial para hablar de tendencia."
         change = float(values.iloc[-1] - values.iloc[-2])
@@ -963,23 +1358,18 @@ def history_trend_summary(history_path: Path) -> str:
     except Exception:
         return "Todavía no hay suficiente historial para hablar de tendencia."
 
-def history_chart(history_path: Path) -> str:
+def history_chart(
+    history_path: Path,
+    model_version: str = MODEL_VERSION,
+) -> str:
     if not history_path.exists():
         return ""
     try:
-        history = pd.read_csv(history_path).tail(60).copy()
-        history["bubble_score"] = pd.to_numeric(
-            history["bubble_score"],
-            errors="coerce",
-        )
-        history["generated_at"] = pd.to_datetime(
-            history["generated_at"],
-            errors="coerce",
-            utc=True,
-        )
-        history = history.dropna(
-            subset=["bubble_score", "generated_at"],
-        ).reset_index(drop=True)
+        all_history = comparable_history(history_path, model_version)
+        if all_history.empty:
+            return ""
+        latest_date = all_history["generated_at"].iloc[-1]
+        history = history_window(all_history, latest_date, days=30)
         values = history["bubble_score"].clip(0, 100).tolist()
         if len(values) < 2:
             return ""
@@ -991,9 +1381,11 @@ def history_chart(history_path: Path) -> str:
         def chart_y(value: float) -> float:
             return top + (100.0 - value) / 100.0 * plot_height
 
+        time_values = history["generated_at"].astype("int64").to_numpy()
+        time_span = max(1, int(time_values[-1] - time_values[0]))
         points = []
-        for index, value in enumerate(values):
-            x = left + index / (len(values) - 1) * plot_width
+        for timestamp, value in zip(time_values, values):
+            x = left + int(timestamp - time_values[0]) / time_span * plot_width
             y = chart_y(value)
             points.append(f"{x:.1f},{y:.1f}")
 
@@ -1022,16 +1414,17 @@ def history_chart(history_path: Path) -> str:
                 f'fill="#94a3b8" font-size="11">{value}</text>'
             )
 
-        latest_date = history["generated_at"].iloc[-1]
         changes: list[str] = []
+        prior_change = values[-1] - values[-2]
+        changes.append(f"anterior: {prior_change:+.1f} puntos")
         for days in (7, 30):
-            target = latest_date - dt.timedelta(days=days)
-            prior = history.loc[history["generated_at"] <= target]
-            if prior.empty:
-                continue
-            change = values[-1] - float(prior["bubble_score"].iloc[-1])
-            changes.append(f"{days} días: {change:+.1f} puntos")
-        change_text = " · ".join(changes) if changes else "Aún sin comparación de 7 o 30 días"
+            anchor = comparison_anchor(all_history, latest_date, days)
+            if anchor is None:
+                changes.append(f"{days} días: todavía no disponible")
+            else:
+                change = values[-1] - float(anchor["bubble_score"])
+                changes.append(f"{days} días: {change:+.1f} puntos")
+        change_text = " · ".join(changes)
 
         accessible_rows = "".join(
             "<tr>"
@@ -1089,13 +1482,15 @@ def render_html(result: dict[str, Any], config: dict[str, Any], history_path: Pa
     capex_regime = html.escape(result["capex_regime"])
     structural_weight = safe_float(result.get("structural_weight"), 0.35)
     confirmation_weight = safe_float(result.get("confirmation_weight"), 0.65)
-    capex_coverage = safe_float(
-        result.get("capex_coverage"),
+    capex_rows_for_coverage = result.get("capex_rows", [])
+    capex_coverage = (
         sum(
             safe_float(item.get("weight"))
-            for item in result.get("capex_rows", [])
+            for item in capex_rows_for_coverage
             if item.get("score") is not None
-        ),
+        )
+        if capex_rows_for_coverage
+        else safe_float(result.get("capex_coverage"))
     )
 
     factor_copy = {
@@ -1188,11 +1583,11 @@ def render_html(result: dict[str, Any], config: dict[str, Any], history_path: Pa
             f"{safe_float(effective_weight):.1%}"
             if effective_weight is not None else "—"
         )
-        mode = (
-            "Automático"
-            if item.get("mode") == "automatic"
-            else "Actualizado manualmente"
-        )
+        mode = {
+            "automatic": "Automático",
+            "collector": "Colector automático; todavía sin índice",
+            "manual": "Actualizado manualmente",
+        }.get(item.get("mode"), "Actualizado manualmente")
         status = (
             ""
             if available
@@ -1204,8 +1599,8 @@ def render_html(result: dict[str, Any], config: dict[str, Any], history_path: Pa
             <small>{html.escape(item.get('reading', ''))} · {mode}{status}</small></th>
           <td data-label="Índice" class="num" style="color:{color}">{score_text}</td>
           <td data-label="Peso base" class="num weight">{item['weight']:.0%}</td>
-          <td data-label="Peso usado" class="num">{effective_weight_text}</td>
-          <td data-label="Suma" class="num">{contribution_text}</td>
+          <td data-label="Peso ajustado" class="num">{effective_weight_text}</td>
+          <td data-label="Puntos que añade" class="num">{contribution_text}</td>
         </tr>""")
 
     inputs = result.get("inputs", {})
@@ -1246,23 +1641,6 @@ def render_html(result: dict[str, Any], config: dict[str, Any], history_path: Pa
             "<strong>Esta no es una lectura nueva.</strong> "
             "La actualización falló y se conserva la última lectura guardada."
             "</aside>"
-        )
-    elif source_warnings:
-        warning_items = "".join(
-            f"<li>{html.escape(str(message))}</li>"
-            for message in source_warnings
-        )
-        warning_label = (
-            "1 aviso"
-            if len(source_warnings) == 1
-            else f"{len(source_warnings)} avisos"
-        )
-        warning_html = (
-            '<details class="data-notice">'
-            f"<summary>Datos principales actualizados con "
-            f"{warning_label} sobre fuentes</summary>"
-            f"<ul>{warning_items}</ul>"
-            "</details>"
         )
     else:
         warning_html = ""
@@ -1371,7 +1749,11 @@ def render_html(result: dict[str, Any], config: dict[str, Any], history_path: Pa
     )
     capex_card_color = risk_color(capex) if capex_conclusive else "#f8fafc"
     capex_card_copy = (
-        f"{capex_regime.capitalize()}: la cobertura permite una lectura."
+        f"{capex_regime.capitalize()} según {available_capex} de "
+        f"{total_capex} señales, que representan {capex_coverage:.0%} del "
+        "peso. Las señales sin dato no cuentan como cero. Esto no garantiza "
+        "que el gasto no vaya a recortarse y el modelo aún no tiene "
+        "validación histórica."
         if capex_conclusive
         else (
             f"Solo hay datos para {available_capex} de {total_capex} señales. "
@@ -1381,7 +1763,11 @@ def render_html(result: dict[str, Any], config: dict[str, Any], history_path: Pa
     capex_lead_html = (
         f'<div class="coverage"><strong>Lectura disponible: '
         f'{capex:.1f}/100 · {capex_regime}.</strong> '
-        f'Hay datos para {available_capex} de {total_capex} señales.</div>'
+        f'Hay datos para {available_capex} de {total_capex} señales, que '
+        f'representan {capex_coverage:.0%} del peso. Las señales sin dato '
+        f'no cuentan como cero y la lectura no garantiza que el gasto no '
+        f'vaya a recortarse. El modelo aún no tiene validación '
+        f'histórica.</div>'
         if capex_conclusive
         else (
             '<div class="capex-warning" role="note">'
@@ -1393,6 +1779,14 @@ def render_html(result: dict[str, Any], config: dict[str, Any], history_path: Pa
             f'{capex:.1f}/100. No se usa como conclusión principal.</p>'
             '</div>'
         )
+    )
+    capex_preliminary_html = (
+        '      <details class="mini-details">'
+        "<summary>Ver cálculo preliminar</summary>"
+        f"<p>{capex:.1f}/100 con las señales disponibles. No es una "
+        "conclusión completa.</p></details>"
+        if not capex_conclusive
+        else ""
     )
 
     top_driver = max(
@@ -1424,6 +1818,36 @@ def render_html(result: dict[str, Any], config: dict[str, Any], history_path: Pa
         f"tiene un nivel {plain_risk_level(confirmation).lower()}."
     )
     trend_text = html.escape(history_trend_summary(history_path))
+    robustness = result.get("weight_sensitivity", {})
+    robustness_scenario = (
+        robustness.get("monte_carlo", {})
+        .get("scenario_b_variable_structural_share", {})
+    )
+    robustness_percentiles = robustness_scenario.get(
+        "score_percentiles",
+        {},
+    )
+    robust_p5 = safe_float(robustness_percentiles.get("p5"), bubble)
+    robust_p50 = safe_float(robustness_percentiles.get("p50"), bubble)
+    robust_p95 = safe_float(robustness_percentiles.get("p95"), bubble)
+    retained_pct = safe_float(
+        robustness_scenario.get("base_regime_retained_pct"),
+        0.0,
+    )
+    dependency_rows = sorted(
+        robustness.get("leave_one_out", []),
+        key=lambda item: abs(safe_float(item.get("change_from_base"))),
+        reverse=True,
+    )[:3]
+    dependency_html = "".join(
+        "<li>"
+        f"Sin <strong>{html.escape(str(item.get('label', 'un bloque')).lower())}"
+        f"</strong>: {safe_float(item.get('score')):.1f}/100, "
+        f"{html.escape(str(item.get('regime', 'N/D')).lower())} "
+        f"({safe_float(item.get('change_from_base')):+.1f} puntos)."
+        "</li>"
+        for item in dependency_rows
+    )
     market_date = html.escape(format_date_es(result.get("market_as_of")))
     nfci_value = inputs.get("nfci")
     nfci_text = (
@@ -1464,6 +1888,11 @@ def render_html(result: dict[str, Any], config: dict[str, Any], history_path: Pa
                 "@type": "DataDownload",
                 "encodingFormat": "text/csv",
                 "contentUrl": f"{PUBLIC_URL}history.csv",
+            },
+            {
+                "@type": "DataDownload",
+                "encodingFormat": "application/json",
+                "contentUrl": f"{PUBLIC_URL}validation.json",
             },
         ],
     }
@@ -1537,18 +1966,19 @@ main{{padding:22px 0 44px}}
 .score-hero{{grid-template-columns:minmax(220px,.72fr) minmax(0,1.28fr);gap:clamp(24px,5vw,56px);padding:clamp(24px,4vw,44px)}}.answer-label{{margin:0 0 8px;color:var(--cyan);font-size:.82rem;font-weight:900;text-transform:uppercase;letter-spacing:.12em}}.regime{{margin:0}}.stage-message{{margin:13px 0 0;font-size:clamp(1.08rem,2vw,1.3rem);font-weight:750;line-height:1.45}}.score-guide{{margin:12px 0 0;color:var(--muted);font-size:.94rem}}.not-probability{{margin-top:13px}}.not-probability strong{{color:#fff}}
 .no-panic{{margin-top:18px;padding:13px 15px;border-left:3px solid var(--amber);border-radius:0 10px 10px 0;background:rgba(251,191,36,.08);color:#fdecc8;font-size:.92rem}}.no-panic strong{{display:block;color:#fff}}
 .stage-panel{{margin:14px 0;padding:17px 18px;border:1px solid var(--border);border-radius:16px;background:rgba(13,26,39,.86)}}.stage-panel h2{{margin:0 0 12px;font-size:1rem}}.stage-scale{{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}}.stage-step{{min-height:58px;padding:9px 8px;border:1px solid var(--border);border-top:5px solid #334155;border-radius:9px;background:#0b1723;color:var(--muted);text-align:center}}.stage-step:nth-child(1){{border-top-color:#22c55e}}.stage-step:nth-child(2){{border-top-color:#eab308}}.stage-step:nth-child(3){{border-top-color:#f59e0b}}.stage-step:nth-child(4){{border-top-color:#fb923c}}.stage-step:nth-child(5){{border-top-color:#ef4444}}.stage-step span,.stage-step strong{{display:block}}.stage-step span{{font-size:.72rem}}.stage-step strong{{font-size:.82rem}}.stage-step.current{{background:#263241;border-color:#f8fafc;color:#fff;box-shadow:0 0 0 2px rgba(248,250,252,.14)}}.stage-you-are-here{{margin:10px 0 0;color:var(--muted);font-size:.88rem}}.stage-you-are-here strong{{color:var(--text)}}.trend{{margin:5px 0 0;color:var(--cyan);font-weight:750;font-size:.9rem}}
-.data-notice{{margin:14px 0;padding:0 15px;border:1px solid var(--border);border-radius:12px;background:rgba(13,26,39,.75);color:var(--muted)}}.data-notice summary{{min-height:44px;padding:11px 0;color:#d6e2ee;font-weight:750;cursor:pointer}}.data-notice ul{{margin:0 0 14px;padding-left:20px;font-size:.88rem}}.data-alert-critical{{margin:14px 0}}
+.data-alert-critical{{margin:14px 0}}
 .plain-summary{{margin:16px 0;padding:clamp(20px,3vw,30px);border:1px solid var(--border);border-radius:18px;background:linear-gradient(135deg,rgba(17,31,46,.98),rgba(13,26,39,.92))}}.plain-summary h2{{margin:0;font-size:1.35rem}}.plain-summary>p{{max-width:900px;margin:10px 0 0;font-size:1.08rem;color:#e3ebf4}}.insight-grid{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}}.insight{{padding:15px;border-radius:12px;background:var(--panel2)}}.insight p{{margin:4px 0 0;color:var(--muted);font-size:.9rem}}.insight strong{{color:var(--text)}}.watch-box{{margin-top:12px;padding:16px;border:1px solid rgba(69,228,196,.22);border-radius:12px;background:rgba(69,228,196,.05)}}.watch-box h3{{margin:0;font-size:1rem}}.watch-box ul{{margin:8px 0 0;padding-left:20px;color:#d7e2ed}}.watch-box li+li{{margin-top:5px}}
 .kpis{{margin:16px 0}}.card{{min-height:225px}}.card h2{{margin:6px 0 0;font-size:1.06rem}}.technical-name{{display:block;margin-top:3px;color:var(--muted);font-size:.82rem;font-weight:550}}.card-value{{display:flex;align-items:baseline;gap:7px;margin-top:14px;font-size:2.5rem;font-weight:900;line-height:1}}.card-value small{{font-size:.86rem;color:var(--muted)}}.level-text{{display:inline-flex;margin-top:10px;padding:5px 8px;border:1px solid currentColor;border-radius:999px;font-size:.78rem;font-weight:850}}.card .sub{{font-size:.9rem;line-height:1.5}}.capex-card{{border-color:#596777}}.capex-card .card-value{{font-size:2.05rem}}
 .section-details{{margin:16px 0;border:1px solid var(--border);border-radius:16px;background:rgba(13,26,39,.94);overflow:hidden}}.section-details>summary{{min-height:54px;padding:16px 20px;color:var(--text);font-size:1.03rem;font-weight:850;cursor:pointer}}.section-details>summary::marker{{color:var(--cyan)}}.section-details[open]>summary{{border-bottom:1px solid var(--border)}}.details-content{{padding:20px}}.details-content h2{{margin:0;font-size:1.28rem}}
+.robustness-grid{{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}}.robustness-card{{padding:15px;border:1px solid var(--border);border-radius:12px;background:var(--panel2)}}.robustness-card strong{{display:block;font-size:1.25rem}}.robustness-card span{{display:block;margin-top:4px;color:var(--muted);font-size:.86rem}}.dependency-list{{margin:12px 0 0;padding-left:21px;color:#d7e2ed}}.dependency-list li+li{{margin-top:6px}}
 .factor{{padding:16px 0;border-bottom:1px solid rgba(148,163,184,.15)}}.factor:last-child{{border-bottom:0}}.factor-heading{{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:start}}.factor-kicker{{margin:0;color:var(--cyan);font-size:.82rem;font-weight:850}}.factor h3{{margin:2px 0 0;font-size:.95rem}}.factor-heading p:not(.factor-kicker){{margin:5px 0 0;color:var(--muted);font-size:.88rem}}.factor-score{{min-width:105px;text-align:right}}.factor-score strong,.factor-score span{{display:block}}.factor-score strong{{font-size:1.55rem;line-height:1}}.factor-score span{{margin-top:4px;font-size:.78rem;font-weight:800}}.factor .track{{margin-top:11px}}.mini-details{{margin-top:8px;color:var(--muted);font-size:.84rem}}.mini-details summary{{display:flex;min-height:44px;width:max-content;align-items:center;padding:7px 0;color:#c5d2df;cursor:pointer}}.mini-details p{{margin:0 0 5px}}
 .capex-warning{{margin:15px 0;padding:16px;border:1px solid #a06a24;border-radius:12px;background:#332816;color:#fde7b2}}.capex-warning strong{{display:block;color:#fff;font-size:1rem}}.capex-warning p{{margin:5px 0 0}}.technical-result{{margin-top:10px;color:var(--muted);font-size:.86rem}}
 .band-list{{display:grid;gap:8px}}.band-row{{display:grid;grid-template-columns:82px 130px 1fr;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--border);border-left:5px solid #64748b;border-radius:10px;background:var(--panel2)}}.band-row:nth-child(1){{border-left-color:#22c55e}}.band-row:nth-child(2){{border-left-color:#eab308}}.band-row:nth-child(3){{border-left-color:#f59e0b}}.band-row:nth-child(4){{border-left-color:#fb923c}}.band-row:nth-child(5){{border-left-color:#ef4444}}.band-row.current{{box-shadow:0 0 0 2px #f8fafc}}.band-row span{{color:var(--muted);font-size:.87rem}}.band-row strong{{font-size:.9rem}}
 .glossary{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}}.glossary div{{padding:13px;background:var(--panel2);border-radius:10px}}.glossary dt{{font-weight:850}}.glossary dd{{margin:4px 0 0;color:var(--muted);font-size:.88rem}}
 .chart-dates{{display:flex;justify-content:space-between;margin-top:5px;color:var(--muted);font-size:.78rem}}
 @media(max-width:1100px){{.brand-row{{display:grid}}.freshness{{min-width:0;grid-template-columns:repeat(3,minmax(0,1fr))}}.quality-badge{{grid-column:1/-1}}.dashboard-grid{{grid-template-columns:1fr}}}}
-@media(max-width:760px){{.wrap{{width:min(calc(100% - 24px),1240px)}}.site-header{{padding:19px 0 14px}}.score-hero{{grid-template-columns:1fr;gap:20px}}.kpis{{grid-template-columns:1fr}}.card{{min-height:0}}.freshness{{grid-template-columns:1fr}}.method-grid,.insight-grid,.glossary{{grid-template-columns:1fr}}.source-card{{grid-template-columns:1fr}}.source-meta{{grid-template-columns:repeat(3,1fr);text-align:left}}.chart-summary{{display:grid}}}}
-@media(max-width:620px){{main{{padding-top:14px}}.panel,.details-content{{padding:17px}}.stage-panel{{padding:13px 10px}}.stage-scale{{gap:3px}}.stage-step{{min-height:55px;padding:7px 2px}}.stage-step span{{font-size:.64rem}}.stage-step strong{{font-size:.66rem;line-height:1.15}}.factor-heading{{grid-template-columns:1fr}}.factor-score{{text-align:left}}.table-wrap{{overflow:visible}}thead{{display:none}}table,tbody,tr,th,td{{display:block;width:100%}}tbody tr{{padding:11px 0;border-bottom:1px solid rgba(148,163,184,.18)}}tbody th,tbody td{{border:0;padding:4px 0}}tbody td{{display:flex;justify-content:space-between;gap:14px;text-align:right}}tbody td::before{{content:attr(data-label);color:var(--muted);font-weight:650}}.band-row{{grid-template-columns:68px 1fr;gap:5px 10px}}.band-row span{{grid-column:1/-1}}.source-meta{{grid-template-columns:1fr}}}}
+@media(max-width:760px){{.wrap{{width:min(calc(100% - 24px),1240px)}}.site-header{{padding:19px 0 14px}}.score-hero{{grid-template-columns:1fr;gap:20px}}.kpis{{grid-template-columns:1fr}}.card{{min-height:0}}.freshness{{grid-template-columns:1fr}}.method-grid,.insight-grid,.glossary,.robustness-grid{{grid-template-columns:1fr}}.source-card{{grid-template-columns:1fr}}.source-meta{{grid-template-columns:repeat(3,1fr);text-align:left}}.chart-summary{{display:grid}}}}
+@media(max-width:620px){{main{{padding-top:14px}}.panel,.details-content{{padding:17px}}.stage-panel{{padding:13px 10px}}.stage-scale{{gap:3px}}.stage-step{{min-height:65px;padding:7px 2px}}.stage-step span,.stage-step strong{{font-size:.75rem;line-height:1.15}}.factor-heading{{grid-template-columns:1fr}}.factor-score{{text-align:left}}.table-wrap{{overflow:visible}}thead{{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}}table,tbody,tr,th,td{{display:block;width:100%}}tbody tr{{padding:11px 0;border-bottom:1px solid rgba(148,163,184,.18)}}tbody th,tbody td{{border:0;padding:4px 0}}tbody td{{display:flex;justify-content:space-between;gap:14px;text-align:right}}tbody td::before{{content:attr(data-label);color:var(--muted);font-weight:650}}.band-row{{grid-template-columns:68px 1fr;gap:5px 10px}}.band-row span{{grid-column:1/-1}}.source-meta{{grid-template-columns:1fr}}}}
 @media(prefers-reduced-motion:reduce){{html{{scroll-behavior:auto}}}}
 </style>
 </head>
@@ -1601,7 +2031,7 @@ main{{padding:22px 0 44px}}
     <p class="trend">{trend_text}</p>
   </section>
 
-  {warning_html}
+{warning_html}
 
   <section class="plain-summary" aria-labelledby="plain-title">
     <h2 id="plain-title">En pocas palabras</h2>
@@ -1655,20 +2085,15 @@ main{{padding:22px 0 44px}}
         frentes. Esto describe el presente; no predice cuánto durará.</p>
     </article>
     <article class="card capex-card">
-      <p class="label">Riesgo de recorte de CapEx</p>
-      <h2>¿Podrían reducir el gasto en IA?
+      <p class="label">Presión para recortar gasto en IA</p>
+      <h2>¿Se observan señales de presión sobre el gasto?
         <span class="technical-name">CapEx: chips, centros de datos, energía y nube</span></h2>
       <div class="card-value" style="color:{capex_card_color}">
         {capex_card_value}</div>
       <span class="level-text" style="color:{capex_card_color}">
         {capex_status}</span>
       <p class="sub">{html.escape(capex_card_copy)}</p>
-      {(
-        f'<details class="mini-details"><summary>Ver cálculo preliminar</summary>'
-        f'<p>{capex:.1f}/100 con las señales disponibles. No es una '
-        f'conclusión completa.</p></details>'
-        if not capex_conclusive else ""
-      )}
+{capex_preliminary_html}
     </article>
   </section>
 
@@ -1676,7 +2101,8 @@ main{{padding:22px 0 44px}}
     <h2 id="history-heading">Historial reciente</h2>
     <p class="section-intro">Aquí verás si la alerta sube o baja con el
       tiempo. La escala siempre va de 0 a 100 para no exagerar cambios
-      pequeños.</p>
+      pequeños. La serie comparable de esta versión empieza el 23 de julio
+      de 2026; no rellenamos el pasado con datos actuales.</p>
 {chart or '<p class="notice">El historial comparable aparecerá después de dos actualizaciones válidas.</p>'}
   </section>
 
@@ -1722,11 +2148,50 @@ main{{padding:22px 0 44px}}
     </div>
   </details>
 
+  <section class="panel" aria-labelledby="robustness-title">
+    <h2 id="robustness-title">¿Cambiar los pesos cambia la conclusión?</h2>
+    <p class="section-intro">Probamos 20,000 escenarios definidos de
+      pesos. Esto mide la estabilidad del cálculo actual; <strong>no es una
+      probabilidad del mercado ni un backtest histórico</strong>.</p>
+    <div class="robustness-grid">
+      <div class="robustness-card">
+        <strong>{robust_p5:.1f}–{robust_p95:.1f}/100</strong>
+        <span>En 9 de cada 10 pruebas de pesos, el marcador quedó en este
+          intervalo; el centro fue {robust_p50:.1f}.</span>
+      </div>
+      <div class="robustness-card">
+        <strong>Conclusión estable</strong>
+        <span>En {retained_pct:.1f}% de las pruebas de pesos —no de futuros
+          posibles— el nivel siguió siendo
+          {html.escape(display_regime)}.</span>
+      </div>
+      <div class="robustness-card">
+        <strong>Desde 23 jul 2026</strong>
+        <span>Empieza la validación prospectiva de la versión
+          {html.escape(str(result.get('model_version', MODEL_VERSION)))}.</span>
+      </div>
+    </div>
+    <details class="mini-details">
+      <summary>Ver de qué bloques depende más</summary>
+      <p>Esta prueba elimina un componente por vez y reparte su peso dentro
+        del mismo grupo. Un salto grande señala dependencia, no que debamos
+        eliminarlo.</p>
+      <ul class="dependency-list">{dependency_html}</ul>
+      <p>No rellenamos años anteriores con datos actuales: eso usaría
+        información que el mercado todavía no conocía. La validación histórica
+        completa se publicará cuando existan insumos fechados suficientes.</p>
+      <div class="raw-links">
+        <a href="validation.json">Robustez completa (JSON)</a>
+        <a href="validation.csv">Pruebas resumidas (CSV)</a>
+      </div>
+    </details>
+  </section>
+
   <section class="panel" aria-labelledby="capex-title">
-    <h2 id="capex-title">Riesgo de recorte de CapEx</h2>
+    <h2 id="capex-title">Señales de presión sobre el CapEx</h2>
     <p class="section-intro">CapEx es el dinero que las empresas destinan a
       chips, centros de datos, energía y capacidad de nube. Este bloque
-      pregunta si podrían empezar a recortarlo.</p>
+      resume presiones observables; no predice si habrá un recorte futuro.</p>
     {capex_lead_html}
     <details class="section-details">
       <summary>Ver las 7 señales de gasto en IA</summary>
@@ -1736,14 +2201,15 @@ main{{padding:22px 0 44px}}
             <caption>N/D significa que no hay un dato utilizable. Nunca se
               convierte en cero.</caption>
             <thead><tr><th scope="col">Señal</th><th scope="col">Índice</th>
-              <th scope="col">Peso base</th><th scope="col">Peso usado</th>
-              <th scope="col">Suma</th></tr></thead>
+              <th scope="col">Peso base</th><th scope="col">Peso ajustado</th>
+              <th scope="col">Puntos que añade</th></tr></thead>
             <tbody>{''.join(capex_html)}</tbody>
           </table>
         </div>
         <p class="coverage"><strong>Cobertura {capex_coverage:.0%}.</strong>
-          Los faltantes se excluyen y las señales disponibles se reponderan.
-          Por eso el peso usado puede ser mayor que el peso base. Solo se
+          Esto es la parte del peso del modelo que tiene datos, no un nivel de
+          certeza. Las señales disponibles se ajustan para volver a sumar
+          100%; por eso el peso ajustado puede superar al peso base. Solo se
           publica una conclusión cuando la cobertura llega al 70%.</p>
       </div>
     </details>
@@ -1792,6 +2258,8 @@ main{{padding:22px 0 44px}}
       <div class="raw-links">
         <a href="latest.json">Datos completos (JSON)</a>
         <a href="history.csv">Historial (CSV)</a>
+        <a href="gpu_price_history.csv">Colector de precios GPU (CSV)</a>
+        <a href="validation.json">Sensibilidad de pesos (JSON)</a>
         <a href="https://github.com/Bluxor-ai/radar-de-la-burbuja-ia">
           Código y metodología</a>
       </div>
@@ -1802,6 +2270,72 @@ main{{padding:22px 0 44px}}
   <p class="notice">{html.escape(result.get('privacy', 'Sitio público sin datos personales.'))} {html.escape(config['site']['disclaimer'])} Proyecto informativo y educativo; valida las fuentes antes de actuar.</p>
 </div></footer>
 </body></html>"""
+
+def write_validation_outputs(
+    output: Path,
+    report: dict[str, Any],
+) -> None:
+    (output / "validation.json").write_text(
+        json.dumps(report, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    rows: list[dict[str, Any]] = []
+    metadata = {
+        "generated_at": report.get("generated_at"),
+        "market_as_of": report.get("market_as_of"),
+        "model_version": report.get("model_version"),
+        "config_sha256": report.get("config_sha256"),
+        "base_score": report.get("base", {}).get("score"),
+        "base_regime": report.get("base", {}).get("regime"),
+    }
+    for key, scenario in report.get("monte_carlo", {}).items():
+        percentiles = scenario.get("score_percentiles", {})
+        rows.append({
+            **metadata,
+            "test": "weight_scenarios",
+            "label": key,
+            "score": percentiles.get("p50"),
+            "p5": percentiles.get("p5"),
+            "p95": percentiles.get("p95"),
+            "same_regime_pct": scenario.get("base_regime_retained_pct"),
+            "change_from_base": None,
+            "regime": None,
+        })
+    for item in report.get("leave_one_out", []):
+        rows.append({
+            **metadata,
+            "test": "leave_one_out",
+            "label": item.get("label"),
+            "score": item.get("score"),
+            "p5": None,
+            "p95": None,
+            "same_regime_pct": None,
+            "change_from_base": item.get("change_from_base"),
+            "regime": item.get("regime"),
+        })
+    for item in report.get("one_at_a_time_weight_changes", []):
+        for direction, description in (
+            ("weight_minus_25pct", "peso -25%"),
+            ("weight_plus_25pct", "peso +25%"),
+        ):
+            scenario = item.get(direction, {})
+            rows.append({
+                **metadata,
+                "test": "one_weight_at_a_time",
+                "label": f"{item.get('label')} · {description}",
+                "score": scenario.get("score"),
+                "p5": None,
+                "p95": None,
+                "same_regime_pct": None,
+                "change_from_base": scenario.get("change_from_base"),
+                "regime": scenario.get("regime"),
+            })
+    pd.DataFrame(rows).to_csv(
+        output / "validation.csv",
+        index=False,
+        lineterminator="\n",
+    )
 
 def run(config_path: Path, output: Path, data_dir: Path, offline: bool) -> dict[str, Any]:
     config = json.loads(config_path.read_text(encoding="utf-8"))
@@ -1837,14 +2371,29 @@ def run(config_path: Path, output: Path, data_dir: Path, offline: bool) -> dict[
             config["site"].get("timezone", "UTC"),
         )
 
+    result.setdefault("model_version", MODEL_VERSION)
+    result.setdefault(
+        "observation_id",
+        observation_id(result.get("generated_at", "")),
+    )
+    if "weight_sensitivity" not in result and result.get("blocks"):
+        result["weight_sensitivity"] = analyze_weight_robustness(
+            result["blocks"]
+        )
+
     history_path = data_dir / "history.csv"
+    gpu_history_path = data_dir / "gpu_price_history.csv"
     if not offline and not result.get("stale"):
         write_history(history_path, result)
+        write_gpu_price_history(gpu_history_path, result)
     elif not history_path.exists():
         history_path.parent.mkdir(parents=True, exist_ok=True)
         history_path.write_text(
-            "generated_at,market_as_of,bubble_score,structural_score,"
-            "confirmation_score,capex_score,regime\n",
+            "observation_id,model_version,generated_at,market_as_of,"
+            "bubble_score,structural_score,confirmation_score,capex_score,"
+            "capex_coverage,capex_regime,regime,valuation_score,"
+            "concentration_score,leverage_score,equity_supply_score,"
+            "credit_score,internal_break_score,forced_selling_score\n",
             encoding="utf-8",
             newline="\n",
         )
@@ -1860,6 +2409,28 @@ def run(config_path: Path, output: Path, data_dir: Path, offline: bool) -> dict[
         encoding="utf-8",
         newline="\n",
     )
+    if gpu_history_path.exists():
+        (output / "gpu_price_history.csv").write_text(
+            gpu_history_path.read_text(encoding="utf-8"),
+            encoding="utf-8",
+            newline="\n",
+        )
+    elif result.get("inputs", {}).get("cloud_gpu_snapshot"):
+        write_gpu_price_history(
+            output / "gpu_price_history.csv",
+            result,
+        )
+    write_validation_outputs(
+        output,
+        result.get("weight_sensitivity", {}),
+    )
+    versions_path = data_dir / "validation" / "model_versions.json"
+    if versions_path.exists():
+        (output / "model_versions.json").write_text(
+            versions_path.read_text(encoding="utf-8"),
+            encoding="utf-8",
+            newline="\n",
+        )
     (output / "index.html").write_text(
         render_html(result, config, history_path),
         encoding="utf-8",

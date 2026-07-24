@@ -15,7 +15,9 @@ El workflow `Actualizar y publicar el Radar`:
 1. instala dependencias desde el archivo bloqueado con hashes;
 2. ejecuta las pruebas;
 3. obtiene los datos y construye `public/`;
-4. guarda únicamente el estado agregado en `data/` y `public/`;
+4. guarda el estado derivado en `data/` y `public/`, incluidos detalles
+   contables por empresa y precios públicos de GPU por región necesarios para
+   reproducir las señales; no guarda cotizaciones crudas ni datos personales;
 5. despliega el artefacto en GitHub Pages.
 
 Corre a las 06:17 y 18:17, hora de Ciudad de México. También puede ejecutarse
@@ -30,7 +32,9 @@ desde **Actions → Actualizar y publicar el Radar → Run workflow**.
    vencidas, conservando fecha y enlace público.
 
 Un fallo completo no agrega puntos artificiales al historial. La última lectura
-guardada permanece disponible y se identifica como respaldo.
+guardada permanece disponible y se identifica como respaldo. El despliegue se
+completa para no dejar el sitio caído, pero el job final `health` marca la
+ejecución en rojo para que el incidente no pase inadvertido.
 
 ## Regla de separación
 

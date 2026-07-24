@@ -21,6 +21,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    outputs:
+      stale: ${{ steps.update_status.outputs.stale }}
     permissions:
       contents: read
 
@@ -47,21 +49,49 @@ jobs:
       - name: Actualizar datos y construir sitio
         run: python radar.py --config config.json --output public --data-dir data
 
+      - name: Registrar estado de la actualización
+        id: update_status
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          payload = json.loads(Path("public/latest.json").read_text())
+          stale = str(bool(payload.get("stale"))).lower()
+          with Path(os.environ["GITHUB_OUTPUT"]).open("a") as output:
+              output.write(f"stale={stale}\n")
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a") as summary:
+              summary.write(
+                  "## Estado del Radar\n\n"
+                  + (
+                      "⚠️ Se desplegó la última lectura guardada porque "
+                      "falló la actualización en vivo.\n"
+                      if stale == "true"
+                      else "✅ Se generó una lectura en vivo.\n"
+                  )
+              )
+          PY
+
       - name: Verificar entregables
         run: |
           test -s public/index.html
           test -s public/latest.json
           test -s public/history.csv
+          test -s public/gpu_price_history.csv
+          test -s public/validation.json
+          test -s public/validation.csv
+          test -s public/model_versions.json
           test -s data/latest.json
           test -s data/history.csv
+          test -s data/gpu_price_history.csv
 
       - name: Empaquetar estado generado
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: radar-state
           path: |
-            data/history.csv
-            data/latest.json
+            data
             public
           if-no-files-found: error
           retention-days: 1
@@ -100,7 +130,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           gh auth setup-git
-          git add data/history.csv data/latest.json public/
+          git add data/ public/
           if git diff --cached --quiet; then
             echo "Sin cambios en datos"
           else
@@ -128,3 +158,20 @@ jobs:
       - name: Publicar en GitHub Pages
         id: deployment
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+
+  health:
+    needs: [build, persist, deploy]
+    if: always() && needs.build.result == 'success' && needs.persist.result == 'success' && needs.deploy.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - name: Señalar respaldo como incidente
+        if: needs.build.outputs.stale == 'true'
+        run: |
+          echo "::error::La actualización en vivo falló; Pages muestra la última lectura guardada."
+          exit 1
+
+      - name: Confirmar lectura en vivo
+        if: needs.build.outputs.stale != 'true'
+        run: echo "La actualización en vivo y el despliegue terminaron correctamente."

@@ -1,0 +1,294 @@
+{
+  "schema_version": 1,
+  "weight_scenarios_not_probabilities": true,
+  "interpretation": "Los porcentajes describen configuraciones de peso simuladas; no son probabilidades de caída ni de ruptura del mercado.",
+  "seed": 20260723,
+  "samples": 20000,
+  "base": {
+    "score": 55.44062243253078,
+    "regime": "PREPARAR",
+    "structural_weight": 0.35,
+    "confirmation_weight": 0.65,
+    "blocks": [
+      {
+        "label": "Valuación y expectativas",
+        "score": 94.46280991735537,
+        "weight": 0.12
+      },
+      {
+        "label": "Concentración y subida temática",
+        "score": 83.5101259119828,
+        "weight": 0.1
+      },
+      {
+        "label": "Apalancamiento y reversión",
+        "score": 57.767836344757825,
+        "weight": 0.08
+      },
+      {
+        "label": "Oferta de nuevas acciones",
+        "score": 70.0,
+        "weight": 0.05
+      },
+      {
+        "label": "Crédito y financiamiento",
+        "score": 0.0,
+        "weight": 0.25
+      },
+      {
+        "label": "Ruptura interna del mercado",
+        "score": 75.0,
+        "weight": 0.25
+      },
+      {
+        "label": "Volatilidad y presión vendedora",
+        "score": 59.21763829112822,
+        "weight": 0.15
+      }
+    ]
+  },
+  "monte_carlo": {
+    "scenario_a_fixed_group_shares": {
+      "method": "Cada peso recibe un multiplicador uniforme entre 0.75 y 1.25. Los primeros cuatro se renormalizan a 35% y los últimos tres a 65%.",
+      "score_percentiles": {
+        "p5": 52.087088268209236,
+        "p50": 55.42939088313525,
+        "p95": 58.75596539423567
+      },
+      "base_regime_retained_pct": 99.965,
+      "regime_distribution_pct": {
+        "NORMAL": 0.0,
+        "VIGILAR": 0.034999999999999996,
+        "PREPARAR": 99.965,
+        "ALERTA ALTA": 0.0,
+        "ALERTA CRÍTICA": 0.0
+      },
+      "minimum_score": 49.81665990898656,
+      "maximum_score": 61.02387444879507
+    },
+    "scenario_b_variable_structural_share": {
+      "method": "Usa los mismos multiplicadores por bloque; el peso estructural se sortea con distribución triangular 25%/35%/45% y confirmación recibe el resto.",
+      "score_percentiles": {
+        "p5": 51.15932310015118,
+        "p50": 55.514799140524616,
+        "p95": 59.463763300166086
+      },
+      "base_regime_retained_pct": 98.42999999999999,
+      "regime_distribution_pct": {
+        "NORMAL": 0.0,
+        "VIGILAR": 1.5699999999999998,
+        "PREPARAR": 98.42999999999999,
+        "ALERTA ALTA": 0.0,
+        "ALERTA CRÍTICA": 0.0
+      },
+      "minimum_score": 46.756710115538866,
+      "maximum_score": 62.92756300110117
+    }
+  },
+  "leave_one_out": [
+    {
+      "label": "Valuación y expectativas",
+      "omitted_score": 94.46280991735537,
+      "omitted_weight": 0.12,
+      "score": 52.69940150268061,
+      "change_from_base": -2.741220929850172,
+      "regime": "PREPARAR"
+    },
+    {
+      "label": "Concentración y subida temática",
+      "omitted_score": 83.5101259119828,
+      "omitted_weight": 0.1,
+      "score": 54.872395480397806,
+      "change_from_base": -0.5682269521329744,
+      "regime": "PREPARAR"
+    },
+    {
+      "label": "Apalancamiento y reversión",
+      "omitted_score": 57.767836344757825,
+      "omitted_weight": 0.08,
+      "score": 57.689284349033386,
+      "change_from_base": 2.2486619165026056,
+      "regime": "PREPARAR"
+    },
+    {
+      "label": "Oferta de nuevas acciones",
+      "omitted_score": 70.0,
+      "omitted_weight": 0.05,
+      "score": 55.99195188067438,
+      "change_from_base": 0.5513294481435977,
+      "regime": "PREPARAR"
+    },
+    {
+      "label": "Crédito y financiamiento",
+      "omitted_score": 0.0,
+      "omitted_weight": 0.25,
+      "score": 72.71102602232405,
+      "change_from_base": 17.27040358979327,
+      "regime": "ALERTA ALTA"
+    },
+    {
+      "label": "Ruptura interna del mercado",
+      "omitted_score": 75.0,
+      "omitted_weight": 0.25,
+      "score": 42.242276022324056,
+      "change_from_base": -13.198346410206724,
+      "regime": "VIGILAR"
+    },
+    {
+      "label": "Volatilidad y presión vendedora",
+      "omitted_score": 59.21763829112822,
+      "omitted_weight": 0.15,
+      "score": 52.18297668886155,
+      "change_from_base": -3.2576457436692294,
+      "regime": "PREPARAR"
+    }
+  ],
+  "one_at_a_time_weight_changes": [
+    {
+      "label": "Valuación y expectativas",
+      "base_weight": 0.12,
+      "weight_minus_25pct": {
+        "target_weight": 0.09,
+        "score": 54.11032058645722,
+        "regime": "PREPARAR",
+        "change_from_base": -1.33030184607356
+      },
+      "weight_plus_25pct": {
+        "target_weight": 0.15,
+        "score": 56.77092427860434,
+        "regime": "PREPARAR",
+        "change_from_base": 1.33030184607356
+      }
+    },
+    {
+      "label": "Concentración y subida temática",
+      "base_weight": 0.1,
+      "weight_minus_25pct": {
+        "target_weight": 0.07500000000000001,
+        "score": 54.66091400254601,
+        "regime": "PREPARAR",
+        "change_from_base": -0.7797084299847725
+      },
+      "weight_plus_25pct": {
+        "target_weight": 0.125,
+        "score": 56.22033086251556,
+        "regime": "PREPARAR",
+        "change_from_base": 0.7797084299847796
+      }
+    },
+    {
+      "label": "Apalancamiento y reversión",
+      "base_weight": 0.08,
+      "weight_minus_25pct": {
+        "target_weight": 0.06,
+        "score": 55.39003082574323,
+        "regime": "PREPARAR",
+        "change_from_base": -0.050591606787548926
+      },
+      "weight_plus_25pct": {
+        "target_weight": 0.1,
+        "score": 55.49121403931833,
+        "regime": "PREPARAR",
+        "change_from_base": 0.050591606787548926
+      }
+    },
+    {
+      "label": "Oferta de nuevas acciones",
+      "base_weight": 0.05,
+      "weight_minus_25pct": {
+        "target_weight": 0.037500000000000006,
+        "score": 55.24905167506409,
+        "regime": "PREPARAR",
+        "change_from_base": -0.1915707574666925
+      },
+      "weight_plus_25pct": {
+        "target_weight": 0.0625,
+        "score": 55.63219318999749,
+        "regime": "PREPARAR",
+        "change_from_base": 0.1915707574667067
+      }
+    },
+    {
+      "label": "Crédito y financiamiento",
+      "base_weight": 0.25,
+      "weight_minus_25pct": {
+        "target_weight": 0.1875,
+        "score": 60.06067430190834,
+        "regime": "PREPARAR",
+        "change_from_base": 4.620051869377562
+      },
+      "weight_plus_25pct": {
+        "target_weight": 0.3125,
+        "score": 50.82057056315321,
+        "regime": "PREPARAR",
+        "change_from_base": -4.620051869377569
+      }
+    },
+    {
+      "label": "Ruptura interna del mercado",
+      "base_weight": 0.25,
+      "weight_minus_25pct": {
+        "target_weight": 0.1875,
+        "score": 53.81067430190834,
+        "regime": "PREPARAR",
+        "change_from_base": -1.629948130622438
+      },
+      "weight_plus_25pct": {
+        "target_weight": 0.3125,
+        "score": 57.07057056315321,
+        "regime": "PREPARAR",
+        "change_from_base": 1.6299481306224308
+      }
+    },
+    {
+      "label": "Volatilidad y presión vendedora",
+      "base_weight": 0.15,
+      "weight_minus_25pct": {
+        "target_weight": 0.11249999999999999,
+        "score": 55.273989379945604,
+        "regime": "PREPARAR",
+        "change_from_base": -0.16663305258517624
+      },
+      "weight_plus_25pct": {
+        "target_weight": 0.1875,
+        "score": 55.60725548511597,
+        "regime": "PREPARAR",
+        "change_from_base": 0.16663305258519046
+      }
+    }
+  ],
+  "methodology": {
+    "regime_bands": {
+      "NORMAL": "0–34.99",
+      "VIGILAR": "35–49.99",
+      "PREPARAR": "50–64.99",
+      "ALERTA ALTA": "65–79.99",
+      "ALERTA CRÍTICA": "80–100"
+    },
+    "multiplier_range": [
+      0.75,
+      1.25
+    ],
+    "scenario_a_group_shares": {
+      "structural": 0.35,
+      "confirmation": 0.65
+    },
+    "scenario_b_structural_triangular": {
+      "minimum": 0.25,
+      "mode": 0.35,
+      "maximum": 0.45
+    },
+    "leave_one_out": "Se elimina un bloque y se reparte su peso entre los demás del mismo grupo, conservando 35% de fragilidad y 65% de confirmación.",
+    "one_at_a_time": "Se reduce o aumenta un peso 25% respecto de su valor base y se redistribuye el resto proporcionalmente."
+  },
+  "model_version": "2.0.0",
+  "generated_at": "2026-07-23T19:01:57-06:00",
+  "market_as_of": "2026-07-23",
+  "config_sha256": "ab460064e19e3061b916965ef2245bf8b263d189b9302c42f39cebc28315ce8a",
+  "historical_validation": {
+    "status": "not_yet_available",
+    "prospective_start": "2026-07-23",
+    "reason": "Los insumos lentos anteriores no conservan todavía su fecha real de disponibilidad y vintage. Usar el valor actual en el pasado introduciría información futura.",
+    "next_step": "Comparar prospectivamente las bandas con drawdowns posteriores de QQQ y SMH y construir un backtest solo con datos point-in-time."
+  }
+}

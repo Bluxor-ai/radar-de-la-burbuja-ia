@@ -1,16 +1,23 @@
 {
-  "generated_at": "2026-07-23T18:08:57-06:00",
+  "schema_version": 2,
+  "model_version": "2.0.0",
+  "radar_model_version": "2.0.0",
+  "capex_model_version": "2.0.0",
+  "config_sha256": "ab460064e19e3061b916965ef2245bf8b263d189b9302c42f39cebc28315ce8a",
+  "code_revision": "local",
+  "observation_id": "local:2026-07-23T19:01:57-06:00",
+  "generated_at": "2026-07-23T19:01:57-06:00",
   "market_as_of": "2026-07-23",
   "macro_as_of": "2026-07-17",
-  "bubble_score": 55.44062080958837,
+  "bubble_score": 55.44062243253078,
   "bubble_regime": "PREPARAR",
-  "structural_score": 79.45135733119751,
+  "structural_score": 79.45136196817586,
   "confirmation_score": 42.51176268256805,
-  "capex_score": 17.153812507034264,
-  "capex_coverage": 0.35,
+  "capex_score": 15.86353368105993,
+  "capex_coverage": 0.85,
   "structural_weight": 0.35,
   "confirmation_weight": 0.65,
-  "capex_regime": "DATOS INSUFICIENTES",
+  "capex_regime": "BAJO",
   "capex_preliminary_regime": "BAJO",
   "blocks": [
     {
@@ -21,9 +28,9 @@
     },
     {
       "label": "Concentración y subida temática",
-      "score": 83.5101096825586,
+      "score": 83.5101259119828,
       "weight": 0.1,
-      "contribution": 8.351010968255862
+      "contribution": 8.35101259119828
     },
     {
       "label": "Apalancamiento y reversión",
@@ -56,47 +63,341 @@
       "contribution": 8.882645743669233
     }
   ],
+  "weight_sensitivity": {
+    "schema_version": 1,
+    "weight_scenarios_not_probabilities": true,
+    "interpretation": "Los porcentajes describen configuraciones de peso simuladas; no son probabilidades de caída ni de ruptura del mercado.",
+    "seed": 20260723,
+    "samples": 20000,
+    "base": {
+      "score": 55.44062243253078,
+      "regime": "PREPARAR",
+      "structural_weight": 0.35,
+      "confirmation_weight": 0.65,
+      "blocks": [
+        {
+          "label": "Valuación y expectativas",
+          "score": 94.46280991735537,
+          "weight": 0.12
+        },
+        {
+          "label": "Concentración y subida temática",
+          "score": 83.5101259119828,
+          "weight": 0.1
+        },
+        {
+          "label": "Apalancamiento y reversión",
+          "score": 57.767836344757825,
+          "weight": 0.08
+        },
+        {
+          "label": "Oferta de nuevas acciones",
+          "score": 70.0,
+          "weight": 0.05
+        },
+        {
+          "label": "Crédito y financiamiento",
+          "score": 0.0,
+          "weight": 0.25
+        },
+        {
+          "label": "Ruptura interna del mercado",
+          "score": 75.0,
+          "weight": 0.25
+        },
+        {
+          "label": "Volatilidad y presión vendedora",
+          "score": 59.21763829112822,
+          "weight": 0.15
+        }
+      ]
+    },
+    "monte_carlo": {
+      "scenario_a_fixed_group_shares": {
+        "method": "Cada peso recibe un multiplicador uniforme entre 0.75 y 1.25. Los primeros cuatro se renormalizan a 35% y los últimos tres a 65%.",
+        "score_percentiles": {
+          "p5": 52.087088268209236,
+          "p50": 55.42939088313525,
+          "p95": 58.75596539423567
+        },
+        "base_regime_retained_pct": 99.965,
+        "regime_distribution_pct": {
+          "NORMAL": 0.0,
+          "VIGILAR": 0.034999999999999996,
+          "PREPARAR": 99.965,
+          "ALERTA ALTA": 0.0,
+          "ALERTA CRÍTICA": 0.0
+        },
+        "minimum_score": 49.81665990898656,
+        "maximum_score": 61.02387444879507
+      },
+      "scenario_b_variable_structural_share": {
+        "method": "Usa los mismos multiplicadores por bloque; el peso estructural se sortea con distribución triangular 25%/35%/45% y confirmación recibe el resto.",
+        "score_percentiles": {
+          "p5": 51.15932310015118,
+          "p50": 55.514799140524616,
+          "p95": 59.463763300166086
+        },
+        "base_regime_retained_pct": 98.42999999999999,
+        "regime_distribution_pct": {
+          "NORMAL": 0.0,
+          "VIGILAR": 1.5699999999999998,
+          "PREPARAR": 98.42999999999999,
+          "ALERTA ALTA": 0.0,
+          "ALERTA CRÍTICA": 0.0
+        },
+        "minimum_score": 46.756710115538866,
+        "maximum_score": 62.92756300110117
+      }
+    },
+    "leave_one_out": [
+      {
+        "label": "Valuación y expectativas",
+        "omitted_score": 94.46280991735537,
+        "omitted_weight": 0.12,
+        "score": 52.69940150268061,
+        "change_from_base": -2.741220929850172,
+        "regime": "PREPARAR"
+      },
+      {
+        "label": "Concentración y subida temática",
+        "omitted_score": 83.5101259119828,
+        "omitted_weight": 0.1,
+        "score": 54.872395480397806,
+        "change_from_base": -0.5682269521329744,
+        "regime": "PREPARAR"
+      },
+      {
+        "label": "Apalancamiento y reversión",
+        "omitted_score": 57.767836344757825,
+        "omitted_weight": 0.08,
+        "score": 57.689284349033386,
+        "change_from_base": 2.2486619165026056,
+        "regime": "PREPARAR"
+      },
+      {
+        "label": "Oferta de nuevas acciones",
+        "omitted_score": 70.0,
+        "omitted_weight": 0.05,
+        "score": 55.99195188067438,
+        "change_from_base": 0.5513294481435977,
+        "regime": "PREPARAR"
+      },
+      {
+        "label": "Crédito y financiamiento",
+        "omitted_score": 0.0,
+        "omitted_weight": 0.25,
+        "score": 72.71102602232405,
+        "change_from_base": 17.27040358979327,
+        "regime": "ALERTA ALTA"
+      },
+      {
+        "label": "Ruptura interna del mercado",
+        "omitted_score": 75.0,
+        "omitted_weight": 0.25,
+        "score": 42.242276022324056,
+        "change_from_base": -13.198346410206724,
+        "regime": "VIGILAR"
+      },
+      {
+        "label": "Volatilidad y presión vendedora",
+        "omitted_score": 59.21763829112822,
+        "omitted_weight": 0.15,
+        "score": 52.18297668886155,
+        "change_from_base": -3.2576457436692294,
+        "regime": "PREPARAR"
+      }
+    ],
+    "one_at_a_time_weight_changes": [
+      {
+        "label": "Valuación y expectativas",
+        "base_weight": 0.12,
+        "weight_minus_25pct": {
+          "target_weight": 0.09,
+          "score": 54.11032058645722,
+          "regime": "PREPARAR",
+          "change_from_base": -1.33030184607356
+        },
+        "weight_plus_25pct": {
+          "target_weight": 0.15,
+          "score": 56.77092427860434,
+          "regime": "PREPARAR",
+          "change_from_base": 1.33030184607356
+        }
+      },
+      {
+        "label": "Concentración y subida temática",
+        "base_weight": 0.1,
+        "weight_minus_25pct": {
+          "target_weight": 0.07500000000000001,
+          "score": 54.66091400254601,
+          "regime": "PREPARAR",
+          "change_from_base": -0.7797084299847725
+        },
+        "weight_plus_25pct": {
+          "target_weight": 0.125,
+          "score": 56.22033086251556,
+          "regime": "PREPARAR",
+          "change_from_base": 0.7797084299847796
+        }
+      },
+      {
+        "label": "Apalancamiento y reversión",
+        "base_weight": 0.08,
+        "weight_minus_25pct": {
+          "target_weight": 0.06,
+          "score": 55.39003082574323,
+          "regime": "PREPARAR",
+          "change_from_base": -0.050591606787548926
+        },
+        "weight_plus_25pct": {
+          "target_weight": 0.1,
+          "score": 55.49121403931833,
+          "regime": "PREPARAR",
+          "change_from_base": 0.050591606787548926
+        }
+      },
+      {
+        "label": "Oferta de nuevas acciones",
+        "base_weight": 0.05,
+        "weight_minus_25pct": {
+          "target_weight": 0.037500000000000006,
+          "score": 55.24905167506409,
+          "regime": "PREPARAR",
+          "change_from_base": -0.1915707574666925
+        },
+        "weight_plus_25pct": {
+          "target_weight": 0.0625,
+          "score": 55.63219318999749,
+          "regime": "PREPARAR",
+          "change_from_base": 0.1915707574667067
+        }
+      },
+      {
+        "label": "Crédito y financiamiento",
+        "base_weight": 0.25,
+        "weight_minus_25pct": {
+          "target_weight": 0.1875,
+          "score": 60.06067430190834,
+          "regime": "PREPARAR",
+          "change_from_base": 4.620051869377562
+        },
+        "weight_plus_25pct": {
+          "target_weight": 0.3125,
+          "score": 50.82057056315321,
+          "regime": "PREPARAR",
+          "change_from_base": -4.620051869377569
+        }
+      },
+      {
+        "label": "Ruptura interna del mercado",
+        "base_weight": 0.25,
+        "weight_minus_25pct": {
+          "target_weight": 0.1875,
+          "score": 53.81067430190834,
+          "regime": "PREPARAR",
+          "change_from_base": -1.629948130622438
+        },
+        "weight_plus_25pct": {
+          "target_weight": 0.3125,
+          "score": 57.07057056315321,
+          "regime": "PREPARAR",
+          "change_from_base": 1.6299481306224308
+        }
+      },
+      {
+        "label": "Volatilidad y presión vendedora",
+        "base_weight": 0.15,
+        "weight_minus_25pct": {
+          "target_weight": 0.11249999999999999,
+          "score": 55.273989379945604,
+          "regime": "PREPARAR",
+          "change_from_base": -0.16663305258517624
+        },
+        "weight_plus_25pct": {
+          "target_weight": 0.1875,
+          "score": 55.60725548511597,
+          "regime": "PREPARAR",
+          "change_from_base": 0.16663305258519046
+        }
+      }
+    ],
+    "methodology": {
+      "regime_bands": {
+        "NORMAL": "0–34.99",
+        "VIGILAR": "35–49.99",
+        "PREPARAR": "50–64.99",
+        "ALERTA ALTA": "65–79.99",
+        "ALERTA CRÍTICA": "80–100"
+      },
+      "multiplier_range": [
+        0.75,
+        1.25
+      ],
+      "scenario_a_group_shares": {
+        "structural": 0.35,
+        "confirmation": 0.65
+      },
+      "scenario_b_structural_triangular": {
+        "minimum": 0.25,
+        "mode": 0.35,
+        "maximum": 0.45
+      },
+      "leave_one_out": "Se elimina un bloque y se reparte su peso entre los demás del mismo grupo, conservando 35% de fragilidad y 65% de confirmación.",
+      "one_at_a_time": "Se reduce o aumenta un peso 25% respecto de su valor base y se redistribuye el resto proporcionalmente."
+    },
+    "model_version": "2.0.0",
+    "generated_at": "2026-07-23T19:01:57-06:00",
+    "market_as_of": "2026-07-23",
+    "config_sha256": "ab460064e19e3061b916965ef2245bf8b263d189b9302c42f39cebc28315ce8a",
+    "historical_validation": {
+      "status": "not_yet_available",
+      "prospective_start": "2026-07-23",
+      "reason": "Los insumos lentos anteriores no conservan todavía su fecha real de disponibilidad y vintage. Usar el valor actual en el pasado introduciría información futura.",
+      "next_step": "Comparar prospectivamente las bandas con drawdowns posteriores de QQQ y SMH y construir un backtest solo con datos point-in-time."
+    }
+  },
   "capex_rows": [
     {
       "key": "guidance",
-      "label": "Guía de las grandes tecnológicas",
-      "score": null,
+      "label": "Gasto reciente de las grandes tecnológicas",
+      "score": 0.0,
       "weight": 0.2,
-      "reading": "Sin lectura pública fechada incorporada.",
-      "mode": "manual",
-      "available": false,
-      "effective_weight": null,
-      "contribution": null
+      "reading": "Frente al mismo trimestre del año anterior: +84.4%; 4 empresas.",
+      "mode": "automatic",
+      "available": true,
+      "effective_weight": 0.23529411764705885,
+      "contribution": 0.0
     },
     {
       "key": "suppliers",
       "label": "Pulso de proveedores y semiconductores",
       "score": 0.0,
       "weight": 0.2,
-      "reading": "Semiconductores vs hyperscalers, 20 días: -4.4 puntos porcentuales.",
+      "reading": "En 20 días, semiconductores rindieron 4.4 puntos menos que las grandes tecnológicas.",
       "mode": "automatic",
       "available": true,
-      "effective_weight": 0.5714285714285715,
+      "effective_weight": 0.23529411764705885,
       "contribution": 0.0
     },
     {
       "key": "physical_buildout",
-      "label": "Construcción, energía y cancelaciones",
-      "score": null,
+      "label": "Gasto nominal en construcción de centros de datos",
+      "score": 0.0,
       "weight": 0.15,
-      "reading": "Sin lectura pública fechada incorporada.",
-      "mode": "manual",
-      "available": false,
-      "effective_weight": null,
-      "contribution": null
+      "reading": "Frente a los mismos tres meses del año anterior: +20.3%.",
+      "mode": "automatic",
+      "available": true,
+      "effective_weight": 0.17647058823529413,
+      "contribution": 0.0
     },
     {
       "key": "cloud_capacity",
-      "label": "Disponibilidad y precio de GPU en nube",
+      "label": "Precios públicos de GPU H100 en nube",
       "score": null,
       "weight": 0.1,
-      "reading": "Sin una fuente pública estable y redistribuible.",
-      "mode": "manual",
+      "reading": "24 regiones; descuento Spot mediano 81.5%. Se archiva sin puntuar; todavía no existe una metodología aprobada.",
+      "mode": "collector",
       "available": false,
       "effective_weight": null,
       "contribution": null
@@ -106,29 +407,29 @@
       "label": "Caja y capacidad de financiar",
       "score": 40.02556251641328,
       "weight": 0.15,
-      "reading": "Cobertura mediana OCF/CapEx: 1.52x.",
+      "reading": "El efectivo generado cubre 1.52 veces el gasto de inversión.",
       "mode": "automatic",
       "available": true,
-      "effective_weight": 0.4285714285714286,
-      "contribution": 17.153812507034264
+      "effective_weight": 0.17647058823529413,
+      "contribution": 7.063334561719992
     },
     {
       "key": "roi_accounting",
-      "label": "Retorno y depreciación económica",
-      "score": null,
+      "label": "Retorno operativo y uso de activos físicos",
+      "score": 49.86779500959299,
       "weight": 0.15,
-      "reading": "Sin lectura pública fechada incorporada.",
-      "mode": "manual",
-      "available": false,
-      "effective_weight": null,
-      "contribution": null
+      "reading": "Estimación contable amplia del retorno: 49.9/100 en 4 empresas; no aísla el retorno de IA.",
+      "mode": "automatic",
+      "available": true,
+      "effective_weight": 0.17647058823529413,
+      "contribution": 8.80019911933994
     },
     {
       "key": "financed_demand",
       "label": "Demanda financiada y circularidad",
       "score": null,
       "weight": 0.05,
-      "reading": "Sin lectura pública fechada incorporada.",
+      "reading": "N/D: no existe una taxonomía pública uniforme para puntuarla.",
       "mode": "manual",
       "available": false,
       "effective_weight": null,
@@ -136,12 +437,12 @@
     }
   ],
   "inputs": {
-    "excess_return_pp": 92.03791130959473,
+    "excess_return_pp": 92.03797216993547,
     "relative_returns_2y_pp": {
-      "QQQ": 9.094501886026872,
-      "SMH": 92.02209857942205,
-      "SOXX": 92.03791130959473,
-      "NVDA": 35.9542491118531
+      "QQQ": 9.094548259585578,
+      "SMH": 92.02214495298075,
+      "SOXX": 92.03797216993547,
+      "NVDA": 35.95430638352626
     },
     "vix": 18.700000762939453,
     "vix_5d_change": 0.1177526165335323,
@@ -157,32 +458,440 @@
     "large_down_days_average": 4.222222222222222,
     "distribution_score": 100.0,
     "regime_score": 30.050392937682183,
-    "cash_coverage_details": {
-      "MSFT": {
-        "ocf_capex": 1.7499717150938545
+    "capex_fundamentals": {
+      "companies": {
+        "MSFT": {
+          "errors": {},
+          "spending": {
+            "latest_period": "2026-03-31",
+            "comparison_period": "2025-03-31",
+            "latest_quarter_capex": 30876000000.0,
+            "year_ago_quarter_capex": 16745000000.0,
+            "growth_yoy_percent": 84.38936996118245
+          },
+          "cash_financing": {
+            "periods": [
+              "2026-03-31",
+              "2025-12-31",
+              "2025-09-30",
+              "2025-06-30"
+            ],
+            "operating_cash_flow_ttm": 170141000000.0,
+            "capex_ttm": 97225000000.0,
+            "ocf_to_capex": 1.7499717150938545
+          },
+          "roi_accounting": {
+            "current_period": "2026-03-31",
+            "comparison_period": "2025-03-31",
+            "incremental_operating_return": 0.38208420424007167,
+            "incremental_return_risk": 23.58315915198567,
+            "ppe_turnover_current": 0.269433184562024,
+            "ppe_turnover_year_ago": 0.3361866285374303,
+            "ppe_turnover_change": -0.19856067525890353,
+            "ppe_turnover_deterioration_risk": 79.42427010356141,
+            "score": 51.50371462777354,
+            "note": "Proxy contable de toda la empresa; no aísla el retorno de IA."
+          },
+          "status": "complete"
+        },
+        "GOOGL": {
+          "errors": {},
+          "spending": {
+            "latest_period": "2026-06-30",
+            "comparison_period": "2025-06-30",
+            "latest_quarter_capex": 44924000000.0,
+            "year_ago_quarter_capex": 22446000000.0,
+            "growth_yoy_percent": 100.14256437672637
+          },
+          "cash_financing": {
+            "periods": [
+              "2026-06-30",
+              "2026-03-31",
+              "2025-12-31",
+              "2025-09-30"
+            ],
+            "operating_cash_flow_ttm": 185675000000.0,
+            "capex_ttm": 132402000000.0,
+            "ocf_to_capex": 1.4023579704234075
+          },
+          "roi_accounting": {
+            "current_period": "2026-06-30",
+            "comparison_period": "2025-06-30",
+            "incremental_operating_return": 0.4231934420386706,
+            "incremental_return_risk": 15.361311592265878,
+            "ppe_turnover_current": 0.35347854567343157,
+            "ppe_turnover_year_ago": 0.443375665560082,
+            "ppe_turnover_change": -0.2027560979763975,
+            "ppe_turnover_deterioration_risk": 81.102439190559,
+            "score": 48.23187539141244,
+            "note": "Proxy contable de toda la empresa; no aísla el retorno de IA."
+          },
+          "status": "complete"
+        },
+        "AMZN": {
+          "errors": {},
+          "spending": {
+            "latest_period": "2026-03-31",
+            "comparison_period": "2025-03-31",
+            "latest_quarter_capex": 44203000000.0,
+            "year_ago_quarter_capex": 25019000000.0,
+            "growth_yoy_percent": 76.67772492905391
+          },
+          "cash_financing": {
+            "periods": [
+              "2026-03-31",
+              "2025-12-31",
+              "2025-09-30",
+              "2025-06-30"
+            ],
+            "operating_cash_flow_ttm": 148531000000.0,
+            "capex_ttm": 151003000000.0,
+            "ocf_to_capex": 0.9836294643152785
+          },
+          "roi_accounting": {
+            "current_period": "2026-03-31",
+            "comparison_period": "2025-03-31",
+            "incremental_operating_return": 0.21771453695191653,
+            "incremental_return_risk": 56.457092609616694,
+            "ppe_turnover_current": 0.3733430138688068,
+            "ppe_turnover_year_ago": 0.4431472688142657,
+            "ppe_turnover_change": -0.15751931661958551,
+            "ppe_turnover_deterioration_risk": 63.007726647834204,
+            "score": 59.73240962872545,
+            "note": "Proxy contable de toda la empresa; no aísla el retorno de IA."
+          },
+          "status": "complete"
+        },
+        "META": {
+          "errors": {},
+          "spending": {
+            "latest_period": "2026-03-31",
+            "comparison_period": "2025-03-31",
+            "latest_quarter_capex": 18997000000.0,
+            "year_ago_quarter_capex": 12941000000.0,
+            "growth_yoy_percent": 46.797001777296956
+          },
+          "cash_financing": {
+            "periods": [
+              "2026-03-31",
+              "2025-12-31",
+              "2025-09-30",
+              "2025-06-30"
+            ],
+            "operating_cash_flow_ttm": 124000000000.0,
+            "capex_ttm": 75747000000.0,
+            "ocf_to_capex": 1.6370285291826738
+          },
+          "roi_accounting": {
+            "current_period": "2026-03-31",
+            "comparison_period": "2025-03-31",
+            "incremental_operating_return": 0.4108646936094583,
+            "incremental_return_risk": 17.82706127810833,
+            "ppe_turnover_current": 0.25825521454385353,
+            "ppe_turnover_year_ago": 0.2838494150477622,
+            "ppe_turnover_change": -0.09016823409553976,
+            "ppe_turnover_deterioration_risk": 36.0672936382159,
+            "score": 26.947177458162116,
+            "note": "Proxy contable de toda la empresa; no aísla el retorno de IA."
+          },
+          "status": "complete"
+        }
       },
-      "GOOGL": {
-        "ocf_capex": 1.4023579704234075
+      "spending": {
+        "available_companies": 4,
+        "minimum_companies": 3,
+        "weight_cap": 0.35,
+        "status": "available",
+        "weighted_median_growth_yoy_percent": 84.38936996118245,
+        "capped_weights": {
+          "GOOGL": 0.32319424460431656,
+          "META": 0.13666906474820145,
+          "AMZN": 0.31800719424460433,
+          "MSFT": 0.22212949640287769
+        },
+        "score": 0.0,
+        "formula": "clamp(50 - 2.5 × crecimiento interanual ponderado en puntos porcentuales)"
       },
-      "AMZN": {
-        "ocf_capex": 0.9836294643152785
+      "cash_financing": {
+        "available_companies": 4,
+        "minimum_companies": 3,
+        "status": "available",
+        "median_ocf_to_capex": 1.5196932498030407,
+        "score": 40.02556251641328,
+        "formula": "100 - scale(mediana OCF TTM / CapEx TTM, 0.8, 2.0)"
       },
-      "META": {
-        "ocf_capex": 1.6370285291826738
+      "roi_accounting": {
+        "available_companies": 4,
+        "minimum_companies": 3,
+        "status": "available",
+        "median_company_score": 49.86779500959299,
+        "score": 49.86779500959299,
+        "note": "Combina retorno operativo incremental y deterioro de rotación de PP&E. Es un proxy contable amplio, no un ROI específico de IA."
       },
-      "available_companies": 4,
-      "median_ocf_capex": 1.5196932498030407
+      "errors_by_company": {}
+    },
+    "census_data_center": {
+      "source": "https://www.census.gov/construction/c30/xlsx/privtime.xlsx",
+      "series": "Private construction put in place: Data center, NSA",
+      "as_of": "2026-05-01",
+      "current_months": [
+        "2026-03-01",
+        "2026-04-01",
+        "2026-05-01"
+      ],
+      "comparison_months": [
+        "2025-03-01",
+        "2025-04-01",
+        "2025-05-01"
+      ],
+      "current_three_month_average_millions": 4938.333333333333,
+      "previous_year_three_month_average_millions": 4105.333333333333,
+      "growth_yoy_percent": 20.29067879181552,
+      "score": 0.0,
+      "formula": "clamp(50 - 2.5 × crecimiento interanual en puntos porcentuales)",
+      "available_observations": 149,
+      "fetched_at": "2026-07-24T01:02:00+00:00",
+      "note": "Proxy mensual de actividad de construcción de centros de datos. No observa cancelaciones individuales ni conexiones eléctricas."
+    },
+    "cloud_gpu_snapshot": {
+      "source": "https://prices.azure.com/api/retail/prices",
+      "sku": "Standard_ND96isr_H100_v5",
+      "currency": "USD",
+      "fetched_at": "2026-07-24T01:02:01+00:00",
+      "price_effective_as_of": "2026-01-01",
+      "median_discount": 0.8151999999999999,
+      "median_discount_percent": 81.52,
+      "median_pay_as_you_go_usd_per_hour": 127.816,
+      "median_spot_usd_per_hour": 23.620397,
+      "price_fingerprint_sha256": "60256898fb058195b6804f387f27706489d7cc1660a88dcb52d9babf89786ad1",
+      "paired_region_count": 24,
+      "regions": [
+        {
+          "region": "australiaeast",
+          "pay_as_you_go_usd_per_hour": 142.6,
+          "spot_usd_per_hour": 26.35248,
+          "discount": 0.8151999999999999,
+          "discount_percent": 81.52,
+          "pay_as_you_go_effective_from": "2024-06-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        },
+        {
+          "region": "canadacentral",
+          "pay_as_you_go_usd_per_hour": 117.984,
+          "spot_usd_per_hour": 21.803443,
+          "discount": 0.8152000016951451,
+          "discount_percent": 81.5200001695145,
+          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        },
+        {
+          "region": "centralus",
+          "pay_as_you_go_usd_per_hour": 120.934,
+          "spot_usd_per_hour": 22.348603,
+          "discount": 0.8152000016537946,
+          "discount_percent": 81.52000016537946,
+          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        },
+        {
+          "region": "eastus",
+          "pay_as_you_go_usd_per_hour": 98.32,
+          "spot_usd_per_hour": 18.169536,
+          "discount": 0.8151999999999999,
+          "discount_percent": 81.52,
+          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
+          "spot_effective_from": "2026-01-01T00:00:00Z"
+        },
+        {
+          "region": "eastus2",
+          "pay_as_you_go_usd_per_hour": 98.32,
+          "spot_usd_per_hour": 18.169536,
+          "discount": 0.8151999999999999,
+          "discount_percent": 81.52,
+          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
+          "spot_effective_from": "2026-01-01T00:00:00Z"
+        },
+        {
+          "region": "japaneast",
+          "pay_as_you_go_usd_per_hour": 142.564,
+          "spot_usd_per_hour": 26.345827,
+          "discount": 0.8152000014028787,
+          "discount_percent": 81.52000014028788,
+          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        },
+        {
+          "region": "japanwest",
+          "pay_as_you_go_usd_per_hour": 152.396,
+          "spot_usd_per_hour": 28.162781,
+          "discount": 0.8151999986876296,
+          "discount_percent": 81.51999986876297,
+          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        },
+        {
+          "region": "koreacentral",
+          "pay_as_you_go_usd_per_hour": 132.732,
+          "spot_usd_per_hour": 24.528874,
+          "discount": 0.8151999969864088,
+          "discount_percent": 81.51999969864087,
+          "pay_as_you_go_effective_from": "2025-01-01T00:00:00Z",
+          "spot_effective_from": "2025-12-01T00:00:00Z"
+        },
+        {
+          "region": "northcentralus",
+          "pay_as_you_go_usd_per_hour": 117.984,
+          "spot_usd_per_hour": 21.803443,
+          "discount": 0.8152000016951451,
+          "discount_percent": 81.5200001695145,
+          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        },
+        {
+          "region": "polandcentral",
+          "pay_as_you_go_usd_per_hour": 127.816,
+          "spot_usd_per_hour": 23.620397,
+          "discount": 0.8151999984352507,
+          "discount_percent": 81.51999984352507,
+          "pay_as_you_go_effective_from": "2025-03-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        },
+        {
+          "region": "southafricanorth",
+          "pay_as_you_go_usd_per_hour": 168.672,
+          "spot_usd_per_hour": 31.170586,
+          "discount": 0.8151999976285335,
+          "discount_percent": 81.51999976285335,
+          "pay_as_you_go_effective_from": "2024-02-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        },
+        {
+          "region": "southafricawest",
+          "pay_as_you_go_usd_per_hour": 186.608,
+          "spot_usd_per_hour": 34.485158,
+          "discount": 0.8152000021435308,
+          "discount_percent": 81.52000021435309,
+          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        },
+        {
+          "region": "southcentralus",
+          "pay_as_you_go_usd_per_hour": 117.968,
+          "spot_usd_per_hour": 21.800486,
+          "discount": 0.81520000339075,
+          "discount_percent": 81.52000033907501,
+          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        },
+        {
+          "region": "spaincentral",
+          "pay_as_you_go_usd_per_hour": 127.816,
+          "spot_usd_per_hour": 23.620397,
+          "discount": 0.8151999984352507,
+          "discount_percent": 81.51999984352507,
+          "pay_as_you_go_effective_from": "2024-06-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        },
+        {
+          "region": "swedencentral",
+          "pay_as_you_go_usd_per_hour": 127.816,
+          "spot_usd_per_hour": 23.620397,
+          "discount": 0.8151999984352507,
+          "discount_percent": 81.51999984352507,
+          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        },
+        {
+          "region": "switzerlandnorth",
+          "pay_as_you_go_usd_per_hour": 140.598,
+          "spot_usd_per_hour": 25.98251,
+          "discount": 0.8152000028449907,
+          "discount_percent": 81.52000028449908,
+          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        },
+        {
+          "region": "uaenorth",
+          "pay_as_you_go_usd_per_hour": 140.598,
+          "spot_usd_per_hour": 25.98251,
+          "discount": 0.8152000028449907,
+          "discount_percent": 81.52000028449908,
+          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        },
+        {
+          "region": "uksouth",
+          "pay_as_you_go_usd_per_hour": 122.9,
+          "spot_usd_per_hour": 22.71192,
+          "discount": 0.8152,
+          "discount_percent": 81.52000000000001,
+          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        },
+        {
+          "region": "usgovarizona",
+          "pay_as_you_go_usd_per_hour": 122.9,
+          "spot_usd_per_hour": 22.71192,
+          "discount": 0.8152,
+          "discount_percent": 81.52000000000001,
+          "pay_as_you_go_effective_from": "2025-03-01T00:00:00Z",
+          "spot_effective_from": "2025-09-01T00:00:00Z"
+        },
+        {
+          "region": "westcentralus",
+          "pay_as_you_go_usd_per_hour": 117.984,
+          "spot_usd_per_hour": 21.803443,
+          "discount": 0.8152000016951451,
+          "discount_percent": 81.5200001695145,
+          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        },
+        {
+          "region": "westeurope",
+          "pay_as_you_go_usd_per_hour": 127.816,
+          "spot_usd_per_hour": 23.620397,
+          "discount": 0.8151999984352507,
+          "discount_percent": 81.51999984352507,
+          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
+          "spot_effective_from": "2025-12-01T00:00:00Z"
+        },
+        {
+          "region": "westus",
+          "pay_as_you_go_usd_per_hour": 127.816,
+          "spot_usd_per_hour": 23.620397,
+          "discount": 0.8151999984352507,
+          "discount_percent": 81.51999984352507,
+          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        },
+        {
+          "region": "westus2",
+          "pay_as_you_go_usd_per_hour": 98.32,
+          "spot_usd_per_hour": 18.169536,
+          "discount": 0.8151999999999999,
+          "discount_percent": 81.52,
+          "pay_as_you_go_effective_from": "2025-01-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        },
+        {
+          "region": "westus3",
+          "pay_as_you_go_usd_per_hour": 98.32,
+          "spot_usd_per_hour": 18.169536,
+          "discount": 0.8151999999999999,
+          "discount_percent": 81.52,
+          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
+          "spot_effective_from": "2025-10-01T00:00:00Z"
+        }
+      ],
+      "note": "Instantánea de precios públicos de lista. No mide inventario, disponibilidad en tiempo real ni frecuencia de desalojo."
     }
   },
   "data_quality": {
-    "status": "Parcial",
-    "warnings": [
-      "FRED no respondió para VIX; se usó la lectura de mercado alterna.",
-      "FRED no respondió para la curva 10Y–2Y; se calculó con tasas oficiales del Tesoro de EE. UU.",
-      "El mosaico de CapEx tiene 35% de cobertura; los faltantes se muestran como N/D."
-    ],
-    "capex_coverage": 0.35,
-    "capex_status": "Datos insuficientes"
+    "status": "Completa",
+    "warnings": [],
+    "source_fallback_count": 2,
+    "capex_coverage": 0.85,
+    "capex_status": "Suficiente"
   },
   "sources": [
     {
@@ -217,6 +926,33 @@
       "as_of": "2026-07-23",
       "mode": "Automático",
       "status": "Fuente alterna"
+    },
+    {
+      "label": "Gasto, caja y retorno contable",
+      "provider": "Estados financieros vía Yahoo Finance",
+      "url": "https://finance.yahoo.com/",
+      "as_of": "2026-03-31",
+      "mode": "Automático",
+      "status": "Disponible",
+      "note": "Proxies amplios de MSFT, GOOGL, AMZN y META; no aíslan exclusivamente la inversión en IA. Edad máxima: 150 días."
+    },
+    {
+      "label": "Construcción privada de centros de datos",
+      "provider": "U.S. Census Bureau",
+      "url": "https://www.census.gov/construction/c30/xlsx/privtime.xlsx",
+      "as_of": "2026-05-01",
+      "mode": "Automático mensual",
+      "status": "Disponible",
+      "note": "Gasto nominal en obra, sin racks ni servidores. Promedio de tres meses frente a los mismos meses del año anterior. Edad máxima: 120 días."
+    },
+    {
+      "label": "Precios públicos de GPU H100",
+      "provider": "Microsoft Azure Retail Prices API",
+      "url": "https://learn.microsoft.com/rest/api/cost-management/retail-prices/azure-retail-prices",
+      "as_of": "2026-01-01",
+      "mode": "Colector automático",
+      "status": "En observación",
+      "note": "Se archiva, pero no se puntúa: el precio de lista no demuestra disponibilidad de capacidad."
     },
     {
       "label": "CAPE de Shiller",

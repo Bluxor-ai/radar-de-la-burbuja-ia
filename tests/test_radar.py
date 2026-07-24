@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 
 import pytest
+import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -90,11 +91,27 @@ def test_fallback_keeps_each_source_date():
     ) == "2026-07-21"
 
 
+def test_total_fallback_preserves_last_successful_generation_time(tmp_path):
+    fallback = tmp_path / "latest.json"
+    payload = load_latest()
+    payload["generated_at"] = "2000-01-01T00:00:00Z"
+    fallback.write_text(json.dumps(payload), encoding="utf-8")
+    restored = radar.load_fallback(fallback, "America/Mexico_City")
+
+    assert restored["generated_at"] == payload["generated_at"]
+    assert restored["served_at"] != payload["generated_at"]
+    assert restored["stale"] is True
+
+
 def test_offline_build_is_isolated(tmp_path):
     data_dir = tmp_path / "data"
     data_dir.mkdir()
-    for name in ("latest.json", "history.csv"):
+    for name in ("latest.json", "history.csv", "gpu_price_history.csv"):
         (data_dir / name).write_bytes((ROOT / "data" / name).read_bytes())
+    (data_dir / "validation").mkdir()
+    (data_dir / "validation" / "model_versions.json").write_bytes(
+        (ROOT / "data" / "validation" / "model_versions.json").read_bytes()
+    )
 
     original_history = (ROOT / "data" / "history.csv").read_bytes()
     result = radar.run(
@@ -108,11 +125,18 @@ def test_offline_build_is_isolated(tmp_path):
     assert (tmp_path / "public" / "index.html").exists()
     assert (tmp_path / "public" / "latest.json").exists()
     assert (tmp_path / "public" / "history.csv").exists()
+    assert (tmp_path / "public" / "gpu_price_history.csv").exists()
+    assert (tmp_path / "public" / "validation.json").exists()
+    assert (tmp_path / "public" / "validation.csv").exists()
+    assert (tmp_path / "public" / "model_versions.json").exists()
     assert (ROOT / "data" / "history.csv").read_bytes() == original_history
 
 
 def test_render_is_transparent_accessible_and_shareable(tmp_path):
     result = copy.deepcopy(load_latest())
+    public_payload = json.dumps(result, ensure_ascii=False)
+    assert "Datos principales actualizados con" not in public_payload
+    assert "FRED no respondió" not in public_payload
     result["capex_rows"][0]["score"] = None
     result["capex_rows"][0]["available"] = False
     result["capex_rows"][0]["contribution"] = None
@@ -131,30 +155,53 @@ def test_render_is_transparent_accessible_and_shareable(tmp_path):
     assert "N/D" in page
     assert "Nunca se" in page and "convierte en cero" in page
     assert "RUPTURA PROBABLE" not in page
+    assert "Datos principales actualizados con" not in page
+    assert "FRED no respondió" not in page
     assert "NFCI" in page
     assert "nfci" in result["inputs"]
 
 
-def test_identical_history_readings_are_deduplicated(tmp_path):
+def test_identical_history_readings_from_distinct_runs_are_preserved(tmp_path):
     history = tmp_path / "history.csv"
     result = load_latest()
+    result.pop("observation_id", None)
     radar.write_history(history, result)
     result["generated_at"] = "2026-07-23T23:59:00-06:00"
     radar.write_history(history, result)
 
     rows = history.read_text(encoding="utf-8").strip().splitlines()
-    assert len(rows) == 2
+    assert len(rows) == 3
     assert "capex_coverage" in rows[0]
     assert "capex_regime" in rows[0]
-    assert rows[1].startswith("2026-07-23T23:59:00-06:00")
+    assert "model_version" in rows[0]
+    assert "capex_model_version" in rows[0]
+    assert "config_sha256" in rows[0]
+    assert "quality_status" in rows[0]
+    assert "valuation_score" in rows[0]
+    assert "capex_guidance_score" in rows[0]
+    assert "census_fetched_at" in rows[0]
+    assert "2026-07-23T23:59:00-06:00" in rows[2]
+
+
+def test_same_observation_id_is_deduplicated(tmp_path):
+    history = tmp_path / "history.csv"
+    result = load_latest()
+    result["observation_id"] = "github:123"
+    radar.write_history(history, result)
+    result["generated_at"] = "2026-07-23T23:59:00-06:00"
+    radar.write_history(history, result)
+
+    frame = pd.read_csv(history)
+    assert len(frame) == 1
+    assert frame.iloc[0]["generated_at"] == "2026-07-23T23:59:00-06:00"
 
 
 def test_history_chart_uses_fixed_zero_to_one_hundred_scale(tmp_path):
     history = tmp_path / "history.csv"
     history.write_text(
-        "generated_at,bubble_score\n"
-        "2026-07-01T12:00:00Z,50\n"
-        "2026-07-08T12:00:00Z,51\n",
+        "observation_id,model_version,generated_at,bubble_score\n"
+        "run-1,2.0.0,2026-07-01T12:00:00Z,50\n"
+        "run-2,2.0.0,2026-07-08T12:00:00Z,51\n",
         encoding="utf-8",
     )
     chart = radar.history_chart(history)

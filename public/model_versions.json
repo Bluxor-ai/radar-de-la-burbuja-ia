@@ -1,0 +1,17 @@
+[
+  {
+    "version": "2.0.0",
+    "radar_model_version": "2.0.0",
+    "capex_model_version": "2.0.0",
+    "frozen_from": "2026-07-23",
+    "status": "prospective",
+    "changes": [
+      "Cada ejecución válida se conserva aunque el índice no cambie.",
+      "El historial guarda los siete componentes y la versión del modelo.",
+      "Tres señales de CapEx pasan a cálculo automático.",
+      "Se publica sensibilidad determinista a cambios de pesos."
+    ],
+    "comparability": "El historial principal se compara por radar_model_version. Los cambios futuros solo de CapEx incrementarán capex_model_version sin cortar la serie principal.",
+    "backtest_status": "Sin backtest histórico completo: faltan insumos point-in-time y vintages anteriores."
+  }
+]

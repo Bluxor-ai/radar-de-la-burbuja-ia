@@ -14,5 +14,9 @@ Antes de publicar cambios:
    correos, tokens, secretos o datos personales;
 6. ejecuta `python -m pytest -q`;
 7. prueba la construcción sin conexión y una actualización en vivo;
-8. verifica `public/index.html`, `public/latest.json` y `public/history.csv`;
+8. verifica `public/index.html`, `public/latest.json`, `public/history.csv`,
+   `public/validation.json`, `public/validation.csv` y
+   `public/gpu_price_history.csv`;
 9. confirma que GitHub Actions y GitHub Pages terminen correctamente.
+10. nunca reconstruyas el pasado con valores actuales: conserva
+    `model_version`, `observation_id` y fechas reales de disponibilidad.
