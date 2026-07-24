@@ -71,6 +71,17 @@ def format_datetime_es(value: Any, timezone_name: str) -> str:
     except Exception:
         return str(value or "N/D")
 
+def format_date_es(value: Any) -> str:
+    months = (
+        "ene", "feb", "mar", "abr", "may", "jun",
+        "jul", "ago", "sep", "oct", "nov", "dic",
+    )
+    try:
+        timestamp = pd.Timestamp(value)
+        return f"{timestamp.day} {months[timestamp.month - 1]} {timestamp.year}"
+    except Exception:
+        return str(value or "N/D")
+
 def as_of_age_days(value: Any, reference: dt.datetime) -> int | None:
     text = str(value or "")
     try:
@@ -97,6 +108,50 @@ def score_descriptor(score: float) -> str:
         return "alta"
     return "muy alta"
 
+def plain_risk_level(score: float) -> str:
+    if score < 20:
+        return "Muy bajo"
+    if score < 35:
+        return "Bajo"
+    if score < 50:
+        return "Moderado"
+    if score < 65:
+        return "Elevado"
+    if score < 80:
+        return "Alto"
+    return "Muy alto"
+
+def beginner_stage(score: float) -> tuple[int, str, str]:
+    if score < 35:
+        return (
+            1,
+            "NORMAL",
+            "No se ve una cadena clara de deterioro.",
+        )
+    if score < 50:
+        return (
+            2,
+            "VIGILAR",
+            "Una parte empieza a fallar, pero el daño sigue contenido.",
+        )
+    if score < 65:
+        return (
+            3,
+            "PREPARAR",
+            "Hay varias grietas, pero todavía no una ruptura generalizada.",
+        )
+    if score < 80:
+        return (
+            4,
+            "ALERTA ALTA",
+            "El deterioro se está extendiendo a varias partes del mercado.",
+        )
+    return (
+        5,
+        "ALERTA CRÍTICA",
+        "Muchas señales de tensión coinciden al mismo tiempo.",
+    )
+
 def previous_source_as_of(
     payload: dict[str, Any],
     label: str,
@@ -111,14 +166,23 @@ def regime(score: float) -> str:
     if score < 35:
         return "NORMAL"
     if score < 50:
-        return "MONITOREAR"
+        return "VIGILAR"
     if score < 65:
         return "PREPARAR"
     if score < 80:
         return "ALERTA ALTA"
-    if score < 90:
-        return "RUPTURA PROBABLE"
-    return "RUPTURA AGUDA"
+    return "ALERTA CRÍTICA"
+
+def capex_level(score: float) -> str:
+    if score < 35:
+        return "BAJO"
+    if score < 55:
+        return "VIGILAR"
+    if score < 70:
+        return "PREPARAR"
+    if score < 85:
+        return "ALERTA ALTA"
+    return "CICLO DE RECORTE"
 
 def risk_color(score: float) -> str:
     if score >= 80:
@@ -659,7 +723,11 @@ def compute_live(
         ("Oferta de nuevas acciones", supply_score, weights["equity_supply"]),
         ("Crédito y financiamiento", credit_score, weights["credit"]),
         ("Ruptura interna del mercado", internal_score, weights["internal_break"]),
-        ("Volatilidad y ventas forzadas", forced_score, weights["forced_selling"]),
+        (
+            "Volatilidad y presión vendedora",
+            forced_score,
+            weights["forced_selling"],
+        ),
     ]
     bubble_score = sum(score * weight for _, score, weight in blocks)
     structural_weight = sum(weight for _, _, weight in blocks[:4])
@@ -713,6 +781,8 @@ def compute_live(
     capex_score, capex_available_weight = aggregate_available_signals(
         capex_rows
     )
+    preliminary_capex_level = capex_level(capex_score)
+    capex_is_conclusive = capex_available_weight >= 0.70
     if capex_available_weight < 0.80:
         source_warnings.append(
             "El mosaico de CapEx tiene "
@@ -763,12 +833,11 @@ def compute_live(
         "structural_weight": structural_weight,
         "confirmation_weight": confirmation_weight,
         "capex_regime": (
-            "BAJO" if capex_score < 35 else
-            "VIGILAR" if capex_score < 55 else
-            "PREPARAR" if capex_score < 70 else
-            "ALERTA ALTA" if capex_score < 85 else
-            "CICLO DE RECORTE"
+            preliminary_capex_level
+            if capex_is_conclusive
+            else "DATOS INSUFICIENTES"
         ),
+        "capex_preliminary_regime": preliminary_capex_level,
         "blocks": [
             {
                 "label": label,
@@ -799,9 +868,18 @@ def compute_live(
             "cash_coverage_details": cash_details,
         },
         "data_quality": {
-            "status": "Parcial" if source_warnings else "Completa",
+            "status": (
+                "Parcial"
+                if any("CapEx" not in warning for warning in source_warnings)
+                else "Completa"
+            ),
             "warnings": source_warnings,
             "capex_coverage": capex_available_weight,
+            "capex_status": (
+                "Suficiente"
+                if capex_is_conclusive
+                else "Datos insuficientes"
+            ),
         },
         "sources": sources,
         "slow_inputs_as_of": {
@@ -838,6 +916,14 @@ def write_history(path: Path, result: dict[str, Any]) -> None:
         "structural_score": round(result["structural_score"], 4),
         "confirmation_score": round(result["confirmation_score"], 4),
         "capex_score": round(result["capex_score"], 4),
+        "capex_coverage": round(
+            safe_float(result.get("capex_coverage")),
+            4,
+        ),
+        "capex_regime": result.get(
+            "capex_regime",
+            "DATOS INSUFICIENTES",
+        ),
         "regime": result["bubble_regime"],
     }
     frame = pd.DataFrame([row])
@@ -851,11 +937,31 @@ def write_history(path: Path, result: dict[str, Any]) -> None:
             "structural_score",
             "confirmation_score",
             "capex_score",
+            "capex_coverage",
+            "capex_regime",
             "regime",
         ]
         frame = frame.drop_duplicates(subset=fingerprint, keep="last").tail(1000)
     csv_text = frame.to_csv(index=False, lineterminator="\n")
     path.write_text(csv_text, encoding="utf-8", newline="\n")
+
+def history_trend_summary(history_path: Path) -> str:
+    if not history_path.exists():
+        return "Todavía no hay suficiente historial para hablar de tendencia."
+    try:
+        history = pd.read_csv(history_path)
+        values = pd.to_numeric(history["bubble_score"], errors="coerce").dropna()
+        if len(values) < 2:
+            return "Todavía no hay suficiente historial para hablar de tendencia."
+        change = float(values.iloc[-1] - values.iloc[-2])
+        if abs(change) < 0.5:
+            return "Casi sin cambio desde la actualización anterior."
+        direction = "Subió" if change > 0 else "Bajó"
+        return (
+            f"{direction} {abs(change):.1f} puntos desde la actualización anterior."
+        )
+    except Exception:
+        return "Todavía no hay suficiente historial para hablar de tendencia."
 
 def history_chart(history_path: Path) -> str:
     if not history_path.exists():
@@ -896,8 +1002,7 @@ def history_chart(history_path: Path) -> str:
             (35, 50, "#eab308"),
             (50, 65, "#f59e0b"),
             (65, 80, "#fb923c"),
-            (80, 90, "#ef4444"),
-            (90, 100, "#b91c1c"),
+            (80, 100, "#ef4444"),
         ]
         band_html = []
         for low, high, color in bands:
@@ -908,7 +1013,7 @@ def history_chart(history_path: Path) -> str:
                 f'height="{band_height:.1f}" fill="{color}" opacity=".08"/>'
             )
         grid_html = []
-        for value in (0, 35, 50, 65, 80, 90, 100):
+        for value in (0, 35, 50, 65, 80, 100):
             y = chart_y(value)
             grid_html.append(
                 f'<line x1="{left}" y1="{y:.1f}" x2="{width-right}" '
@@ -936,6 +1041,8 @@ def history_chart(history_path: Path) -> str:
             for row in history.tail(8).itertuples()
         )
         last_x, last_y = points[-1].split(",")
+        first_label = format_date_es(history["generated_at"].iloc[0])
+        last_label = format_date_es(history["generated_at"].iloc[-1])
         return f"""
         <div class="history-chart">
           <svg class="spark" viewBox="0 0 {width} {height}" role="img"
@@ -953,6 +1060,10 @@ def history_chart(history_path: Path) -> str:
           <div class="chart-summary">
             <strong>Último: {values[-1]:.1f}/100</strong>
             <span>{html.escape(change_text)}</span>
+          </div>
+          <div class="chart-dates" aria-hidden="true">
+            <span>{html.escape(first_label)}</span>
+            <span>{html.escape(last_label)}</span>
           </div>
           <table class="sr-only">
             <caption>Últimas observaciones del índice</caption>
@@ -987,20 +1098,78 @@ def render_html(result: dict[str, Any], config: dict[str, Any], history_path: Pa
         ),
     )
 
+    factor_copy = {
+        "Valuación y expectativas": (
+            "Qué tan caro está",
+            "¿Los precios están muy por encima de los resultados actuales?",
+        ),
+        "Concentración y subida temática": (
+            "Dependencia de pocas empresas",
+            "¿La subida depende demasiado de unas cuantas compañías?",
+        ),
+        "Apalancamiento y reversión": (
+            "Apuestas con deuda",
+            "¿Hay dinero prestado que podría acelerar una caída?",
+        ),
+        "Oferta de nuevas acciones": (
+            "Acciones nuevas",
+            "¿Las empresas aprovechan los precios altos para vender más acciones?",
+        ),
+        "Crédito y financiamiento": (
+            "Tensión financiera",
+            "¿Se está volviendo más difícil o caro conseguir dinero?",
+        ),
+        "Ruptura interna del mercado": (
+            "Debilidad dentro del sector",
+            "¿Los nueve referentes de IA seguidos ya se debilitan aunque los índices aguanten?",
+        ),
+        "Volatilidad y presión vendedora": (
+            "Miedo y presión de venta",
+            "¿Las caídas, el volumen y la volatilidad muestran ventas más agresivas?",
+        ),
+    }
     block_html = []
     for block in result["blocks"]:
+        technical_label = (
+            "Volatilidad y presión vendedora"
+            if block["label"] == "Volatilidad y ventas forzadas"
+            else block["label"]
+        )
         score = safe_float(block["score"])
         color = risk_color(score)
+        plain_label, question = factor_copy.get(
+            technical_label,
+            (technical_label, "¿Qué muestra esta parte del Radar?"),
+        )
+        zero_note = (
+            " Cero no significa que no exista crédito; significa que estas "
+            "señales no muestran tensión importante."
+            if technical_label == "Crédito y financiamiento" and score < 5
+            else ""
+        )
         block_html.append(f"""
-        <div class="metric">
-          <div class="metric-copy"><strong>{html.escape(block['label'])}</strong>
-            <small>Aporte al índice: {block['contribution']:.1f} puntos</small></div>
-          <div class="track" role="progressbar" aria-label="{html.escape(block['label'])}"
-            aria-valuemin="0" aria-valuemax="100" aria-valuenow="{score:.1f}">
+        <article class="factor">
+          <div class="factor-heading">
+            <div>
+              <p class="factor-kicker">{html.escape(plain_label)}</p>
+              <h3>{html.escape(technical_label)}</h3>
+              <p>{html.escape(question)}{html.escape(zero_note)}</p>
+            </div>
+            <div class="factor-score" style="color:{color}">
+              <strong>{score:.1f}</strong>
+              <span>/100 · {plain_risk_level(score)}</span>
+            </div>
+          </div>
+          <div class="track" role="progressbar" aria-label="{html.escape(technical_label)}"
+            aria-valuemin="0" aria-valuemax="100" aria-valuenow="{score:.1f}"
+            aria-valuetext="{plain_risk_level(score)}, {score:.1f} de 100">
             <span style="width:{score:.1f}%;background:{color}"></span></div>
-          <div class="number" style="color:{color}">{score:.1f}</div>
-          <div class="weight" title="Peso base">{block['weight']:.0%}</div>
-        </div>""")
+          <details class="mini-details">
+            <summary>Ver peso y aporte</summary>
+            <p>Explica {block['contribution']:.1f} de los {bubble:.1f} puntos
+              del Radar. Su peso base es {block['weight']:.0%}.</p>
+          </details>
+        </article>""")
 
     capex_html = []
     for item in result["capex_rows"]:
@@ -1014,15 +1183,29 @@ def render_html(result: dict[str, Any], config: dict[str, Any], history_path: Pa
             f"{safe_float(contribution):.1f}"
             if contribution is not None else "—"
         )
-        mode = "Automático" if item.get("mode") == "automatic" else "Manual fechado"
-        status = "" if available else " · Sin dato; no se cuenta como cero"
+        effective_weight = item.get("effective_weight")
+        effective_weight_text = (
+            f"{safe_float(effective_weight):.1%}"
+            if effective_weight is not None else "—"
+        )
+        mode = (
+            "Automático"
+            if item.get("mode") == "automatic"
+            else "Actualizado manualmente"
+        )
+        status = (
+            ""
+            if available
+            else " · Sin dato utilizable; no significa riesgo cero"
+        )
         capex_html.append(f"""
         <tr>
           <th scope="row"><strong>{html.escape(item['label'])}</strong>
             <small>{html.escape(item.get('reading', ''))} · {mode}{status}</small></th>
           <td data-label="Índice" class="num" style="color:{color}">{score_text}</td>
           <td data-label="Peso base" class="num weight">{item['weight']:.0%}</td>
-          <td data-label="Aporte" class="num">{contribution_text}</td>
+          <td data-label="Peso usado" class="num">{effective_weight_text}</td>
+          <td data-label="Suma" class="num">{contribution_text}</td>
         </tr>""")
 
     inputs = result.get("inputs", {})
@@ -1051,12 +1234,44 @@ def render_html(result: dict[str, Any], config: dict[str, Any], history_path: Pa
     stale = bool(result.get("stale"))
     if stale and result.get("stale_reason") not in warnings:
         warnings.insert(0, result.get("stale_reason", "Datos de respaldo."))
-    warning_html = (
-        '<aside class="data-alert" aria-label="Aviso de calidad de datos">'
-        '<strong>Calidad de datos:</strong> '
-        + " ".join(html.escape(str(message)) for message in warnings)
-        + "</aside>"
-        if warnings else ""
+    source_warnings = [
+        message
+        for message in warnings
+        if "CapEx" not in str(message)
+    ]
+    if stale:
+        warning_html = (
+            '<aside class="data-alert data-alert-critical" '
+            'aria-label="Aviso importante sobre los datos">'
+            "<strong>Esta no es una lectura nueva.</strong> "
+            "La actualización falló y se conserva la última lectura guardada."
+            "</aside>"
+        )
+    elif source_warnings:
+        warning_items = "".join(
+            f"<li>{html.escape(str(message))}</li>"
+            for message in source_warnings
+        )
+        warning_label = (
+            "1 aviso"
+            if len(source_warnings) == 1
+            else f"{len(source_warnings)} avisos"
+        )
+        warning_html = (
+            '<details class="data-notice">'
+            f"<summary>Datos principales actualizados con "
+            f"{warning_label} sobre fuentes</summary>"
+            f"<ul>{warning_items}</ul>"
+            "</details>"
+        )
+    else:
+        warning_html = ""
+    quality_display = (
+        "Lectura guardada"
+        if stale
+        else "Actualizados con respaldo"
+        if source_warnings
+        else "Actualizados"
     )
     chart = history_chart(history_path)
     timezone_name = config["site"].get("timezone", "UTC")
@@ -1124,14 +1339,92 @@ def render_html(result: dict[str, Any], config: dict[str, Any], history_path: Pa
           </div>
         </li>""")
 
-    summary = (
-        f"El índice está en <strong>{bubble_regime}</strong> con "
-        f"<strong>{bubble:.1f}/100</strong>. La fragilidad estructural es "
-        f"{score_descriptor(structural)} ({structural:.1f}) y la confirmación "
-        f"observable es {score_descriptor(confirmation)} ({confirmation:.1f}). "
-        f"El bloque de condiciones financieras marca {credit_score:.1f}/100 y "
-        f"la ruptura interna de la cesta IA, {internal_break:.1f}/100."
+    stage_number, display_regime, stage_message = beginner_stage(bubble)
+    stage_ranges = [
+        ("0–34", "Normal"),
+        ("35–49", "Vigilar"),
+        ("50–64", "Preparar"),
+        ("65–79", "Alerta alta"),
+        ("80–100", "Alerta crítica"),
+    ]
+    stage_scale_html = "".join(
+        (
+            f'<div class="stage-step{" current" if index == stage_number else ""}"'
+            f'{" aria-current=\"step\"" if index == stage_number else ""}>'
+            f"<span>{score_range}</span><strong>{label}</strong></div>"
+        )
+        for index, (score_range, label) in enumerate(stage_ranges, start=1)
     )
+
+    available_capex = sum(
+        1
+        for item in result.get("capex_rows", [])
+        if item.get("score") is not None
+    )
+    total_capex = len(result.get("capex_rows", []))
+    capex_conclusive = capex_coverage >= 0.70
+    capex_status = capex_regime if capex_conclusive else "DATOS INSUFICIENTES"
+    capex_card_value = (
+        f"{capex:.1f}<small>/100</small>"
+        if capex_conclusive
+        else f"{capex_coverage:.0%}<small> disponible</small>"
+    )
+    capex_card_color = risk_color(capex) if capex_conclusive else "#f8fafc"
+    capex_card_copy = (
+        f"{capex_regime.capitalize()}: la cobertura permite una lectura."
+        if capex_conclusive
+        else (
+            f"Solo hay datos para {available_capex} de {total_capex} señales. "
+            "No alcanza para afirmar que el riesgo sea bajo."
+        )
+    )
+    capex_lead_html = (
+        f'<div class="coverage"><strong>Lectura disponible: '
+        f'{capex:.1f}/100 · {capex_regime}.</strong> '
+        f'Hay datos para {available_capex} de {total_capex} señales.</div>'
+        if capex_conclusive
+        else (
+            '<div class="capex-warning" role="note">'
+            '<strong>Sin conclusión: faltan datos.</strong>'
+            f'<p>Solo hay información para {available_capex} de '
+            f'{total_capex} señales ({capex_coverage:.0%} del peso). '
+            'No es correcto concluir que el riesgo sea bajo.</p>'
+            f'<p class="technical-result">Cálculo preliminar con lo disponible: '
+            f'{capex:.1f}/100. No se usa como conclusión principal.</p>'
+            '</div>'
+        )
+    )
+
+    top_driver = max(
+        result["blocks"],
+        key=lambda item: safe_float(item.get("contribution")),
+    )
+    top_driver_plain = factor_copy.get(
+        (
+            "Volatilidad y presión vendedora"
+            if top_driver["label"] == "Volatilidad y ventas forzadas"
+            else top_driver["label"]
+        ),
+        (top_driver["label"], ""),
+    )[0]
+    confirming_blocks = result["blocks"][4:]
+    main_brake = min(
+        confirming_blocks,
+        key=lambda item: safe_float(item.get("score")),
+    )
+    main_brake_plain = factor_copy.get(
+        main_brake["label"],
+        (main_brake["label"], ""),
+    )[0]
+
+    summary = (
+        f"Hoy el Radar está en <strong>{display_regime}</strong>. "
+        f"{html.escape(stage_message)} La vulnerabilidad previa tiene un nivel "
+        f"{plain_risk_level(structural).lower()} y el daño que ya se observa "
+        f"tiene un nivel {plain_risk_level(confirmation).lower()}."
+    )
+    trend_text = html.escape(history_trend_summary(history_path))
+    market_date = html.escape(format_date_es(result.get("market_as_of")))
     nfci_value = inputs.get("nfci")
     nfci_text = (
         f"{safe_float(nfci_value):.3f}"
@@ -1158,7 +1451,7 @@ def render_html(result: dict[str, Any], config: dict[str, Any], history_path: Pa
         "measurementTechnique": (
             "Índice ponderado de siete bloques de valuación, concentración, "
             "apalancamiento, oferta, condiciones financieras, ruptura interna "
-            "y ventas forzadas."
+            "y presión vendedora."
         ),
         "isBasedOn": source_urls,
         "distribution": [
@@ -1234,131 +1527,276 @@ main{{padding:22px 0 44px}}
 .method-grid{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}}.method-card{{padding:18px;background:var(--panel2);border-radius:12px}}.method-card h3{{margin:0 0 8px;font-size:1rem}}.method-card p{{margin:0;color:var(--muted);font-size:.88rem}}
 .bands{{display:grid;gap:7px;margin-top:14px}}.band{{display:grid;grid-template-columns:72px 128px 1fr;gap:10px;align-items:center;font-size:.82rem}}.band i{{height:8px;border-radius:999px}}
 .source-list{{display:grid;gap:8px;padding:0;margin:0;list-style:none}}.source-card{{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;padding:13px 14px;background:var(--panel2);border-radius:11px}}.source-card span{{display:block;color:var(--muted);font-size:.82rem}}.source-meta{{display:grid;grid-template-columns:repeat(3,auto);gap:8px 14px;text-align:right}}.source-meta span,.source-meta time{{color:var(--muted);font-size:.76rem}}
-.raw-links{{display:flex;flex-wrap:wrap;gap:10px;margin-top:15px}}.raw-links a{{padding:7px 10px;border:1px solid var(--border);border-radius:9px;text-decoration:none;font-size:.82rem}}
+.raw-links{{display:flex;flex-wrap:wrap;gap:10px;margin-top:15px}}.raw-links a{{display:inline-flex;min-height:44px;align-items:center;padding:7px 10px;border:1px solid var(--border);border-radius:9px;text-decoration:none;font-size:.82rem}}
 .notice{{color:var(--muted);font-size:.82rem}}.site-footer{{padding:22px 0 34px;border-top:1px solid rgba(148,163,184,.16)}}.site-footer p{{margin:0}}
 .sr-only{{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}}
+.skip-link{{position:absolute;left:12px;top:-80px;z-index:20;padding:10px 14px;background:#fff;color:#071018;border-radius:8px;font-weight:850}}.skip-link:focus{{top:12px}}
+:focus-visible{{outline:3px solid #fbbf24;outline-offset:3px;border-radius:5px}}
+.site-header{{padding:24px 0 18px}}.site-header h1{{margin-top:8px;font-size:clamp(2rem,5vw,3.45rem)}}.site-header .subtitle{{max-width:820px;font-size:clamp(1rem,2vw,1.16rem)}}
+.top-status{{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin-top:14px;color:var(--muted);font-size:.88rem}}.top-status strong{{color:var(--text)}}.status-dot{{display:inline-block;width:8px;height:8px;margin-right:6px;border-radius:50%;background:var(--cyan)}}
+.score-hero{{grid-template-columns:minmax(220px,.72fr) minmax(0,1.28fr);gap:clamp(24px,5vw,56px);padding:clamp(24px,4vw,44px)}}.answer-label{{margin:0 0 8px;color:var(--cyan);font-size:.82rem;font-weight:900;text-transform:uppercase;letter-spacing:.12em}}.regime{{margin:0}}.stage-message{{margin:13px 0 0;font-size:clamp(1.08rem,2vw,1.3rem);font-weight:750;line-height:1.45}}.score-guide{{margin:12px 0 0;color:var(--muted);font-size:.94rem}}.not-probability{{margin-top:13px}}.not-probability strong{{color:#fff}}
+.no-panic{{margin-top:18px;padding:13px 15px;border-left:3px solid var(--amber);border-radius:0 10px 10px 0;background:rgba(251,191,36,.08);color:#fdecc8;font-size:.92rem}}.no-panic strong{{display:block;color:#fff}}
+.stage-panel{{margin:14px 0;padding:17px 18px;border:1px solid var(--border);border-radius:16px;background:rgba(13,26,39,.86)}}.stage-panel h2{{margin:0 0 12px;font-size:1rem}}.stage-scale{{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}}.stage-step{{min-height:58px;padding:9px 8px;border:1px solid var(--border);border-top:5px solid #334155;border-radius:9px;background:#0b1723;color:var(--muted);text-align:center}}.stage-step:nth-child(1){{border-top-color:#22c55e}}.stage-step:nth-child(2){{border-top-color:#eab308}}.stage-step:nth-child(3){{border-top-color:#f59e0b}}.stage-step:nth-child(4){{border-top-color:#fb923c}}.stage-step:nth-child(5){{border-top-color:#ef4444}}.stage-step span,.stage-step strong{{display:block}}.stage-step span{{font-size:.72rem}}.stage-step strong{{font-size:.82rem}}.stage-step.current{{background:#263241;border-color:#f8fafc;color:#fff;box-shadow:0 0 0 2px rgba(248,250,252,.14)}}.stage-you-are-here{{margin:10px 0 0;color:var(--muted);font-size:.88rem}}.stage-you-are-here strong{{color:var(--text)}}.trend{{margin:5px 0 0;color:var(--cyan);font-weight:750;font-size:.9rem}}
+.data-notice{{margin:14px 0;padding:0 15px;border:1px solid var(--border);border-radius:12px;background:rgba(13,26,39,.75);color:var(--muted)}}.data-notice summary{{min-height:44px;padding:11px 0;color:#d6e2ee;font-weight:750;cursor:pointer}}.data-notice ul{{margin:0 0 14px;padding-left:20px;font-size:.88rem}}.data-alert-critical{{margin:14px 0}}
+.plain-summary{{margin:16px 0;padding:clamp(20px,3vw,30px);border:1px solid var(--border);border-radius:18px;background:linear-gradient(135deg,rgba(17,31,46,.98),rgba(13,26,39,.92))}}.plain-summary h2{{margin:0;font-size:1.35rem}}.plain-summary>p{{max-width:900px;margin:10px 0 0;font-size:1.08rem;color:#e3ebf4}}.insight-grid{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}}.insight{{padding:15px;border-radius:12px;background:var(--panel2)}}.insight p{{margin:4px 0 0;color:var(--muted);font-size:.9rem}}.insight strong{{color:var(--text)}}.watch-box{{margin-top:12px;padding:16px;border:1px solid rgba(69,228,196,.22);border-radius:12px;background:rgba(69,228,196,.05)}}.watch-box h3{{margin:0;font-size:1rem}}.watch-box ul{{margin:8px 0 0;padding-left:20px;color:#d7e2ed}}.watch-box li+li{{margin-top:5px}}
+.kpis{{margin:16px 0}}.card{{min-height:225px}}.card h2{{margin:6px 0 0;font-size:1.06rem}}.technical-name{{display:block;margin-top:3px;color:var(--muted);font-size:.82rem;font-weight:550}}.card-value{{display:flex;align-items:baseline;gap:7px;margin-top:14px;font-size:2.5rem;font-weight:900;line-height:1}}.card-value small{{font-size:.86rem;color:var(--muted)}}.level-text{{display:inline-flex;margin-top:10px;padding:5px 8px;border:1px solid currentColor;border-radius:999px;font-size:.78rem;font-weight:850}}.card .sub{{font-size:.9rem;line-height:1.5}}.capex-card{{border-color:#596777}}.capex-card .card-value{{font-size:2.05rem}}
+.section-details{{margin:16px 0;border:1px solid var(--border);border-radius:16px;background:rgba(13,26,39,.94);overflow:hidden}}.section-details>summary{{min-height:54px;padding:16px 20px;color:var(--text);font-size:1.03rem;font-weight:850;cursor:pointer}}.section-details>summary::marker{{color:var(--cyan)}}.section-details[open]>summary{{border-bottom:1px solid var(--border)}}.details-content{{padding:20px}}.details-content h2{{margin:0;font-size:1.28rem}}
+.factor{{padding:16px 0;border-bottom:1px solid rgba(148,163,184,.15)}}.factor:last-child{{border-bottom:0}}.factor-heading{{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:start}}.factor-kicker{{margin:0;color:var(--cyan);font-size:.82rem;font-weight:850}}.factor h3{{margin:2px 0 0;font-size:.95rem}}.factor-heading p:not(.factor-kicker){{margin:5px 0 0;color:var(--muted);font-size:.88rem}}.factor-score{{min-width:105px;text-align:right}}.factor-score strong,.factor-score span{{display:block}}.factor-score strong{{font-size:1.55rem;line-height:1}}.factor-score span{{margin-top:4px;font-size:.78rem;font-weight:800}}.factor .track{{margin-top:11px}}.mini-details{{margin-top:8px;color:var(--muted);font-size:.84rem}}.mini-details summary{{display:flex;min-height:44px;width:max-content;align-items:center;padding:7px 0;color:#c5d2df;cursor:pointer}}.mini-details p{{margin:0 0 5px}}
+.capex-warning{{margin:15px 0;padding:16px;border:1px solid #a06a24;border-radius:12px;background:#332816;color:#fde7b2}}.capex-warning strong{{display:block;color:#fff;font-size:1rem}}.capex-warning p{{margin:5px 0 0}}.technical-result{{margin-top:10px;color:var(--muted);font-size:.86rem}}
+.band-list{{display:grid;gap:8px}}.band-row{{display:grid;grid-template-columns:82px 130px 1fr;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--border);border-left:5px solid #64748b;border-radius:10px;background:var(--panel2)}}.band-row:nth-child(1){{border-left-color:#22c55e}}.band-row:nth-child(2){{border-left-color:#eab308}}.band-row:nth-child(3){{border-left-color:#f59e0b}}.band-row:nth-child(4){{border-left-color:#fb923c}}.band-row:nth-child(5){{border-left-color:#ef4444}}.band-row.current{{box-shadow:0 0 0 2px #f8fafc}}.band-row span{{color:var(--muted);font-size:.87rem}}.band-row strong{{font-size:.9rem}}
+.glossary{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}}.glossary div{{padding:13px;background:var(--panel2);border-radius:10px}}.glossary dt{{font-weight:850}}.glossary dd{{margin:4px 0 0;color:var(--muted);font-size:.88rem}}
+.chart-dates{{display:flex;justify-content:space-between;margin-top:5px;color:var(--muted);font-size:.78rem}}
 @media(max-width:1100px){{.brand-row{{display:grid}}.freshness{{min-width:0;grid-template-columns:repeat(3,minmax(0,1fr))}}.quality-badge{{grid-column:1/-1}}.dashboard-grid{{grid-template-columns:1fr}}}}
-@media(max-width:760px){{.wrap{{width:min(calc(100% - 24px),1240px)}}.site-header{{padding-top:24px}}.score-hero{{grid-template-columns:1fr;gap:18px}}.kpis{{grid-template-columns:1fr}}.freshness{{grid-template-columns:1fr}}.method-grid{{grid-template-columns:1fr}}.source-card{{grid-template-columns:1fr}}.source-meta{{grid-template-columns:repeat(3,1fr);text-align:left}}.chart-summary{{display:grid}}}}
-@media(max-width:620px){{.panel{{padding:17px}}.metric{{grid-template-columns:minmax(0,1fr) auto}}.metric .track{{grid-column:1/-1;grid-row:2}}.metric .number{{grid-column:2;grid-row:1}}.metric .weight{{display:none}}.table-wrap{{overflow:visible}}thead{{display:none}}table,tbody,tr,th,td{{display:block;width:100%}}tbody tr{{padding:11px 0;border-bottom:1px solid rgba(148,163,184,.18)}}tbody th,tbody td{{border:0;padding:4px 0}}tbody td{{display:flex;justify-content:space-between;gap:14px;text-align:right}}tbody td::before{{content:attr(data-label);color:var(--muted);font-weight:650}}.band{{grid-template-columns:60px 105px 1fr;font-size:.76rem}}.source-meta{{grid-template-columns:1fr}}}}
+@media(max-width:760px){{.wrap{{width:min(calc(100% - 24px),1240px)}}.site-header{{padding:19px 0 14px}}.score-hero{{grid-template-columns:1fr;gap:20px}}.kpis{{grid-template-columns:1fr}}.card{{min-height:0}}.freshness{{grid-template-columns:1fr}}.method-grid,.insight-grid,.glossary{{grid-template-columns:1fr}}.source-card{{grid-template-columns:1fr}}.source-meta{{grid-template-columns:repeat(3,1fr);text-align:left}}.chart-summary{{display:grid}}}}
+@media(max-width:620px){{main{{padding-top:14px}}.panel,.details-content{{padding:17px}}.stage-panel{{padding:13px 10px}}.stage-scale{{gap:3px}}.stage-step{{min-height:55px;padding:7px 2px}}.stage-step span{{font-size:.64rem}}.stage-step strong{{font-size:.66rem;line-height:1.15}}.factor-heading{{grid-template-columns:1fr}}.factor-score{{text-align:left}}.table-wrap{{overflow:visible}}thead{{display:none}}table,tbody,tr,th,td{{display:block;width:100%}}tbody tr{{padding:11px 0;border-bottom:1px solid rgba(148,163,184,.18)}}tbody th,tbody td{{border:0;padding:4px 0}}tbody td{{display:flex;justify-content:space-between;gap:14px;text-align:right}}tbody td::before{{content:attr(data-label);color:var(--muted);font-weight:650}}.band-row{{grid-template-columns:68px 1fr;gap:5px 10px}}.band-row span{{grid-column:1/-1}}.source-meta{{grid-template-columns:1fr}}}}
 @media(prefers-reduced-motion:reduce){{html{{scroll-behavior:auto}}}}
 </style>
 </head>
 <body>
-<header class="site-header"><div class="wrap brand-row">
-  <div>
-    <p class="eyebrow">Señales de mercado de Estados Unidos</p>
-    <h1>{title}</h1>
-    <p class="subtitle">{subtitle}</p>
-  </div>
-  <div class="freshness" aria-label="Frescura de los datos">
-    <span>Mercado <strong>{market_as_of}</strong></span>
-    <span>Macro más rezagado <strong>{macro_as_of}</strong></span>
-    <span>Generado <time datetime="{updated_iso}"><strong>{updated}</strong></time></span>
-    <span class="quality-badge">Datos: {quality_status}</span>
+<a class="skip-link" href="#contenido">Saltar al contenido</a>
+<header class="site-header"><div class="wrap">
+  <p class="eyebrow">Actualización automática cada 12 horas · Mercado al
+    <time datetime="{market_as_of}">{market_date}</time></p>
+  <h1>{title}</h1>
+  <p class="subtitle">¿El auge de la inteligencia artificial solo está caro
+    o ya empieza a romperse? Este Radar lo resume sin asumir conocimientos
+    de finanzas.</p>
+  <div class="top-status" aria-label="Estado de la actualización">
+    <span><i class="status-dot" aria-hidden="true"></i>
+      <strong>{quality_display}</strong></span>
+    <span>Última generación:
+      <time datetime="{updated_iso}"><strong>{updated}</strong></time></span>
   </div>
 </div></header>
-<main class="wrap">
-  {warning_html}
+<main id="contenido" class="wrap" tabindex="-1">
   <section class="score-hero" aria-labelledby="main-score-title">
     <div>
-      <p class="label">Índice de riesgo de ruptura</p>
+      <p class="label">Riesgo de ruptura</p>
       <div class="score-dial" style="color:{risk_color(bubble)}">
         <span class="score-number">{bubble:.1f}</span><span class="score-denom">/100</span>
       </div>
-      <span class="not-probability">Índice, no probabilidad</span>
+      <span class="not-probability"><strong>Nivel {stage_number} de 5</strong>
+        · no es una probabilidad</span>
     </div>
     <div>
-      <h2 id="main-score-title" class="regime">{bubble_regime}</h2>
-      <p class="summary">{summary}</p>
-      <p class="formula"><strong>Composición:</strong> {structural_weight:.0%} × fragilidad {structural:.1f} + {confirmation_weight:.0%} × confirmación {confirmation:.1f} = {bubble:.1f}.</p>
+      <p class="answer-label">Respuesta rápida</p>
+      <h2 id="main-score-title" class="regime">{display_regime}</h2>
+      <p class="stage-message">{html.escape(stage_message)}</p>
+      <p class="score-guide">Cero significa pocas señales de problema.
+        Cien significa muchas señales fuertes ocurriendo al mismo tiempo.</p>
+      <div class="no-panic">
+        <strong>Qué no significa</strong>
+        {bubble:.1f} no significa {bubble:.1f}% de probabilidad de una caída,
+        ni significa que debas comprar o vender hoy.
+      </div>
+    </div>
+  </section>
+
+  <section class="stage-panel" aria-labelledby="scale-title">
+    <h2 id="scale-title">Dónde está el Radar en la escala</h2>
+    <div class="stage-scale">{stage_scale_html}</div>
+    <p class="stage-you-are-here"><strong>Estás aquí: nivel {stage_number},
+      {display_regime}.</strong> Importa más la tendencia de varias
+      actualizaciones que un solo número.</p>
+    <p class="trend">{trend_text}</p>
+  </section>
+
+  {warning_html}
+
+  <section class="plain-summary" aria-labelledby="plain-title">
+    <h2 id="plain-title">En pocas palabras</h2>
+    <p>{summary} No tomes una decisión de inversión por una sola
+      actualización.</p>
+    <div class="insight-grid">
+      <article class="insight">
+        <strong>Lo que más empuja la alerta</strong>
+        <p>{html.escape(top_driver_plain)}: {safe_float(top_driver['score']):.1f}/100.
+          Este bloque suma {safe_float(top_driver['contribution']):.1f} puntos
+          al resultado.</p>
+      </article>
+      <article class="insight">
+        <strong>Lo que todavía contiene la alerta</strong>
+        <p>{html.escape(main_brake_plain)}:
+          {safe_float(main_brake['score']):.1f}/100 de tensión. Un valor bajo
+          aquí significa que estas señales aún no muestran estrés importante.</p>
+      </article>
+    </div>
+    <div class="watch-box">
+      <h3>Qué tendría que empeorar para subir de nivel</h3>
+      <ul>
+        <li>Que conseguir financiamiento se vuelva más difícil o caro.</li>
+        <li>Que la debilidad se extienda entre más referentes de IA.</li>
+        <li>Que las caídas bruscas y la presión de venta coincidan.</li>
+      </ul>
     </div>
   </section>
 
   <section class="kpis" aria-label="Lecturas principales">
     <article class="card">
-      <p class="label">Fragilidad estructural</p>
-      <div class="value" style="color:{risk_color(structural)}">{structural:.1f}</div>
-      <p class="sub">Qué tan vulnerable está la estructura, aunque todavía no esté rompiéndose.</p>
+      <p class="label">Fragilidad</p>
+      <h2>Qué tan vulnerable está el mercado
+        <span class="technical-name">Nombre técnico: fragilidad estructural</span></h2>
+      <div class="card-value" style="color:{risk_color(structural)}">
+        {structural:.1f}<small>/100</small></div>
+      <span class="level-text" style="color:{risk_color(structural)}">
+        {plain_risk_level(structural)}</span>
+      <p class="sub">Si aparece una mala noticia, el mercado podría dañarse
+        con facilidad. Un valor alto no significa que la caída ya empezó.</p>
     </article>
     <article class="card">
-      <p class="label">Confirmación observable</p>
-      <div class="value" style="color:{risk_color(confirmation)}">{confirmation:.1f}</div>
-      <p class="sub">Cuánto deterioro ya aparece en crédito, tendencia y ventas forzadas.</p>
+      <p class="label">Confirmación</p>
+      <h2>Cuánto del daño ya se observa
+        <span class="technical-name">Nombre técnico: confirmación observable</span></h2>
+      <div class="card-value" style="color:{risk_color(confirmation)}">
+        {confirmation:.1f}<small>/100</small></div>
+      <span class="level-text" style="color:{risk_color(confirmation)}">
+        {plain_risk_level(confirmation)}</span>
+      <p class="sub">Hay deterioro, pero todavía no aparece en todos los
+        frentes. Esto describe el presente; no predice cuánto durará.</p>
     </article>
-    <article class="card">
-      <p class="label">Riesgo de moderación de CapEx</p>
-      <div class="value" style="color:{risk_color(capex)}">{capex:.1f}</div>
-      <p class="sub">{capex_regime} · Cobertura de señales {capex_coverage:.0%}.</p>
+    <article class="card capex-card">
+      <p class="label">Riesgo de recorte de CapEx</p>
+      <h2>¿Podrían reducir el gasto en IA?
+        <span class="technical-name">CapEx: chips, centros de datos, energía y nube</span></h2>
+      <div class="card-value" style="color:{capex_card_color}">
+        {capex_card_value}</div>
+      <span class="level-text" style="color:{capex_card_color}">
+        {capex_status}</span>
+      <p class="sub">{html.escape(capex_card_copy)}</p>
+      {(
+        f'<details class="mini-details"><summary>Ver cálculo preliminar</summary>'
+        f'<p>{capex:.1f}/100 con las señales disponibles. No es una '
+        f'conclusión completa.</p></details>'
+        if not capex_conclusive else ""
+      )}
     </article>
   </section>
-
-  <div class="dashboard-grid">
-    <section class="panel" aria-labelledby="blocks-title">
-      <h2 id="blocks-title">Siete bloques del índice</h2>
-      <p class="section-intro">Cada lectura va de 0 a 100; el peso muestra cuánto influye en el resultado agregado.</p>
-      {''.join(block_html).lstrip()}
-    </section>
-    <section class="panel" aria-labelledby="capex-title">
-      <h2 id="capex-title">Mosaico de CapEx en IA</h2>
-      <p class="section-intro">CapEx significa inversión en centros de datos, chips, energía y capacidad de nube.</p>
-      <div class="table-wrap">
-        <table>
-          <caption>Señales automáticas y manuales con su peso base.</caption>
-          <thead><tr><th scope="col">Señal</th><th scope="col">Índice</th><th scope="col">Peso base</th><th scope="col">Aporte</th></tr></thead>
-          <tbody>{''.join(capex_html)}</tbody>
-        </table>
-      </div>
-      <p class="coverage"><strong>Cobertura {capex_coverage:.0%}.</strong> Los faltantes aparecen como N/D y se excluyen; las señales disponibles se reponderan. Nunca se convierten silenciosamente en riesgo cero.</p>
-    </section>
-  </div>
 
   <section class="panel" aria-labelledby="history-heading">
     <h2 id="history-heading">Historial reciente</h2>
-    <p class="section-intro">Escala fija de 0 a 100 para no exagerar movimientos pequeños.</p>
-    {chart or '<p class="notice">El historial comparable aparecerá después de dos actualizaciones válidas.</p>'}
+    <p class="section-intro">Aquí verás si la alerta sube o baja con el
+      tiempo. La escala siempre va de 0 a 100 para no exagerar cambios
+      pequeños.</p>
+{chart or '<p class="notice">El historial comparable aparecerá después de dos actualizaciones válidas.</p>'}
   </section>
 
   <section class="panel" aria-labelledby="method-heading">
-    <h2 id="method-heading">Cómo leer el Radar</h2>
-    <p class="section-intro">El modelo observa proxies de mercado de Estados Unidos. No mide todo el ecosistema global de IA y no emite recomendaciones.</p>
-    <div class="method-grid">
-      <div class="method-card">
-        <h3>Índice de ruptura</h3>
-        <p>Valuación, concentración, apalancamiento y emisiones forman la fragilidad. Condiciones financieras, ruptura interna y ventas forzadas forman la confirmación.</p>
-        <div class="bands" aria-label="Bandas del índice de ruptura">
-          <div class="band"><i style="background:#22c55e"></i><strong>0–34</strong><span>Normal</span></div>
-          <div class="band"><i style="background:#eab308"></i><strong>35–49</strong><span>Monitorear</span></div>
-          <div class="band"><i style="background:#f59e0b"></i><strong>50–64</strong><span>Preparar</span></div>
-          <div class="band"><i style="background:#fb923c"></i><strong>65–79</strong><span>Alerta alta</span></div>
-          <div class="band"><i style="background:#ef4444"></i><strong>80–89</strong><span>Ruptura probable</span></div>
-          <div class="band"><i style="background:#b91c1c"></i><strong>90–100</strong><span>Ruptura aguda</span></div>
-        </div>
-      </div>
-      <div class="method-card">
-        <h3>Índice de CapEx</h3>
-        <p>Combina guía corporativa, pulso de proveedores, construcción física, capacidad de nube, caja, retorno contable y demanda financiada.</p>
-        <div class="bands" aria-label="Bandas del índice de CapEx">
-          <div class="band"><i style="background:#22c55e"></i><strong>0–34</strong><span>Bajo</span></div>
-          <div class="band"><i style="background:#eab308"></i><strong>35–54</strong><span>Vigilar</span></div>
-          <div class="band"><i style="background:#f59e0b"></i><strong>55–69</strong><span>Preparar</span></div>
-          <div class="band"><i style="background:#fb923c"></i><strong>70–84</strong><span>Alerta alta</span></div>
-          <div class="band"><i style="background:#ef4444"></i><strong>85–100</strong><span>Ciclo de recorte</span></div>
-        </div>
-        <p style="margin-top:14px"><strong>Lecturas rápidas:</strong> VIX {vix_text} · NFCI {nfci_text} · curva 10Y–2Y {curve_text}.</p>
-      </div>
+    <h2 id="method-heading">Cómo leerlo</h2>
+    <p class="section-intro">El número es un índice de señales, no una
+      probabilidad exacta. Usa la palabra y la explicación antes que el
+      decimal.</p>
+    <div class="band-list" aria-label="Cinco niveles del Radar">
+      <div class="band-row{" current" if stage_number == 1 else ""}">
+        <strong>0–34</strong><strong>Normal</strong>
+        <span>No hay una cadena clara de deterioro.</span></div>
+      <div class="band-row{" current" if stage_number == 2 else ""}">
+        <strong>35–49</strong><strong>Vigilar</strong>
+        <span>Una pieza empieza a fallar; conviene seguirla.</span></div>
+      <div class="band-row{" current" if stage_number == 3 else ""}">
+        <strong>50–64</strong><strong>Preparar</strong>
+        <span>Hay varias grietas, pero no una ruptura generalizada.</span></div>
+      <div class="band-row{" current" if stage_number == 4 else ""}">
+        <strong>65–79</strong><strong>Alerta alta</strong>
+        <span>El deterioro se está extendiendo entre más señales.</span></div>
+      <div class="band-row{" current" if stage_number == 5 else ""}">
+        <strong>80–100</strong><strong>Alerta crítica</strong>
+        <span>Muchas señales fuertes coinciden. Aun así, no es certeza.</span></div>
     </div>
   </section>
 
-  <section class="panel" aria-labelledby="sources-heading">
-    <h2 id="sources-heading">Fuentes y frescura</h2>
-    <p class="section-intro">Las entradas lentas conservan su fecha visible. NFCI sustituye un spread privado que no permite redistribución pública.</p>
-    <ul class="source-list">{''.join(source_html)}</ul>
-    <div class="raw-links">
-      <a href="latest.json">Última lectura (JSON)</a>
-      <a href="history.csv">Historial (CSV)</a>
-      <a href="https://github.com/Bluxor-ai/radar-de-la-burbuja-ia">Código y metodología</a>
+  <details class="section-details">
+    <summary>Ver los 7 componentes y cuánto influyen</summary>
+    <div class="details-content">
+      <h2>Bloques del riesgo de ruptura</h2>
+      <p class="section-intro">Cada componente responde una pregunta
+        distinta. Un valor alto significa más tensión en esa parte, no una
+        predicción segura.</p>
+      {''.join(block_html).lstrip()}
+      <details class="mini-details">
+        <summary>Ver cómo se combinan</summary>
+        <p><strong>35% × fragilidad ({structural:.1f}) + 65% × confirmación
+          ({confirmation:.1f}) = {bubble:.1f}.</strong></p>
+        <p>El resultado final da más peso al daño que ya se observa. Por eso
+          puede ser menor que la fragilidad.</p>
+      </details>
     </div>
+  </details>
+
+  <section class="panel" aria-labelledby="capex-title">
+    <h2 id="capex-title">Riesgo de recorte de CapEx</h2>
+    <p class="section-intro">CapEx es el dinero que las empresas destinan a
+      chips, centros de datos, energía y capacidad de nube. Este bloque
+      pregunta si podrían empezar a recortarlo.</p>
+    {capex_lead_html}
+    <details class="section-details">
+      <summary>Ver las 7 señales de gasto en IA</summary>
+      <div class="details-content">
+        <div class="table-wrap">
+          <table>
+            <caption>N/D significa que no hay un dato utilizable. Nunca se
+              convierte en cero.</caption>
+            <thead><tr><th scope="col">Señal</th><th scope="col">Índice</th>
+              <th scope="col">Peso base</th><th scope="col">Peso usado</th>
+              <th scope="col">Suma</th></tr></thead>
+            <tbody>{''.join(capex_html)}</tbody>
+          </table>
+        </div>
+        <p class="coverage"><strong>Cobertura {capex_coverage:.0%}.</strong>
+          Los faltantes se excluyen y las señales disponibles se reponderan.
+          Por eso el peso usado puede ser mayor que el peso base. Solo se
+          publica una conclusión cuando la cobertura llega al 70%.</p>
+      </div>
+    </details>
   </section>
+
+  <details class="section-details">
+    <summary>Diccionario sin jerga</summary>
+    <div class="details-content">
+      <h2>Qué significa cada palabra</h2>
+      <dl class="glossary">
+        <div><dt>Burbuja</dt><dd>Precios y expectativas que pueden haber
+          crecido más rápido que los resultados reales.</dd></div>
+        <div><dt>Fragilidad</dt><dd>Qué tan fácil sería que una mala noticia
+          cause daño.</dd></div>
+        <div><dt>Confirmación</dt><dd>Cuánto de ese daño ya aparece en datos
+          observables.</dd></div>
+        <div><dt>Crédito</dt><dd>Qué tan fácil y caro es conseguir dinero
+          prestado.</dd></div>
+        <div><dt>CapEx</dt><dd>Gasto de largo plazo en chips, edificios,
+          energía y nube.</dd></div>
+        <div><dt>VIX</dt><dd>Medida de cuánto movimiento brusco espera el
+          mercado de acciones de Estados Unidos.</dd></div>
+        <div><dt>NFCI</dt><dd>Resumen público de qué tan fáciles o difíciles
+          son las condiciones financieras.</dd></div>
+        <div><dt>N/D</dt><dd>No disponible. No significa cero ni ausencia de
+          riesgo.</dd></div>
+      </dl>
+    </div>
+  </details>
+
+  <details class="section-details">
+    <summary>Fuentes, fechas y detalles técnicos</summary>
+    <div class="details-content">
+      <h2>Fuentes y frescura</h2>
+      <p class="section-intro">El Radar usa aproximaciones del mercado de
+        Estados Unidos. No cubre todo el ecosistema mundial de IA y no emite
+        recomendaciones personalizadas.</p>
+      <p class="coverage"><strong>Estado: {quality_status}.</strong>
+        Mercado al {market_date}; datos macro al {macro_as_of}. Lecturas
+        rápidas: VIX {vix_text}, NFCI {nfci_text} y curva 10Y–2Y
+        {curve_text}.</p>
+      <ul class="source-list">{''.join(source_html)}</ul>
+      <p class="notice">Las entradas lentas conservan su fecha visible. NFCI
+        sustituye un indicador privado que no permite redistribución
+        pública. La actualización corre con GitHub Actions cada 12 horas.</p>
+      <div class="raw-links">
+        <a href="latest.json">Datos completos (JSON)</a>
+        <a href="history.csv">Historial (CSV)</a>
+        <a href="https://github.com/Bluxor-ai/radar-de-la-burbuja-ia">
+          Código y metodología</a>
+      </div>
+    </div>
+  </details>
 </main>
 <footer class="site-footer"><div class="wrap">
   <p class="notice">{html.escape(result.get('privacy', 'Sitio público sin datos personales.'))} {html.escape(config['site']['disclaimer'])} Proyecto informativo y educativo; valida las fuentes antes de actuar.</p>

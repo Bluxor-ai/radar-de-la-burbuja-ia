@@ -17,7 +17,7 @@ entrenado con información privada.
 
 La fórmula es:
 
-`12% valuación + 10% concentración + 8% apalancamiento + 5% oferta + 25% condiciones financieras + 25% ruptura interna + 15% ventas forzadas`
+`12% valuación + 10% concentración + 8% apalancamiento + 5% oferta + 25% condiciones financieras + 25% ruptura interna + 15% presión vendedora`
 
 - **Valuación:** promedio de CAPE y capitalización bursátil/PIB.
 - **Concentración:** 60% participación del top 10 y 40% rendimiento relativo
@@ -29,8 +29,9 @@ La fórmula es:
   endurecimiento del NFCI en cuatro semanas.
 - **Ruptura interna:** amplitud bajo medias de 50/200 días y situación de QQQ y
   SMH respecto de ambas medias.
-- **Ventas forzadas:** días de distribución, régimen de volatilidad/drawdown y
-  nivel del VIX.
+- **Presión vendedora:** días de distribución, régimen de
+  volatilidad/drawdown y nivel del VIX. Es una aproximación de mercado; no
+  prueba que todas las ventas sean forzadas.
 
 La **fragilidad estructural** renormaliza los primeros cuatro bloques, cuyo peso
 base suma 35%. La **confirmación observable** renormaliza los últimos tres, cuyo
@@ -41,15 +42,14 @@ peso base suma 65%.
 | Intervalo | Etiqueta |
 |---:|---|
 | 0–34.99 | NORMAL |
-| 35–49.99 | MONITOREAR |
+| 35–49.99 | VIGILAR |
 | 50–64.99 | PREPARAR |
 | 65–79.99 | ALERTA ALTA |
-| 80–89.99 | RUPTURA PROBABLE |
-| 90–100 | RUPTURA AGUDA |
+| 80–100 | ALERTA CRÍTICA |
 
 Las etiquetas describen bandas del índice, no certeza de un evento futuro.
 
-## Mosaico de CapEx
+## Riesgo de recorte de CapEx
 
 Es un índice separado. Combina guía de hyperscalers, pulso de proveedores,
 construcción física, capacidad de nube, capacidad de financiar, retorno
@@ -63,7 +63,9 @@ Dos señales se calculan automáticamente:
 Una señal manual solo participa si tiene una lectura pública incorporada. Los
 faltantes aparecen como `N/D`; las señales disponibles se renormalizan y el
 porcentaje de cobertura queda visible. Una cobertura parcial debe interpretarse
-con cautela.
+con cautela. El tablero solo publica una conclusión principal cuando la
+cobertura alcanza al menos 70%; antes muestra **datos insuficientes** y conserva
+el cálculo parcial únicamente como referencia.
 
 ## Frescura, fallos e historial
 

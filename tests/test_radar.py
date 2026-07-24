@@ -27,11 +27,32 @@ def test_weights_sum_to_one():
 
 def test_regime_bands():
     assert radar.regime(10) == "NORMAL"
-    assert radar.regime(40) == "MONITOREAR"
+    assert radar.regime(40) == "VIGILAR"
     assert radar.regime(55) == "PREPARAR"
     assert radar.regime(70) == "ALERTA ALTA"
-    assert radar.regime(85) == "RUPTURA PROBABLE"
-    assert radar.regime(95) == "RUPTURA AGUDA"
+    assert radar.regime(85) == "ALERTA CRÍTICA"
+    assert radar.regime(95) == "ALERTA CRÍTICA"
+
+
+def test_beginner_stages_are_plain_and_five_level():
+    assert radar.beginner_stage(10)[:2] == (1, "NORMAL")
+    assert radar.beginner_stage(40)[:2] == (2, "VIGILAR")
+    assert radar.beginner_stage(55)[:2] == (3, "PREPARAR")
+    assert radar.beginner_stage(70)[:2] == (4, "ALERTA ALTA")
+    assert radar.beginner_stage(95)[:2] == (5, "ALERTA CRÍTICA")
+
+
+def test_capex_level_does_not_override_coverage_rule():
+    assert radar.capex_level(17.2) == "BAJO"
+    latest = load_latest()
+    if latest["capex_coverage"] < 0.70:
+        page = radar.render_html(
+            latest,
+            load_config(),
+            ROOT / "data" / "history.csv",
+        )
+        assert "DATOS INSUFICIENTES" in page
+        assert "No es correcto concluir que el riesgo sea bajo" in page
 
 
 def test_missing_signals_are_reweighted_not_zeroed():
@@ -101,10 +122,15 @@ def test_render_is_transparent_accessible_and_shareable(tmp_path):
     assert 'rel="canonical"' in page
     assert 'property="og:image"' in page
     assert 'type="application/ld+json"' in page
-    assert "Índice, no probabilidad" in page
+    assert "Saltar al contenido" in page
+    assert "no es una probabilidad" in page
+    assert "En pocas palabras" in page
+    assert "DATOS INSUFICIENTES" in page
+    assert "Diccionario sin jerga" in page
     assert "Fuentes y frescura" in page
     assert "N/D" in page
-    assert "no se cuenta como cero" in page
+    assert "Nunca se" in page and "convierte en cero" in page
+    assert "RUPTURA PROBABLE" not in page
     assert "NFCI" in page
     assert "nfci" in result["inputs"]
 
@@ -118,6 +144,8 @@ def test_identical_history_readings_are_deduplicated(tmp_path):
 
     rows = history.read_text(encoding="utf-8").strip().splitlines()
     assert len(rows) == 2
+    assert "capex_coverage" in rows[0]
+    assert "capex_regime" in rows[0]
     assert rows[1].startswith("2026-07-23T23:59:00-06:00")
 
 

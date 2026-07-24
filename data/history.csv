@@ -1,2 +1,2 @@
-generated_at,market_as_of,bubble_score,structural_score,confirmation_score,capex_score,regime
-2026-07-23T17:39:08-06:00,2026-07-23,55.4406,79.4514,42.5118,17.1538,PREPARAR
+generated_at,market_as_of,bubble_score,structural_score,confirmation_score,capex_score,capex_coverage,capex_regime,regime
+2026-07-23T18:07:29-06:00,2026-07-23,55.4406,79.4514,42.5118,17.1538,0.35,DATOS INSUFICIENTES,PREPARAR

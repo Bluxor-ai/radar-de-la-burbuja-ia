@@ -30,7 +30,7 @@ El índice principal combina siete bloques:
 | Oferta de nuevas acciones | 5% |
 | Crédito y financiamiento | 25% |
 | Ruptura interna del mercado | 25% |
-| Volatilidad y ventas forzadas | 15% |
+| Volatilidad y presión vendedora | 15% |
 
 Los primeros cuatro forman la fragilidad estructural (35%) y los últimos tres
 la confirmación observable (65%). La escala y todos los umbrales están
@@ -52,7 +52,9 @@ Lecturas lentas y fechadas en `config.json`: CAPE, capitalización bursátil/PIB
 concentración top 10, margin debt, oferta de acciones y EBP. Si una lectura
 vence, el sitio lo señala. Los componentes de CapEx sin una fuente pública,
 fechada y redistribuible aparecen como `N/D` y se excluyen del cálculo; nunca se
-convierten silenciosamente en cero.
+convierten silenciosamente en cero. El sitio solo presenta una conclusión de
+CapEx cuando la cobertura llega al 70%; debajo de ese umbral muestra **datos
+insuficientes** y deja el cálculo parcial como referencia secundaria.
 
 ## Ejecutar localmente
 
