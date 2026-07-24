@@ -164,9 +164,10 @@ def test_render_is_transparent_accessible_and_shareable(tmp_path):
 def test_identical_history_readings_from_distinct_runs_are_preserved(tmp_path):
     history = tmp_path / "history.csv"
     result = load_latest()
-    result.pop("observation_id", None)
+    result["observation_id"] = "run-1"
     radar.write_history(history, result)
     result["generated_at"] = "2026-07-23T23:59:00-06:00"
+    result["observation_id"] = "run-2"
     radar.write_history(history, result)
 
     rows = history.read_text(encoding="utf-8").strip().splitlines()
