@@ -59,6 +59,72 @@ observación faltante como riesgo cero.
 Por eso, una gráfica calculada hoy con datos revisados puede ser una
 reconstrucción útil, pero no prueba capacidad predictiva fuera de muestra.
 
+## Reconstrucción parcial del 1 al 22 de julio de 2026
+
+No existen lecturas reales guardadas antes del 23 de julio. Lo que aparece del
+1 al 22 de julio se calculó después y se muestra únicamente para dar contexto.
+No debe describirse como “lo que marcaba el Radar ese día”.
+
+La reconstrucción sigue estas reglas:
+
+- los precios, volúmenes, VIX y curva de tasas se recortan en la fecha
+  evaluada;
+- esos archivos se descargaron después del periodo, por lo que pueden incluir
+  correcciones o ajustes hechos posteriormente;
+- el NFCI se incorpora con una demora de cinco días. Coincide con su calendario
+  normal —miércoles a las 8:30 a. m. hora del Este para la semana terminada el
+  viernes—, pero el archivo actual puede contener revisiones. La publicación
+  pasa al jueves cuando corresponde por feriado;
+- las cifras lentas se congelan con valores que se consideran disponibles al
+  comenzar julio, pero no todas tienen una copia archivada con fecha y hora;
+- la razón mercado/PIB usa dos datos del primer trimestre: el numerador estaba
+  disponible el 11 de junio y el PIB usado quedó disponible el 25 de junio;
+- la concentración usa 36.4%, cifra informada por S&P al 30 de junio. Se aplica
+  a todo el tramo y no es una medición distinta para cada día;
+- la oferta de acciones conserva 70 de 100 como decisión manual. La fuente
+  oficial comprueba emisión y recompras, pero no esa conversión;
+- el indicador de presión sobre gasto en inteligencia artificial no se
+  reconstruye;
+- fines de semana y días sin mercado repiten el último cierre disponible;
+- cada fila lleva `observation_type=reconstructed` y un identificador separado;
+- las lecturas automáticas originales no se reemplazan.
+
+Además, el modelo, sus pesos y la lista de empresas fueron definidos después de
+esas fechas. Por eso la serie usa información histórica, pero el diseño del
+Radar sí conoce lo ocurrido después. Es una limitación distinta y no se elimina
+con sólo recortar las cotizaciones.
+
+Las fuentes, valores y límites se publican en
+`data/historical_reconstruction.json`. La línea debe mostrarse punteada y con la
+leyenda **Reconstrucción parcial**. Toda comparación que use uno de esos puntos
+debe decir, por ejemplo, **contra una estimación reconstruida**. Las mediciones
+formales de desempeño sólo deben usar lecturas reales guardadas desde el 23 de
+julio.
+
+La explicación oficial del [NFCI](https://www.chicagofed.org/-/media/publications/nfci/nfci-faqs-pdf.pdf)
+confirma tanto el horario habitual como la posibilidad de revisiones. Para las
+series de FRED, una comprobación estricta debe usar la versión histórica de
+[ALFRED](https://fred.stlouisfed.org/docs/api/fred/realtime_period.html), porque
+la consulta normal de FRED devuelve lo que se conoce hoy sobre el pasado.
+
+## Requisitos para llamar “verificada” a una fecha reconstruida
+
+Una fecha sólo podrá subir de reconstrucción parcial a reconstrucción
+verificada cuando cada dato utilizado conserve:
+
+- el periodo que mide;
+- la fecha y hora en que fue publicado;
+- el valor tal como se publicó entonces, no sólo el valor corregido actual;
+- una copia del archivo o una huella que permita comprobar que no cambió;
+- la fuente y la fecha en que se descargó;
+- la regla aplicada cuando faltó un dato.
+
+El cálculo debe aceptar únicamente información publicada antes de la hora
+evaluada. Un dato faltante se muestra como `N/D`, nunca como cero, y la cobertura
+debe quedar visible. Si una fuente revisa el pasado, la reconstrucción publicada
+no debe sobrescribirse en silencio: se crea una versión nueva y se conserva la
+anterior.
+
 ## Registro prospectivo
 
 La versión base del modelo comienza su seguimiento prospectivo el

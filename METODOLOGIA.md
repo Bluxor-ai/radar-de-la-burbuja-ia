@@ -24,7 +24,10 @@ La fórmula es:
   máximo, a dos años, de QQQ/SMH/SOXX/NVDA contra SPY.
 - **Apalancamiento:** relación deuda/crédito libre, crecimiento anual de margin
   debt y una lectura explícita de rollover.
-- **Oferta:** emisión bruta ajustada por absorción de recompras.
+- **Oferta:** puntuación manual congelada a partir de datos de emisión y
+  recompras. La fuente respalda los datos base, pero todavía no existe una
+  fórmula pública que justifique su conversión a 70 de 100; por eso debe
+  tomarse como una aproximación.
 - **Condiciones financieras:** 50% nivel del NFCI, 25% EBP fechado y 25%
   endurecimiento del NFCI en cuatro semanas.
 - **Ruptura interna:** amplitud bajo medias de 50/200 días y situación de QQQ y
@@ -114,6 +117,18 @@ pronósticos de guía futura.
   comparaciones usan únicamente la misma versión.
 - Las referencias de 7 y 30 días usan una observación anterior o igual al
   momento objetivo y se omiten si queda a más de 18 horas.
+- Las fechas del 1 al 22 de julio de 2026 son una reconstrucción parcial hecha
+  después. En cada día se eliminan cierres posteriores, pero los archivos se
+  descargaron más tarde y pueden contener correcciones. El NFCI usa una demora
+  de cinco días, acorde con su publicación normal de los miércoles, y las
+  cifras lentas provienen de un archivo público de supuestos. No todas cuentan
+  con una copia guardada en su fecha original. Las series de FRED requieren la
+  versión histórica de ALFRED para una comprobación estricta de lo que se sabía
+  en cada fecha.
+- El tablero muestra ese tramo con una línea punteada y la leyenda
+  **Reconstrucción parcial**. Las lecturas guardadas automáticamente comienzan
+  el 23 de julio y usan una línea sólida. Una comparación entre ambos tipos
+  debe indicarlo de forma expresa.
 
 ## Robustez y validación
 
@@ -124,10 +139,14 @@ Los porcentajes resultantes describen configuraciones de peso, no probabilidades
 de una caída.
 
 La validación prospectiva de la versión 2.0.0 empieza el 23 de julio de 2026.
-Todavía no se publica un backtest completo porque los datos lentos históricos
-no contienen todas sus fechas de disponibilidad ni vintages. Aplicar los
-valores actuales al pasado introduciría información futura. Véase
-[VALIDACION.md](VALIDACION.md).
+La reconstrucción de julio sirve para ver el recorrido reciente, pero no es una
+prueba histórica del modelo ni demuestra que pueda anticipar una caída. El
+modelo, sus pesos y la lista de empresas se definieron después de ese tramo.
+Además, varios archivos actuales pueden contener revisiones de datos pasados.
+Todavía no se publica una prueba histórica completa porque los datos lentos no
+conservan todas sus fechas de publicación ni sus versiones originales. Aplicar
+el valor corregido actual a una fecha anterior introduciría información que no
+existía entonces. Véase [VALIDACION.md](VALIDACION.md).
 
 ## Fuentes y límites
 

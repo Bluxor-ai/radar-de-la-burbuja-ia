@@ -1,0 +1,198 @@
+{
+  "version": "1.1",
+  "start_date": "2026-07-01",
+  "end_date": "2026-07-22",
+  "timezone": "America/Mexico_City",
+  "daily_time": "18:17",
+  "nfci_release_lag_days": 5,
+  "quality_label": "Reconstrucción parcial hecha después; no fue una lectura real",
+  "public_note": "Serie estimada después de los hechos. Usa cierres históricos, archivos descargados después y algunas cifras aproximadas o sujetas a revisión. Sirve para dar contexto; no demuestra qué habría mostrado el Radar en ese momento.",
+  "created_at": "2026-07-24",
+  "point_in_time_status": "partial",
+  "data_policy": {
+    "actual_readings_begin": "2026-07-23",
+    "market_and_macro_files": "Descargados después del periodo y recortados por fecha; pueden incluir correcciones o ajustes posteriores. Cada fila guarda una huella normalizada para detectar cambios materiales sin publicar cotizaciones.",
+    "slow_inputs": "Congelados para todo el tramo con cifras que se consideran disponibles al comenzar julio, pero no todas cuentan con una copia archivada y una hora exacta de publicación.",
+    "fred_and_alfred": "FRED muestra de forma predeterminada el valor conocido hoy. Una reconstrucción verificada debe pedir a ALFRED la versión que era conocida en la fecha evaluada.",
+    "nfci_schedule": "El NFCI normalmente se publica el miércoles a las 8:30 a. m. hora del Este y cubre la semana terminada el viernes anterior; pasa al jueves cuando hay un feriado aplicable. Su historia puede revisarse cada semana.",
+    "equity_supply_scoring": "Los datos base son oficiales. La conversión a 70 de 100 es una decisión manual congelada, no una fórmula respaldada por la fuente.",
+    "missing_inputs": "No se convierten en cero.",
+    "rewrite_rule": "Si cambian las fuentes o los valores reconstruidos, debe publicarse una nueva versión y conservarse la anterior."
+  },
+  "known_limits": [
+    "El modelo, sus pesos y la lista de empresas se definieron después del periodo reconstruido.",
+    "El archivo vigente del NFCI puede contener revisiones y la demora de cinco días es una aproximación al calendario de publicación.",
+    "La concentración usa la cifra oficial de cierre de junio, no una medición distinta para cada día de julio.",
+    "La lectura mensual de valoración de largo plazo no cuenta con una copia guardada el 1 de julio.",
+    "La puntuación de oferta de acciones es manual: la fuente respalda los datos base, no su conversión a 70 de 100.",
+    "La parte de presión sobre gasto en inteligencia artificial no se reconstruye."
+  ],
+  "config_overrides": {
+    "valuation": {
+      "cape": {
+        "value": 40.73,
+        "as_of": "2026-07-01",
+        "source": "https://www.multpl.com/shiller-pe/table/by-month"
+      },
+      "market_cap_gdp": {
+        "value": 2.5003,
+        "public_equities_usd_millions": 79673843,
+        "gdp_usd_billions": 31865.721,
+        "available_at": "2026-06-25",
+        "as_of": "2026-Q1",
+        "source": "https://fred.stlouisfed.org/series/BOGZ1LM883164115Q",
+        "denominator_source": "https://www.bea.gov/sites/default/files/2026-06/gdp1q26-3rd.pdf"
+      }
+    },
+    "concentration": {
+      "top10_share": {
+        "value": 0.364,
+        "as_of": "2026-06-30",
+        "source": "https://www.spglobal.com/spdji/en/indices/equity/sp-500/"
+      }
+    },
+    "leverage": {
+      "margin_debt_trillion": 1.415557,
+      "free_credit_cash_trillion": 0.2066,
+      "free_credit_margin_trillion": 0.217256,
+      "previous_month_trillion": 1.304281,
+      "year_ago_trillion": 0.92096,
+      "rollover_score": 0.0,
+      "as_of": "2026-05",
+      "source": "https://www.finra.org/rules-guidance/key-topics/margin-accounts/margin-statistics"
+    },
+    "equity_supply": {
+      "gross_issuance_score": 80.0,
+      "buyback_absorption_offset": -10.0,
+      "scoring_method": "manual_frozen",
+      "score_note": "Puntuación manual congelada; la fuente respalda los datos base, no la conversión a 70.",
+      "raw_values_usd_billions": {
+        "net_issuance": 25.2,
+        "gross_issuance": 361.45,
+        "gross_retirement": 336.25,
+        "repurchases": 176.1,
+        "cash_mergers_and_acquisitions": 160.15
+      },
+      "published_at": "2026-06-18T17:45:04Z",
+      "retrieved_at": "2026-07-24T16:34:00Z",
+      "source_sha256": "e86d2e65d6befebb627779e1c4b8bc85b383898f334278e3cd6d4d17d35601dd",
+      "as_of": "2026-Q1",
+      "source": "https://www.federalreserve.gov/releases/efa/equity-issuance-retirement-quarterly-historical.csv"
+    },
+    "credit": {
+      "ebp_value": -0.3799085044,
+      "ebp_risk_score": 0.0,
+      "as_of": "2026-05",
+      "source": "https://www.federalreserve.gov/econres/notes/feds-notes/ebp_csv.csv"
+    }
+  },
+  "slow_inputs_as_of": {
+    "cape": "2026-07-01",
+    "market_cap_gdp": "2026-Q1; ambos datos disponibles 2026-06-25",
+    "concentration": "2026-06-30; página consultada 2026-07-24",
+    "margin_debt": "2026-05",
+    "equity_supply": "2026-Q1; publicado 2026-06-18",
+    "ebp": "2026-05"
+  },
+  "sources": [
+    {
+      "label": "Valoración de largo plazo",
+      "as_of": "2026-07-01",
+      "value": 40.73,
+      "url": "https://www.multpl.com/shiller-pe/table/by-month",
+      "note": "Lectura mensual fechada el 1 de julio."
+    },
+    {
+      "label": "Valor del mercado frente a la economía",
+      "as_of": "2026-Q1",
+      "value": 2.5003,
+      "url": "https://fred.stlouisfed.org/series/BOGZ1LM883164115Q",
+      "denominator_url": "https://www.bea.gov/sites/default/files/2026-06/gdp1q26-3rd.pdf",
+      "available_at": "2026-06-25",
+      "raw_values": {
+        "public_equities_usd_millions": 79673843,
+        "gdp_usd_billions": 31865.721
+      },
+      "note": "Acciones públicas nacionales divididas entre el PIB del primer trimestre. El numerador salió el 11 de junio y el PIB usado quedó disponible el 25 de junio."
+    },
+    {
+      "label": "Concentración de las diez mayores",
+      "as_of": "2026-06-30",
+      "value": 0.364,
+      "url": "https://www.spglobal.com/spdji/en/indices/equity/sp-500/",
+      "retrieved_at": "2026-07-24",
+      "note": "S&P informó 36.4% al cierre de junio. Se usa para todo el tramo y no representa una medición diaria."
+    },
+    {
+      "label": "Deuda usada para comprar acciones",
+      "as_of": "2026-05",
+      "url": "https://www.finra.org/rules-guidance/key-topics/margin-accounts/margin-statistics",
+      "note": "Mayo era el último mes publicado al comenzar julio."
+    },
+    {
+      "label": "Emisión y recompra de acciones",
+      "as_of": "2026-Q1",
+      "url": "https://www.federalreserve.gov/releases/efa/equity-issuance-retirement-quarterly-historical.csv",
+      "retrieved_at": "2026-07-24T16:34:00Z",
+      "sha256": "e86d2e65d6befebb627779e1c4b8bc85b383898f334278e3cd6d4d17d35601dd",
+      "raw_values_usd_billions": {
+        "net_issuance": 25.2,
+        "gross_issuance": 361.45,
+        "gross_retirement": 336.25,
+        "repurchases": 176.1,
+        "cash_mergers_and_acquisitions": 160.15
+      },
+      "score": 70.0,
+      "scoring_method": "manual_frozen",
+      "note": "Datos oficiales del primer trimestre. La puntuación de 70 se congeló manualmente: la fuente respalda los datos base, no esa conversión."
+    },
+    {
+      "label": "Presión del crédito",
+      "as_of": "2026-05",
+      "value": -0.3799085044,
+      "url": "https://www.federalreserve.gov/econres/notes/feds-notes/ebp_csv.csv",
+      "note": "Mayo era el último mes disponible al comenzar julio."
+    },
+    {
+      "label": "Cierres y volumen de mercado",
+      "as_of": "Cada fecha reconstruida",
+      "url": "https://finance.yahoo.com/",
+      "retrieved_at": "2026-07-24",
+      "note": "Descargados después del periodo. Los precios ajustados pueden cambiar por correcciones, dividendos o divisiones."
+    },
+    {
+      "label": "VIX",
+      "as_of": "Cada sesión reconstruida",
+      "url": "https://www.cboe.com/tradable-products/vix/vix-historical-data",
+      "data_url": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
+      "retrieved_at": "2026-07-24",
+      "note": "Cierres históricos oficiales de Cboe; se recortan en cada fecha."
+    },
+    {
+      "label": "Condiciones financieras",
+      "as_of": "Publicación semanal disponible en cada fecha",
+      "url": "https://www.chicagofed.org/research/data/nfci/current-data",
+      "retrieved_at": "2026-07-24",
+      "note": "Archivo vigente del NFCI, sujeto a revisiones. Se respeta su calendario normal de publicación."
+    },
+    {
+      "label": "Curva de tasas de 10 y 2 años",
+      "as_of": "Cada sesión reconstruida",
+      "url": "https://home.treasury.gov/treasury-daily-interest-rate-xml-feed",
+      "retrieved_at": "2026-07-24",
+      "note": "Tasas diarias oficiales del Tesoro de Estados Unidos."
+    }
+  ],
+  "methodology_sources": [
+    {
+      "label": "Calendario y revisiones del NFCI",
+      "url": "https://www.chicagofed.org/-/media/publications/nfci/nfci-faqs-pdf.pdf",
+      "note": "El Banco de la Reserva Federal de Chicago publica el NFCI los miércoles a las 8:30 a. m. hora del Este, o el jueves cuando corresponde por feriado, y advierte que la historia puede revisarse."
+    },
+    {
+      "label": "Datos conocidos en una fecha pasada",
+      "url": "https://fred.stlouisfed.org/docs/api/fred/realtime_period.html",
+      "note": "La documentación de FRED explica que el valor predeterminado refleja lo conocido hoy; ALFRED permite pedir lo que se conocía en una fecha pasada."
+    }
+  ]
+}

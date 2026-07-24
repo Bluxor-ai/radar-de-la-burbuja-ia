@@ -62,6 +62,10 @@ CapEx cuando la cobertura llega al 70%. La cobertura normal es 85%: precio de
 nube y circularidad no se fuerzan a producir un índice que sus fuentes no
 pueden sostener.
 
+La oferta de acciones usa datos públicos, pero su conversión actual a 70 de
+100 sigue siendo una decisión manual. El tablero la marca como aproximación
+hasta que exista una fórmula pública y validada.
+
 ## Historial y validación
 
 La versión 2.0.0 conserva cada ejecución válida, incluso si el resultado se
@@ -69,8 +73,11 @@ repite. El historial incluye los siete componentes, una versión del modelo y un
 identificador de ejecución; solo elimina reintentos del mismo proceso.
 
 Las comparaciones de 7 y 30 días usan una lectura realmente anterior al momento
-objetivo. La serie prospectiva comparable comienza el 23 de julio de 2026. No
-se rellenan años anteriores con valores actuales.
+objetivo. La serie prospectiva comparable comienza el 23 de julio de 2026.
+Además, el tablero muestra una reconstrucción diaria del 1 al 22 de julio con
+datos de mercado recortados en cada fecha y un manifiesto de cifras lentas que
+ya estaban publicadas. La gráfica la distingue con una línea punteada; no la
+presenta como si hubiera sido registrada en tiempo real.
 
 Cada actualización publica también 20,000 escenarios deterministas de pesos,
 pruebas sin un bloque y cambios de ±25% por componente. Esto mide robustez del
@@ -95,6 +102,18 @@ Para reconstruir el sitio con la última lectura guardada y sin pedir datos:
 ```bash
 python radar.py --offline --config config.json --output public --data-dir data
 ```
+
+La reconstrucción fechada de julio se puede volver a generar con:
+
+```bash
+python historical_backfill.py
+```
+
+Sus fuentes, fechas y límites están congelados en
+`data/historical_reconstruction.json`. El proceso actualiza únicamente la misma
+versión y fecha, conserva versiones anteriores y nunca borra lecturas
+automáticas. Si cambian materialmente el cálculo o las reglas, exige una
+versión nueva.
 
 ## Privacidad y licencia
 

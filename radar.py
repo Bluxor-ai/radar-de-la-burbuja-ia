@@ -1162,6 +1162,7 @@ def write_history(path: Path, result: dict[str, Any]) -> None:
         "generated_at": result["generated_at"],
         "market_as_of": result.get("market_as_of"),
         "macro_as_of": result.get("macro_as_of"),
+        "observation_type": result.get("observation_type", "live"),
         "bubble_score": round(result["bubble_score"], 4),
         "structural_score": round(result["structural_score"], 4),
         "confirmation_score": round(result["confirmation_score"], 4),
@@ -1333,6 +1334,41 @@ def comparable_history(
             history["bubble_score"],
             errors="coerce",
         )
+        if "observation_type" not in history.columns:
+            history["observation_type"] = "live"
+        else:
+            history["observation_type"] = (
+                history["observation_type"]
+                .fillna("live")
+                .astype(str)
+                .str.strip()
+                .replace("", "live")
+            )
+        if "reconstruction_version" in history.columns:
+            reconstruction_mask = history["observation_type"].eq(
+                "reconstructed"
+            )
+            versions = (
+                history.loc[reconstruction_mask, "reconstruction_version"]
+                .dropna()
+                .astype(str)
+                .loc[lambda values: values.str.strip().ne("")]
+            )
+            if not versions.empty:
+                active_version = max(
+                    versions.unique(),
+                    key=lambda value: tuple(
+                        int(part) if part.isdigit() else 0
+                        for part in str(value).split(".")
+                    ),
+                )
+                history = history.loc[
+                    ~reconstruction_mask
+                    | history["reconstruction_version"]
+                    .fillna("")
+                    .astype(str)
+                    .eq(active_version)
+                ].copy()
         return history.dropna(subset=["bubble_score"]).reset_index(drop=True)
     except Exception:
         return pd.DataFrame()
@@ -1345,9 +1381,15 @@ def history_trend_summary(
         return "Todavía no hay suficiente historial para hablar de tendencia."
     try:
         history = comparable_history(history_path, model_version)
-        values = history["bubble_score"]
+        live_history = history.loc[
+            history["observation_type"].ne("reconstructed")
+        ]
+        values = live_history["bubble_score"]
         if len(values) < 2:
-            return "Todavía no hay suficiente historial para hablar de tendencia."
+            return (
+                "Todavía no hay dos lecturas automáticas para hablar "
+                "de tendencia."
+            )
         change = float(values.iloc[-1] - values.iloc[-2])
         if abs(change) < 0.5:
             return "Casi sin cambio desde la actualización anterior."
@@ -1361,6 +1403,7 @@ def history_trend_summary(
 def history_chart(
     history_path: Path,
     model_version: str = MODEL_VERSION,
+    timezone_name: str = "America/Mexico_City",
 ) -> str:
     if not history_path.exists():
         return ""
@@ -1389,6 +1432,61 @@ def history_chart(
             y = chart_y(value)
             points.append(f"{x:.1f},{y:.1f}")
 
+        reconstructed_mask = (
+            history["observation_type"].eq("reconstructed").tolist()
+        )
+        reconstructed_indexes = [
+            index
+            for index, is_reconstructed in enumerate(reconstructed_mask)
+            if is_reconstructed
+        ]
+        live_indexes = [
+            index
+            for index, is_reconstructed in enumerate(reconstructed_mask)
+            if not is_reconstructed
+        ]
+        reconstructed_line = ""
+        if reconstructed_indexes:
+            reconstruction_points = [
+                points[index] for index in reconstructed_indexes
+            ]
+            if len(reconstruction_points) >= 2:
+                reconstructed_line = (
+                    f'<polyline points="{" ".join(reconstruction_points)}" '
+                    'fill="none" stroke="#fbbf24" stroke-width="3" '
+                    'stroke-dasharray="9 7" stroke-linejoin="round" '
+                    'stroke-linecap="round"/>'
+                )
+        live_line = ""
+        if live_indexes:
+            live_points = [points[index] for index in live_indexes]
+            if len(live_points) >= 2:
+                live_line = (
+                    f'<polyline points="{" ".join(live_points)}" '
+                    'fill="none" stroke="#22d3ee" stroke-width="4" '
+                    'stroke-linejoin="round" stroke-linecap="round"/>'
+                )
+        if (
+            not reconstructed_indexes
+            and not reconstructed_line
+            and not live_line
+        ):
+            live_line = (
+                f'<polyline points="{" ".join(points)}" fill="none" '
+                'stroke="#22d3ee" stroke-width="4" '
+                'stroke-linejoin="round" stroke-linecap="round"/>'
+            )
+        reconstruction_dots = "".join(
+            f'<circle cx="{points[index].split(",")[0]}" '
+            f'cy="{points[index].split(",")[1]}" r="2.5" fill="#fbbf24"/>'
+            for index in reconstructed_indexes
+        )
+        live_dots = "".join(
+            f'<circle cx="{points[index].split(",")[0]}" '
+            f'cy="{points[index].split(",")[1]}" r="2.5" fill="#22d3ee"/>'
+            for index in live_indexes
+        )
+
         bands = [
             (0, 35, "#22c55e"),
             (35, 50, "#eab308"),
@@ -1416,26 +1514,47 @@ def history_chart(
 
         changes: list[str] = []
         prior_change = values[-1] - values[-2]
-        changes.append(f"anterior: {prior_change:+.1f} puntos")
+        prior_note = (
+            " (contra una estimación reconstruida)"
+            if history["observation_type"].iloc[-2] == "reconstructed"
+            else ""
+        )
+        changes.append(
+            f"anterior: {prior_change:+.1f} puntos{prior_note}"
+        )
         for days in (7, 30):
             anchor = comparison_anchor(all_history, latest_date, days)
             if anchor is None:
                 changes.append(f"{days} días: todavía no disponible")
             else:
                 change = values[-1] - float(anchor["bubble_score"])
-                changes.append(f"{days} días: {change:+.1f} puntos")
+                estimated = (
+                    " (contra una estimación reconstruida)"
+                    if str(anchor.get("observation_type", "")).strip()
+                    == "reconstructed"
+                    else ""
+                )
+                changes.append(
+                    f"{days} días: {change:+.1f} puntos{estimated}"
+                )
         change_text = " · ".join(changes)
 
         accessible_rows = "".join(
             "<tr>"
-            f"<td>{html.escape(str(row.generated_at.date()))}</td>"
+            f"<td>{html.escape(str(row.display_date))}</td>"
             f"<td>{float(row.bubble_score):.1f}</td>"
+            f"<td>{'Reconstrucción parcial' if row.observation_type == 'reconstructed' else 'Lectura guardada'}</td>"
             "</tr>"
-            for row in history.tail(8).itertuples()
+            for row in history.assign(
+                display_date=history["generated_at"]
+                .dt.tz_convert(timezone_name)
+                .dt.date
+            ).tail(8).itertuples()
         )
         last_x, last_y = points[-1].split(",")
-        first_label = format_date_es(history["generated_at"].iloc[0])
-        last_label = format_date_es(history["generated_at"].iloc[-1])
+        local_dates = history["generated_at"].dt.tz_convert(timezone_name)
+        first_label = format_date_es(local_dates.iloc[0])
+        last_label = format_date_es(local_dates.iloc[-1])
         return f"""
         <div class="history-chart">
           <svg class="spark" viewBox="0 0 {width} {height}" role="img"
@@ -1444,12 +1563,19 @@ def history_chart(
             <desc id="history-desc">Última lectura {values[-1]:.1f}. {html.escape(change_text)}.</desc>
             {''.join(band_html)}
             {''.join(grid_html)}
-            <polyline points="{' '.join(points)}" fill="none"
-              stroke="#22d3ee" stroke-width="4" stroke-linejoin="round"
-              stroke-linecap="round"/>
+            {reconstructed_line}
+            {live_line}
+            {reconstruction_dots}
+            {live_dots}
             <circle cx="{last_x}" cy="{last_y}" r="6" fill="#f8fafc"
               stroke="#22d3ee" stroke-width="3"/>
           </svg>
+          <div class="chart-legend" aria-label="Tipos de datos del historial">
+            <span><i class="legend-reconstructed" aria-hidden="true"></i>
+              Reconstrucción parcial</span>
+            <span><i class="legend-live" aria-hidden="true"></i>
+              Lecturas guardadas automáticamente</span>
+          </div>
           <div class="chart-summary">
             <strong>Último: {values[-1]:.1f}/100</strong>
             <span>{html.escape(change_text)}</span>
@@ -1460,7 +1586,8 @@ def history_chart(
           </div>
           <table class="sr-only">
             <caption>Últimas observaciones del índice</caption>
-            <thead><tr><th scope="col">Fecha</th><th scope="col">Índice</th></tr></thead>
+            <thead><tr><th scope="col">Fecha</th><th scope="col">Índice</th>
+              <th scope="col">Tipo de dato</th></tr></thead>
             <tbody>{accessible_rows}</tbody>
           </table>
         </div>"""
@@ -1542,13 +1669,19 @@ def render_html(result: dict[str, Any], config: dict[str, Any], history_path: Pa
             if technical_label == "Crédito y financiamiento" and score < 5
             else ""
         )
+        method_note = (
+            " El dato base es público, pero convertirlo a este número "
+            "todavía requiere una decisión manual; úsalo como aproximación."
+            if technical_label == "Oferta de nuevas acciones"
+            else ""
+        )
         block_html.append(f"""
         <article class="factor">
           <div class="factor-heading">
             <div>
               <p class="factor-kicker">{html.escape(plain_label)}</p>
               <h3>{html.escape(technical_label)}</h3>
-              <p>{html.escape(question)}{html.escape(zero_note)}</p>
+              <p>{html.escape(question)}{html.escape(zero_note)}{html.escape(method_note)}</p>
             </div>
             <div class="factor-score" style="color:{color}">
               <strong>{score:.1f}</strong>
@@ -1651,8 +1784,8 @@ def render_html(result: dict[str, Any], config: dict[str, Any], history_path: Pa
         if source_warnings
         else "Actualizados"
     )
-    chart = history_chart(history_path)
     timezone_name = config["site"].get("timezone", "UTC")
+    chart = history_chart(history_path, timezone_name=timezone_name)
     updated_iso = html.escape(str(result.get("generated_at", "")), quote=True)
     updated = html.escape(format_datetime_es(
         result.get("generated_at"),
@@ -1952,7 +2085,7 @@ main{{padding:22px 0 44px}}
 .track{{height:10px;background:#1b2b3d;border-radius:999px;overflow:hidden}}.track span{{display:block;height:100%;border-radius:inherit}}.number,.weight,.num{{text-align:right;font-weight:850;font-variant-numeric:tabular-nums}}.weight{{color:var(--cyan2);font-size:.82rem}}
 .table-wrap{{overflow-x:auto}}table{{width:100%;border-collapse:collapse;font-size:.88rem}}caption{{padding:0 0 12px;text-align:left;color:var(--muted)}}th,td{{padding:12px 9px;border-bottom:1px solid rgba(148,163,184,.15);text-align:left;vertical-align:top}}thead th{{color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}}tbody th{{font-weight:750}}
 .coverage{{margin-top:13px;padding:11px 13px;background:var(--panel2);border-radius:10px;color:var(--muted);font-size:.84rem}}.coverage strong{{color:var(--text)}}
-.spark{{display:block;width:100%;height:auto;min-height:180px;background:var(--panel2);border-radius:12px}}.chart-summary{{display:flex;justify-content:space-between;gap:14px;margin-top:10px;color:var(--muted);font-size:.85rem}}.chart-summary strong{{color:var(--text)}}
+.spark{{display:block;width:100%;height:auto;min-height:180px;background:var(--panel2);border-radius:12px}}.chart-legend{{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:10px;color:var(--muted);font-size:.8rem}}.chart-legend span{{display:inline-flex;align-items:center;gap:7px}}.chart-legend i{{display:inline-block;width:28px;height:0;border-top:3px solid #22d3ee}}.chart-legend .legend-reconstructed{{border-top-color:#fbbf24;border-top-style:dashed}}.chart-summary{{display:flex;justify-content:space-between;gap:14px;margin-top:10px;color:var(--muted);font-size:.85rem}}.chart-summary strong{{color:var(--text)}}
 .method-grid{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}}.method-card{{padding:18px;background:var(--panel2);border-radius:12px}}.method-card h3{{margin:0 0 8px;font-size:1rem}}.method-card p{{margin:0;color:var(--muted);font-size:.88rem}}
 .bands{{display:grid;gap:7px;margin-top:14px}}.band{{display:grid;grid-template-columns:72px 128px 1fr;gap:10px;align-items:center;font-size:.82rem}}.band i{{height:8px;border-radius:999px}}
 .source-list{{display:grid;gap:8px;padding:0;margin:0;list-style:none}}.source-card{{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;padding:13px 14px;background:var(--panel2);border-radius:11px}}.source-card span{{display:block;color:var(--muted);font-size:.82rem}}.source-meta{{display:grid;grid-template-columns:repeat(3,auto);gap:8px 14px;text-align:right}}.source-meta span,.source-meta time{{color:var(--muted);font-size:.76rem}}
@@ -2099,10 +2232,13 @@ main{{padding:22px 0 44px}}
 
   <section class="panel" aria-labelledby="history-heading">
     <h2 id="history-heading">Historial reciente</h2>
-    <p class="section-intro">Aquí verás si la alerta sube o baja con el
-      tiempo. La escala siempre va de 0 a 100 para no exagerar cambios
-      pequeños. La serie comparable de esta versión empieza el 23 de julio
-      de 2026; no rellenamos el pasado con datos actuales.</p>
+    <p class="section-intro">La línea punteada es una estimación hecha después
+      para cada día desde el 1 de julio. Recorta los cierres por fecha y congela
+      las cifras lentas disponibles al comenzar el mes, pero algunas fuentes
+      pueden haber corregido su historia. La línea sólida muestra las lecturas
+      que el sistema sí guardó automáticamente desde el 23 de julio. Cuando no
+      operan las acciones se conserva su último cierre; otra señal puede
+      cambiar si su propia fuente sí publicó un dato.</p>
 {chart or '<p class="notice">El historial comparable aparecerá después de dos actualizaciones válidas.</p>'}
   </section>
 
@@ -2258,6 +2394,8 @@ main{{padding:22px 0 44px}}
       <div class="raw-links">
         <a href="latest.json">Datos completos (JSON)</a>
         <a href="history.csv">Historial (CSV)</a>
+        <a href="historical_reconstruction.json">
+          Fuentes de la reconstrucción (JSON)</a>
         <a href="gpu_price_history.csv">Colector de precios GPU (CSV)</a>
         <a href="validation.json">Sensibilidad de pesos (JSON)</a>
         <a href="https://github.com/Bluxor-ai/radar-de-la-burbuja-ia">
@@ -2409,6 +2547,13 @@ def run(config_path: Path, output: Path, data_dir: Path, offline: bool) -> dict[
         encoding="utf-8",
         newline="\n",
     )
+    reconstruction_path = data_dir / "historical_reconstruction.json"
+    if reconstruction_path.exists():
+        (output / "historical_reconstruction.json").write_text(
+            reconstruction_path.read_text(encoding="utf-8"),
+            encoding="utf-8",
+            newline="\n",
+        )
     if gpu_history_path.exists():
         (output / "gpu_price_history.csv").write_text(
             gpu_history_path.read_text(encoding="utf-8"),
