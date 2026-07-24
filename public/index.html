@@ -18,7 +18,7 @@
 <meta name="twitter:description" content="Índice público y reproducible de fragilidad, confirmación de ruptura y riesgo de moderación del gasto en inteligencia artificial.">
 <meta name="twitter:image" content="https://bluxor-ai.github.io/radar-de-la-burbuja-ia/og.png">
 <title>Radar de la Burbuja IA</title>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"Radar de la Burbuja IA","description":"Índice público y reproducible de fragilidad, confirmación de ruptura y riesgo de moderación del gasto en inteligencia artificial.","url":"https://bluxor-ai.github.io/radar-de-la-burbuja-ia/","license":"https://opensource.org/license/mit","dateModified":"2026-07-23T18:08:57-06:00","creator":{"@type":"Organization","name":"Bluxor-ai"},"measurementTechnique":"Índice ponderado de siete bloques de valuación, concentración, apalancamiento, oferta, condiciones financieras, ruptura interna y presión vendedora.","isBasedOn":["https://finance.yahoo.com/","https://finance.yahoo.com/quote/%5EVIX/","https://www.chicagofed.org/research/data/nfci/current-data","https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve","https://www.multpl.com/shiller-pe/table/by-month","https://buffettindicator.org/","https://www.slickcharts.com/sp500/analysis","https://www.finra.org/rules-guidance/key-topics/margin-accounts/margin-statistics","https://www.spglobal.com/market-intelligence/en/news-insights/research/2026/07/mega-deals-push-h1-2026-us-equity-issuance-into-orbit","https://www.federalreserve.gov/econres/economic-research-data.htm"],"distribution":[{"@type":"DataDownload","encodingFormat":"application/json","contentUrl":"https://bluxor-ai.github.io/radar-de-la-burbuja-ia/latest.json"},{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://bluxor-ai.github.io/radar-de-la-burbuja-ia/history.csv"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"Radar de la Burbuja IA","description":"Índice público y reproducible de fragilidad, confirmación de ruptura y riesgo de moderación del gasto en inteligencia artificial.","url":"https://bluxor-ai.github.io/radar-de-la-burbuja-ia/","license":"https://opensource.org/license/mit","dateModified":"2026-07-23T19:01:57-06:00","creator":{"@type":"Organization","name":"Bluxor-ai"},"measurementTechnique":"Índice ponderado de siete bloques de valuación, concentración, apalancamiento, oferta, condiciones financieras, ruptura interna y presión vendedora.","isBasedOn":["https://finance.yahoo.com/","https://finance.yahoo.com/quote/%5EVIX/","https://www.chicagofed.org/research/data/nfci/current-data","https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve","https://finance.yahoo.com/","https://www.census.gov/construction/c30/xlsx/privtime.xlsx","https://learn.microsoft.com/rest/api/cost-management/retail-prices/azure-retail-prices","https://www.multpl.com/shiller-pe/table/by-month","https://buffettindicator.org/","https://www.slickcharts.com/sp500/analysis","https://www.finra.org/rules-guidance/key-topics/margin-accounts/margin-statistics","https://www.spglobal.com/market-intelligence/en/news-insights/research/2026/07/mega-deals-push-h1-2026-us-equity-issuance-into-orbit","https://www.federalreserve.gov/econres/economic-research-data.htm"],"distribution":[{"@type":"DataDownload","encodingFormat":"application/json","contentUrl":"https://bluxor-ai.github.io/radar-de-la-burbuja-ia/latest.json"},{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://bluxor-ai.github.io/radar-de-la-burbuja-ia/history.csv"},{"@type":"DataDownload","encodingFormat":"application/json","contentUrl":"https://bluxor-ai.github.io/radar-de-la-burbuja-ia/validation.json"}]}</script>
 <style>
 :root{--bg:#071018;--panel:#0d1a27;--panel2:#111f2e;--border:#26384b;--text:#f4f7fb;--muted:#a8b6c7;--cyan:#45e4c4;--cyan2:#36bffa;--amber:#fbbf24;--shadow:0 18px 60px rgba(0,0,0,.24)}
 *{box-sizing:border-box}
@@ -62,18 +62,19 @@ main{padding:22px 0 44px}
 .score-hero{grid-template-columns:minmax(220px,.72fr) minmax(0,1.28fr);gap:clamp(24px,5vw,56px);padding:clamp(24px,4vw,44px)}.answer-label{margin:0 0 8px;color:var(--cyan);font-size:.82rem;font-weight:900;text-transform:uppercase;letter-spacing:.12em}.regime{margin:0}.stage-message{margin:13px 0 0;font-size:clamp(1.08rem,2vw,1.3rem);font-weight:750;line-height:1.45}.score-guide{margin:12px 0 0;color:var(--muted);font-size:.94rem}.not-probability{margin-top:13px}.not-probability strong{color:#fff}
 .no-panic{margin-top:18px;padding:13px 15px;border-left:3px solid var(--amber);border-radius:0 10px 10px 0;background:rgba(251,191,36,.08);color:#fdecc8;font-size:.92rem}.no-panic strong{display:block;color:#fff}
 .stage-panel{margin:14px 0;padding:17px 18px;border:1px solid var(--border);border-radius:16px;background:rgba(13,26,39,.86)}.stage-panel h2{margin:0 0 12px;font-size:1rem}.stage-scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.stage-step{min-height:58px;padding:9px 8px;border:1px solid var(--border);border-top:5px solid #334155;border-radius:9px;background:#0b1723;color:var(--muted);text-align:center}.stage-step:nth-child(1){border-top-color:#22c55e}.stage-step:nth-child(2){border-top-color:#eab308}.stage-step:nth-child(3){border-top-color:#f59e0b}.stage-step:nth-child(4){border-top-color:#fb923c}.stage-step:nth-child(5){border-top-color:#ef4444}.stage-step span,.stage-step strong{display:block}.stage-step span{font-size:.72rem}.stage-step strong{font-size:.82rem}.stage-step.current{background:#263241;border-color:#f8fafc;color:#fff;box-shadow:0 0 0 2px rgba(248,250,252,.14)}.stage-you-are-here{margin:10px 0 0;color:var(--muted);font-size:.88rem}.stage-you-are-here strong{color:var(--text)}.trend{margin:5px 0 0;color:var(--cyan);font-weight:750;font-size:.9rem}
-.data-notice{margin:14px 0;padding:0 15px;border:1px solid var(--border);border-radius:12px;background:rgba(13,26,39,.75);color:var(--muted)}.data-notice summary{min-height:44px;padding:11px 0;color:#d6e2ee;font-weight:750;cursor:pointer}.data-notice ul{margin:0 0 14px;padding-left:20px;font-size:.88rem}.data-alert-critical{margin:14px 0}
+.data-alert-critical{margin:14px 0}
 .plain-summary{margin:16px 0;padding:clamp(20px,3vw,30px);border:1px solid var(--border);border-radius:18px;background:linear-gradient(135deg,rgba(17,31,46,.98),rgba(13,26,39,.92))}.plain-summary h2{margin:0;font-size:1.35rem}.plain-summary>p{max-width:900px;margin:10px 0 0;font-size:1.08rem;color:#e3ebf4}.insight-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}.insight{padding:15px;border-radius:12px;background:var(--panel2)}.insight p{margin:4px 0 0;color:var(--muted);font-size:.9rem}.insight strong{color:var(--text)}.watch-box{margin-top:12px;padding:16px;border:1px solid rgba(69,228,196,.22);border-radius:12px;background:rgba(69,228,196,.05)}.watch-box h3{margin:0;font-size:1rem}.watch-box ul{margin:8px 0 0;padding-left:20px;color:#d7e2ed}.watch-box li+li{margin-top:5px}
 .kpis{margin:16px 0}.card{min-height:225px}.card h2{margin:6px 0 0;font-size:1.06rem}.technical-name{display:block;margin-top:3px;color:var(--muted);font-size:.82rem;font-weight:550}.card-value{display:flex;align-items:baseline;gap:7px;margin-top:14px;font-size:2.5rem;font-weight:900;line-height:1}.card-value small{font-size:.86rem;color:var(--muted)}.level-text{display:inline-flex;margin-top:10px;padding:5px 8px;border:1px solid currentColor;border-radius:999px;font-size:.78rem;font-weight:850}.card .sub{font-size:.9rem;line-height:1.5}.capex-card{border-color:#596777}.capex-card .card-value{font-size:2.05rem}
 .section-details{margin:16px 0;border:1px solid var(--border);border-radius:16px;background:rgba(13,26,39,.94);overflow:hidden}.section-details>summary{min-height:54px;padding:16px 20px;color:var(--text);font-size:1.03rem;font-weight:850;cursor:pointer}.section-details>summary::marker{color:var(--cyan)}.section-details[open]>summary{border-bottom:1px solid var(--border)}.details-content{padding:20px}.details-content h2{margin:0;font-size:1.28rem}
+.robustness-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}.robustness-card{padding:15px;border:1px solid var(--border);border-radius:12px;background:var(--panel2)}.robustness-card strong{display:block;font-size:1.25rem}.robustness-card span{display:block;margin-top:4px;color:var(--muted);font-size:.86rem}.dependency-list{margin:12px 0 0;padding-left:21px;color:#d7e2ed}.dependency-list li+li{margin-top:6px}
 .factor{padding:16px 0;border-bottom:1px solid rgba(148,163,184,.15)}.factor:last-child{border-bottom:0}.factor-heading{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:start}.factor-kicker{margin:0;color:var(--cyan);font-size:.82rem;font-weight:850}.factor h3{margin:2px 0 0;font-size:.95rem}.factor-heading p:not(.factor-kicker){margin:5px 0 0;color:var(--muted);font-size:.88rem}.factor-score{min-width:105px;text-align:right}.factor-score strong,.factor-score span{display:block}.factor-score strong{font-size:1.55rem;line-height:1}.factor-score span{margin-top:4px;font-size:.78rem;font-weight:800}.factor .track{margin-top:11px}.mini-details{margin-top:8px;color:var(--muted);font-size:.84rem}.mini-details summary{display:flex;min-height:44px;width:max-content;align-items:center;padding:7px 0;color:#c5d2df;cursor:pointer}.mini-details p{margin:0 0 5px}
 .capex-warning{margin:15px 0;padding:16px;border:1px solid #a06a24;border-radius:12px;background:#332816;color:#fde7b2}.capex-warning strong{display:block;color:#fff;font-size:1rem}.capex-warning p{margin:5px 0 0}.technical-result{margin-top:10px;color:var(--muted);font-size:.86rem}
 .band-list{display:grid;gap:8px}.band-row{display:grid;grid-template-columns:82px 130px 1fr;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--border);border-left:5px solid #64748b;border-radius:10px;background:var(--panel2)}.band-row:nth-child(1){border-left-color:#22c55e}.band-row:nth-child(2){border-left-color:#eab308}.band-row:nth-child(3){border-left-color:#f59e0b}.band-row:nth-child(4){border-left-color:#fb923c}.band-row:nth-child(5){border-left-color:#ef4444}.band-row.current{box-shadow:0 0 0 2px #f8fafc}.band-row span{color:var(--muted);font-size:.87rem}.band-row strong{font-size:.9rem}
 .glossary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.glossary div{padding:13px;background:var(--panel2);border-radius:10px}.glossary dt{font-weight:850}.glossary dd{margin:4px 0 0;color:var(--muted);font-size:.88rem}
 .chart-dates{display:flex;justify-content:space-between;margin-top:5px;color:var(--muted);font-size:.78rem}
 @media(max-width:1100px){.brand-row{display:grid}.freshness{min-width:0;grid-template-columns:repeat(3,minmax(0,1fr))}.quality-badge{grid-column:1/-1}.dashboard-grid{grid-template-columns:1fr}}
-@media(max-width:760px){.wrap{width:min(calc(100% - 24px),1240px)}.site-header{padding:19px 0 14px}.score-hero{grid-template-columns:1fr;gap:20px}.kpis{grid-template-columns:1fr}.card{min-height:0}.freshness{grid-template-columns:1fr}.method-grid,.insight-grid,.glossary{grid-template-columns:1fr}.source-card{grid-template-columns:1fr}.source-meta{grid-template-columns:repeat(3,1fr);text-align:left}.chart-summary{display:grid}}
-@media(max-width:620px){main{padding-top:14px}.panel,.details-content{padding:17px}.stage-panel{padding:13px 10px}.stage-scale{gap:3px}.stage-step{min-height:55px;padding:7px 2px}.stage-step span{font-size:.64rem}.stage-step strong{font-size:.66rem;line-height:1.15}.factor-heading{grid-template-columns:1fr}.factor-score{text-align:left}.table-wrap{overflow:visible}thead{display:none}table,tbody,tr,th,td{display:block;width:100%}tbody tr{padding:11px 0;border-bottom:1px solid rgba(148,163,184,.18)}tbody th,tbody td{border:0;padding:4px 0}tbody td{display:flex;justify-content:space-between;gap:14px;text-align:right}tbody td::before{content:attr(data-label);color:var(--muted);font-weight:650}.band-row{grid-template-columns:68px 1fr;gap:5px 10px}.band-row span{grid-column:1/-1}.source-meta{grid-template-columns:1fr}}
+@media(max-width:760px){.wrap{width:min(calc(100% - 24px),1240px)}.site-header{padding:19px 0 14px}.score-hero{grid-template-columns:1fr;gap:20px}.kpis{grid-template-columns:1fr}.card{min-height:0}.freshness{grid-template-columns:1fr}.method-grid,.insight-grid,.glossary,.robustness-grid{grid-template-columns:1fr}.source-card{grid-template-columns:1fr}.source-meta{grid-template-columns:repeat(3,1fr);text-align:left}.chart-summary{display:grid}}
+@media(max-width:620px){main{padding-top:14px}.panel,.details-content{padding:17px}.stage-panel{padding:13px 10px}.stage-scale{gap:3px}.stage-step{min-height:65px;padding:7px 2px}.stage-step span,.stage-step strong{font-size:.75rem;line-height:1.15}.factor-heading{grid-template-columns:1fr}.factor-score{text-align:left}.table-wrap{overflow:visible}thead{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}table,tbody,tr,th,td{display:block;width:100%}tbody tr{padding:11px 0;border-bottom:1px solid rgba(148,163,184,.18)}tbody th,tbody td{border:0;padding:4px 0}tbody td{display:flex;justify-content:space-between;gap:14px;text-align:right}tbody td::before{content:attr(data-label);color:var(--muted);font-weight:650}.band-row{grid-template-columns:68px 1fr;gap:5px 10px}.band-row span{grid-column:1/-1}.source-meta{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
@@ -88,9 +89,9 @@ main{padding:22px 0 44px}
     de finanzas.</p>
   <div class="top-status" aria-label="Estado de la actualización">
     <span><i class="status-dot" aria-hidden="true"></i>
-      <strong>Actualizados con respaldo</strong></span>
+      <strong>Actualizados</strong></span>
     <span>Última generación:
-      <time datetime="2026-07-23T18:08:57-06:00"><strong>23 jul 2026, 18:08</strong></time></span>
+      <time datetime="2026-07-23T19:01:57-06:00"><strong>23 jul 2026, 19:01</strong></time></span>
   </div>
 </div></header>
 <main id="contenido" class="wrap" tabindex="-1">
@@ -126,7 +127,7 @@ main{padding:22px 0 44px}
     <p class="trend">Todavía no hay suficiente historial para hablar de tendencia.</p>
   </section>
 
-  <details class="data-notice"><summary>Datos principales actualizados con 2 avisos sobre fuentes</summary><ul><li>FRED no respondió para VIX; se usó la lectura de mercado alterna.</li><li>FRED no respondió para la curva 10Y–2Y; se calculó con tasas oficiales del Tesoro de EE. UU.</li></ul></details>
+
 
   <section class="plain-summary" aria-labelledby="plain-title">
     <h2 id="plain-title">En pocas palabras</h2>
@@ -180,15 +181,15 @@ main{padding:22px 0 44px}
         frentes. Esto describe el presente; no predice cuánto durará.</p>
     </article>
     <article class="card capex-card">
-      <p class="label">Riesgo de recorte de CapEx</p>
-      <h2>¿Podrían reducir el gasto en IA?
+      <p class="label">Presión para recortar gasto en IA</p>
+      <h2>¿Se observan señales de presión sobre el gasto?
         <span class="technical-name">CapEx: chips, centros de datos, energía y nube</span></h2>
-      <div class="card-value" style="color:#f8fafc">
-        35%<small> disponible</small></div>
-      <span class="level-text" style="color:#f8fafc">
-        DATOS INSUFICIENTES</span>
-      <p class="sub">Solo hay datos para 2 de 7 señales. No alcanza para afirmar que el riesgo sea bajo.</p>
-      <details class="mini-details"><summary>Ver cálculo preliminar</summary><p>17.2/100 con las señales disponibles. No es una conclusión completa.</p></details>
+      <div class="card-value" style="color:#22c55e">
+        15.9<small>/100</small></div>
+      <span class="level-text" style="color:#22c55e">
+        BAJO</span>
+      <p class="sub">Bajo según 5 de 7 señales, que representan 85% del peso. Las señales sin dato no cuentan como cero. Esto no garantiza que el gasto no vaya a recortarse y el modelo aún no tiene validación histórica.</p>
+
     </article>
   </section>
 
@@ -196,7 +197,8 @@ main{padding:22px 0 44px}
     <h2 id="history-heading">Historial reciente</h2>
     <p class="section-intro">Aquí verás si la alerta sube o baja con el
       tiempo. La escala siempre va de 0 a 100 para no exagerar cambios
-      pequeños.</p>
+      pequeños. La serie comparable de esta versión empieza el 23 de julio
+      de 2026; no rellenamos el pasado con datos actuales.</p>
 <p class="notice">El historial comparable aparecerá después de dos actualizaciones válidas.</p>
   </section>
 
@@ -395,12 +397,51 @@ main{padding:22px 0 44px}
     </div>
   </details>
 
+  <section class="panel" aria-labelledby="robustness-title">
+    <h2 id="robustness-title">¿Cambiar los pesos cambia la conclusión?</h2>
+    <p class="section-intro">Probamos 20,000 escenarios definidos de
+      pesos. Esto mide la estabilidad del cálculo actual; <strong>no es una
+      probabilidad del mercado ni un backtest histórico</strong>.</p>
+    <div class="robustness-grid">
+      <div class="robustness-card">
+        <strong>51.2–59.5/100</strong>
+        <span>En 9 de cada 10 pruebas de pesos, el marcador quedó en este
+          intervalo; el centro fue 55.5.</span>
+      </div>
+      <div class="robustness-card">
+        <strong>Conclusión estable</strong>
+        <span>En 98.4% de las pruebas de pesos —no de futuros
+          posibles— el nivel siguió siendo
+          PREPARAR.</span>
+      </div>
+      <div class="robustness-card">
+        <strong>Desde 23 jul 2026</strong>
+        <span>Empieza la validación prospectiva de la versión
+          2.0.0.</span>
+      </div>
+    </div>
+    <details class="mini-details">
+      <summary>Ver de qué bloques depende más</summary>
+      <p>Esta prueba elimina un componente por vez y reparte su peso dentro
+        del mismo grupo. Un salto grande señala dependencia, no que debamos
+        eliminarlo.</p>
+      <ul class="dependency-list"><li>Sin <strong>crédito y financiamiento</strong>: 72.7/100, alerta alta (+17.3 puntos).</li><li>Sin <strong>ruptura interna del mercado</strong>: 42.2/100, vigilar (-13.2 puntos).</li><li>Sin <strong>volatilidad y presión vendedora</strong>: 52.2/100, preparar (-3.3 puntos).</li></ul>
+      <p>No rellenamos años anteriores con datos actuales: eso usaría
+        información que el mercado todavía no conocía. La validación histórica
+        completa se publicará cuando existan insumos fechados suficientes.</p>
+      <div class="raw-links">
+        <a href="validation.json">Robustez completa (JSON)</a>
+        <a href="validation.csv">Pruebas resumidas (CSV)</a>
+      </div>
+    </details>
+  </section>
+
   <section class="panel" aria-labelledby="capex-title">
-    <h2 id="capex-title">Riesgo de recorte de CapEx</h2>
+    <h2 id="capex-title">Señales de presión sobre el CapEx</h2>
     <p class="section-intro">CapEx es el dinero que las empresas destinan a
       chips, centros de datos, energía y capacidad de nube. Este bloque
-      pregunta si podrían empezar a recortarlo.</p>
-    <div class="capex-warning" role="note"><strong>Sin conclusión: faltan datos.</strong><p>Solo hay información para 2 de 7 señales (35% del peso). No es correcto concluir que el riesgo sea bajo.</p><p class="technical-result">Cálculo preliminar con lo disponible: 17.2/100. No se usa como conclusión principal.</p></div>
+      resume presiones observables; no predice si habrá un recorte futuro.</p>
+    <div class="coverage"><strong>Lectura disponible: 15.9/100 · BAJO.</strong> Hay datos para 5 de 7 señales, que representan 85% del peso. Las señales sin dato no cuentan como cero y la lectura no garantiza que el gasto no vaya a recortarse. El modelo aún no tiene validación histórica.</div>
     <details class="section-details">
       <summary>Ver las 7 señales de gasto en IA</summary>
       <div class="details-content">
@@ -409,70 +450,71 @@ main{padding:22px 0 44px}
             <caption>N/D significa que no hay un dato utilizable. Nunca se
               convierte en cero.</caption>
             <thead><tr><th scope="col">Señal</th><th scope="col">Índice</th>
-              <th scope="col">Peso base</th><th scope="col">Peso usado</th>
-              <th scope="col">Suma</th></tr></thead>
+              <th scope="col">Peso base</th><th scope="col">Peso ajustado</th>
+              <th scope="col">Puntos que añade</th></tr></thead>
             <tbody>
         <tr>
-          <th scope="row"><strong>Guía de las grandes tecnológicas</strong>
-            <small>Sin lectura pública fechada incorporada. · Actualizado manualmente · Sin dato utilizable; no significa riesgo cero</small></th>
-          <td data-label="Índice" class="num" style="color:#94a3b8">N/D</td>
+          <th scope="row"><strong>Gasto reciente de las grandes tecnológicas</strong>
+            <small>Frente al mismo trimestre del año anterior: +84.4%; 4 empresas. · Automático</small></th>
+          <td data-label="Índice" class="num" style="color:#22c55e">0.0</td>
           <td data-label="Peso base" class="num weight">20%</td>
-          <td data-label="Peso usado" class="num">—</td>
-          <td data-label="Suma" class="num">—</td>
+          <td data-label="Peso ajustado" class="num">23.5%</td>
+          <td data-label="Puntos que añade" class="num">0.0</td>
         </tr>
         <tr>
           <th scope="row"><strong>Pulso de proveedores y semiconductores</strong>
-            <small>Semiconductores vs hyperscalers, 20 días: -4.4 puntos porcentuales. · Automático</small></th>
+            <small>En 20 días, semiconductores rindieron 4.4 puntos menos que las grandes tecnológicas. · Automático</small></th>
           <td data-label="Índice" class="num" style="color:#22c55e">0.0</td>
           <td data-label="Peso base" class="num weight">20%</td>
-          <td data-label="Peso usado" class="num">57.1%</td>
-          <td data-label="Suma" class="num">0.0</td>
+          <td data-label="Peso ajustado" class="num">23.5%</td>
+          <td data-label="Puntos que añade" class="num">0.0</td>
         </tr>
         <tr>
-          <th scope="row"><strong>Construcción, energía y cancelaciones</strong>
-            <small>Sin lectura pública fechada incorporada. · Actualizado manualmente · Sin dato utilizable; no significa riesgo cero</small></th>
-          <td data-label="Índice" class="num" style="color:#94a3b8">N/D</td>
+          <th scope="row"><strong>Gasto nominal en construcción de centros de datos</strong>
+            <small>Frente a los mismos tres meses del año anterior: +20.3%. · Automático</small></th>
+          <td data-label="Índice" class="num" style="color:#22c55e">0.0</td>
           <td data-label="Peso base" class="num weight">15%</td>
-          <td data-label="Peso usado" class="num">—</td>
-          <td data-label="Suma" class="num">—</td>
+          <td data-label="Peso ajustado" class="num">17.6%</td>
+          <td data-label="Puntos que añade" class="num">0.0</td>
         </tr>
         <tr>
-          <th scope="row"><strong>Disponibilidad y precio de GPU en nube</strong>
-            <small>Sin una fuente pública estable y redistribuible. · Actualizado manualmente · Sin dato utilizable; no significa riesgo cero</small></th>
+          <th scope="row"><strong>Precios públicos de GPU H100 en nube</strong>
+            <small>24 regiones; descuento Spot mediano 81.5%. Se archiva sin puntuar; todavía no existe una metodología aprobada. · Colector automático; todavía sin índice · Sin dato utilizable; no significa riesgo cero</small></th>
           <td data-label="Índice" class="num" style="color:#94a3b8">N/D</td>
           <td data-label="Peso base" class="num weight">10%</td>
-          <td data-label="Peso usado" class="num">—</td>
-          <td data-label="Suma" class="num">—</td>
+          <td data-label="Peso ajustado" class="num">—</td>
+          <td data-label="Puntos que añade" class="num">—</td>
         </tr>
         <tr>
           <th scope="row"><strong>Caja y capacidad de financiar</strong>
-            <small>Cobertura mediana OCF/CapEx: 1.52x. · Automático</small></th>
+            <small>El efectivo generado cubre 1.52 veces el gasto de inversión. · Automático</small></th>
           <td data-label="Índice" class="num" style="color:#eab308">40.0</td>
           <td data-label="Peso base" class="num weight">15%</td>
-          <td data-label="Peso usado" class="num">42.9%</td>
-          <td data-label="Suma" class="num">17.2</td>
+          <td data-label="Peso ajustado" class="num">17.6%</td>
+          <td data-label="Puntos que añade" class="num">7.1</td>
         </tr>
         <tr>
-          <th scope="row"><strong>Retorno y depreciación económica</strong>
-            <small>Sin lectura pública fechada incorporada. · Actualizado manualmente · Sin dato utilizable; no significa riesgo cero</small></th>
-          <td data-label="Índice" class="num" style="color:#94a3b8">N/D</td>
+          <th scope="row"><strong>Retorno operativo y uso de activos físicos</strong>
+            <small>Estimación contable amplia del retorno: 49.9/100 en 4 empresas; no aísla el retorno de IA. · Automático</small></th>
+          <td data-label="Índice" class="num" style="color:#eab308">49.9</td>
           <td data-label="Peso base" class="num weight">15%</td>
-          <td data-label="Peso usado" class="num">—</td>
-          <td data-label="Suma" class="num">—</td>
+          <td data-label="Peso ajustado" class="num">17.6%</td>
+          <td data-label="Puntos que añade" class="num">8.8</td>
         </tr>
         <tr>
           <th scope="row"><strong>Demanda financiada y circularidad</strong>
-            <small>Sin lectura pública fechada incorporada. · Actualizado manualmente · Sin dato utilizable; no significa riesgo cero</small></th>
+            <small>N/D: no existe una taxonomía pública uniforme para puntuarla. · Actualizado manualmente · Sin dato utilizable; no significa riesgo cero</small></th>
           <td data-label="Índice" class="num" style="color:#94a3b8">N/D</td>
           <td data-label="Peso base" class="num weight">5%</td>
-          <td data-label="Peso usado" class="num">—</td>
-          <td data-label="Suma" class="num">—</td>
+          <td data-label="Peso ajustado" class="num">—</td>
+          <td data-label="Puntos que añade" class="num">—</td>
         </tr></tbody>
           </table>
         </div>
-        <p class="coverage"><strong>Cobertura 35%.</strong>
-          Los faltantes se excluyen y las señales disponibles se reponderan.
-          Por eso el peso usado puede ser mayor que el peso base. Solo se
+        <p class="coverage"><strong>Cobertura 85%.</strong>
+          Esto es la parte del peso del modelo que tiene datos, no un nivel de
+          certeza. Las señales disponibles se ajustan para volver a sumar
+          100%; por eso el peso ajustado puede superar al peso base. Solo se
           publica una conclusión cuando la cobertura llega al 70%.</p>
       </div>
     </details>
@@ -510,7 +552,7 @@ main{padding:22px 0 44px}
       <p class="section-intro">El Radar usa aproximaciones del mercado de
         Estados Unidos. No cubre todo el ecosistema mundial de IA y no emite
         recomendaciones personalizadas.</p>
-      <p class="coverage"><strong>Estado: Parcial.</strong>
+      <p class="coverage"><strong>Estado: Completa.</strong>
         Mercado al 23 jul 2026; datos macro al 2026-07-17. Lecturas
         rápidas: VIX 18.70, NFCI -0.552 y curva 10Y–2Y
         0.34%.</p>
@@ -549,6 +591,33 @@ main{padding:22px 0 44px}
             <span>Automático</span>
             <time>2026-07-23</time>
             <span>Fuente alterna</span>
+          </div>
+        </li>
+        <li class="source-card">
+          <div><strong>Gasto, caja y retorno contable</strong>
+            <span><a href="https://finance.yahoo.com/" target="_blank" rel="noopener noreferrer">Estados financieros vía Yahoo Finance</a></span><small>Proxies amplios de MSFT, GOOGL, AMZN y META; no aíslan exclusivamente la inversión en IA. Edad máxima: 150 días.</small></div>
+          <div class="source-meta">
+            <span>Automático</span>
+            <time>2026-03-31</time>
+            <span>Disponible</span>
+          </div>
+        </li>
+        <li class="source-card">
+          <div><strong>Construcción privada de centros de datos</strong>
+            <span><a href="https://www.census.gov/construction/c30/xlsx/privtime.xlsx" target="_blank" rel="noopener noreferrer">U.S. Census Bureau</a></span><small>Gasto nominal en obra, sin racks ni servidores. Promedio de tres meses frente a los mismos meses del año anterior. Edad máxima: 120 días.</small></div>
+          <div class="source-meta">
+            <span>Automático mensual</span>
+            <time>2026-05-01</time>
+            <span>Disponible</span>
+          </div>
+        </li>
+        <li class="source-card">
+          <div><strong>Precios públicos de GPU H100</strong>
+            <span><a href="https://learn.microsoft.com/rest/api/cost-management/retail-prices/azure-retail-prices" target="_blank" rel="noopener noreferrer">Microsoft Azure Retail Prices API</a></span><small>Se archiva, pero no se puntúa: el precio de lista no demuestra disponibilidad de capacidad.</small></div>
+          <div class="source-meta">
+            <span>Colector automático</span>
+            <time>2026-01-01</time>
+            <span>En observación</span>
           </div>
         </li>
         <li class="source-card">
@@ -611,6 +680,8 @@ main{padding:22px 0 44px}
       <div class="raw-links">
         <a href="latest.json">Datos completos (JSON)</a>
         <a href="history.csv">Historial (CSV)</a>
+        <a href="gpu_price_history.csv">Colector de precios GPU (CSV)</a>
+        <a href="validation.json">Sensibilidad de pesos (JSON)</a>
         <a href="https://github.com/Bluxor-ai/radar-de-la-burbuja-ia">
           Código y metodología</a>
       </div>

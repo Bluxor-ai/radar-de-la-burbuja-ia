@@ -100,9 +100,10 @@
     "guidance": {
       "score": null,
       "weight": 0.2,
-      "label": "Guía de las grandes tecnológicas",
-      "reading": "Sin lectura pública fechada incorporada.",
-      "mode": "manual"
+      "label": "Gasto reciente de las grandes tecnológicas",
+      "reading": "Cambio frente al mismo trimestre del año anterior.",
+      "max_age_days": 150,
+      "mode": "automatic"
     },
     "suppliers": {
       "score": null,
@@ -114,36 +115,39 @@
     "physical_buildout": {
       "score": null,
       "weight": 0.15,
-      "label": "Construcción, energía y cancelaciones",
-      "reading": "Sin lectura pública fechada incorporada.",
-      "mode": "manual"
+      "label": "Gasto nominal en construcción de centros de datos",
+      "reading": "Promedio de tres meses frente al mismo periodo de un año antes.",
+      "max_age_days": 120,
+      "mode": "automatic"
     },
     "cloud_capacity": {
       "score": null,
       "weight": 0.1,
-      "label": "Disponibilidad y precio de GPU en nube",
-      "reading": "Sin una fuente pública estable y redistribuible.",
-      "mode": "manual"
+      "label": "Precios públicos de GPU H100 en nube",
+      "reading": "Se archiva sin puntuar; todavía no existe una metodología aprobada.",
+      "mode": "collector"
     },
     "cash_financing": {
       "score": null,
       "weight": 0.15,
       "label": "Caja y capacidad de financiar",
-      "reading": "Proxy de cobertura de CapEx con flujo operativo.",
+      "reading": "Cuántas veces el efectivo generado cubre el gasto de inversión.",
+      "max_age_days": 150,
       "mode": "automatic"
     },
     "roi_accounting": {
       "score": null,
       "weight": 0.15,
-      "label": "Retorno y depreciación económica",
-      "reading": "Sin lectura pública fechada incorporada.",
-      "mode": "manual"
+      "label": "Retorno operativo y uso de activos físicos",
+      "reading": "Estimación amplia con ingreso operativo y uso de activos físicos.",
+      "max_age_days": 150,
+      "mode": "automatic"
     },
     "financed_demand": {
       "score": null,
       "weight": 0.05,
       "label": "Demanda financiada y circularidad",
-      "reading": "Sin lectura pública fechada incorporada.",
+      "reading": "N/D: no existe una taxonomía pública uniforme para puntuarla.",
       "mode": "manual"
     }
   }

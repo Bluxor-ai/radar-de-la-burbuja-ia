@@ -16,7 +16,8 @@ probabilidades, pronósticos exactos ni recomendaciones de inversión**.
 
 La página se reconstruye a las 06:17 y 18:17, hora de Ciudad de México, mediante
 GitHub Actions. Cada lectura expone fecha, calidad, cobertura, fuentes y
-descargas en JSON/CSV.
+descargas en JSON/CSV. El enlace no tiene una fecha automática de caducidad
+mientras GitHub Pages siga habilitado.
 
 ## Qué calcula
 
@@ -45,16 +46,36 @@ Lecturas automáticas:
 - VIX y curva del Tesoro 10Y–2Y mediante FRED, con una lectura de mercado alterna
   para VIX y tasas oficiales del Tesoro como respaldo de la curva.
 - National Financial Conditions Index (NFCI) de la Reserva Federal de Chicago.
-- Medias móviles, amplitud, drawdowns, volatilidad, distribución y dos proxies
-  del mosaico de CapEx.
+- Medias móviles, amplitud, drawdowns, volatilidad y distribución.
+- Cinco señales puntuadas del mosaico de CapEx: gasto trimestral, pulso de
+  proveedores, construcción de centros de datos de Census, cobertura de caja y
+  retorno contable amplio.
+- Un colector de precios públicos H100 de Azure que se archiva sin puntuar
+  porque el precio de lista no demuestra disponibilidad de capacidad.
 
 Lecturas lentas y fechadas en `config.json`: CAPE, capitalización bursátil/PIB,
 concentración top 10, margin debt, oferta de acciones y EBP. Si una lectura
 vence, el sitio lo señala. Los componentes de CapEx sin una fuente pública,
 fechada y redistribuible aparecen como `N/D` y se excluyen del cálculo; nunca se
 convierten silenciosamente en cero. El sitio solo presenta una conclusión de
-CapEx cuando la cobertura llega al 70%; debajo de ese umbral muestra **datos
-insuficientes** y deja el cálculo parcial como referencia secundaria.
+CapEx cuando la cobertura llega al 70%. La cobertura normal es 85%: precio de
+nube y circularidad no se fuerzan a producir un índice que sus fuentes no
+pueden sostener.
+
+## Historial y validación
+
+La versión 2.0.0 conserva cada ejecución válida, incluso si el resultado se
+repite. El historial incluye los siete componentes, una versión del modelo y un
+identificador de ejecución; solo elimina reintentos del mismo proceso.
+
+Las comparaciones de 7 y 30 días usan una lectura realmente anterior al momento
+objetivo. La serie prospectiva comparable comienza el 23 de julio de 2026. No
+se rellenan años anteriores con valores actuales.
+
+Cada actualización publica también 20,000 escenarios deterministas de pesos,
+pruebas sin un bloque y cambios de ±25% por componente. Esto mide robustez del
+cálculo actual, no probabilidad del mercado ni capacidad predictiva. Los límites
+y el plan de backtest están en [VALIDACION.md](VALIDACION.md).
 
 ## Ejecutar localmente
 
