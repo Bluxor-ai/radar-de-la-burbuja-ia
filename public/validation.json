@@ -5,7 +5,7 @@
   "seed": 20260723,
   "samples": 20000,
   "base": {
-    "score": 55.22907583106706,
+    "score": 54.98563872659165,
     "regime": "PREPARAR",
     "structural_weight": 0.35,
     "confirmation_weight": 0.65,
@@ -17,7 +17,7 @@
       },
       {
         "label": "Concentración y subida temática",
-        "score": 77.79430655742863,
+        "score": 78.2790291847268,
         "weight": 0.1
       },
       {
@@ -42,7 +42,7 @@
       },
       {
         "label": "Volatilidad y presión vendedora",
-        "score": 66.24750348070245,
+        "score": 64.30144103266765,
         "weight": 0.15
       }
     ]
@@ -51,38 +51,38 @@
     "scenario_a_fixed_group_shares": {
       "method": "Cada peso recibe un multiplicador uniforme entre 0.75 y 1.25. Los primeros cuatro se renormalizan a 35% y los últimos tres a 65%.",
       "score_percentiles": {
-        "p5": 51.94119494351217,
-        "p50": 55.23058993188587,
-        "p95": 58.482998027774656
+        "p5": 51.70652207958443,
+        "p50": 54.98426311529384,
+        "p95": 58.22656653495851
       },
-      "base_regime_retained_pct": 99.86500000000001,
+      "base_regime_retained_pct": 99.81,
       "regime_distribution_pct": {
         "NORMAL": 0.0,
-        "VIGILAR": 0.135,
-        "PREPARAR": 99.86500000000001,
+        "VIGILAR": 0.19,
+        "PREPARAR": 99.81,
         "ALERTA ALTA": 0.0,
         "ALERTA CRÍTICA": 0.0
       },
-      "minimum_score": 49.603005486934165,
-      "maximum_score": 60.955121888782934
+      "minimum_score": 49.40407577933059,
+      "maximum_score": 60.65446152659659
     },
     "scenario_b_variable_structural_share": {
       "method": "Usa los mismos multiplicadores por bloque; el peso estructural se sortea con distribución triangular 25%/35%/45% y confirmación recibe el resto.",
       "score_percentiles": {
-        "p5": 51.059793240473034,
-        "p50": 55.30740335857464,
-        "p95": 59.16912250823678
+        "p5": 50.81276828632375,
+        "p50": 55.061142182293196,
+        "p95": 58.931680680132146
       },
-      "base_regime_retained_pct": 98.275,
+      "base_regime_retained_pct": 97.84,
       "regime_distribution_pct": {
         "NORMAL": 0.0,
-        "VIGILAR": 1.725,
-        "PREPARAR": 98.275,
+        "VIGILAR": 2.16,
+        "PREPARAR": 97.84,
         "ALERTA ALTA": 0.0,
         "ALERTA CRÍTICA": 0.0
       },
-      "minimum_score": 46.82147136747366,
-      "maximum_score": 62.35508602298377
+      "minimum_score": 46.55436409457768,
+      "maximum_score": 62.15854396911578
     }
   },
   "leave_one_out": [
@@ -90,56 +90,56 @@
       "label": "Valuación y expectativas",
       "omitted_score": 94.46280991735537,
       "omitted_weight": 0.12,
-      "score": 52.189638239240146,
-      "change_from_base": -3.0394375918269105,
+      "score": 51.971491010971604,
+      "change_from_base": -3.014147715620048,
       "regime": "PREPARAR"
     },
     {
       "label": "Concentración y subida temática",
-      "omitted_score": 77.79430655742863,
+      "omitted_score": 78.2790291847268,
       "omitted_weight": 0.1,
-      "score": 55.2324308143895,
-      "change_from_base": 0.0033549833224455483,
+      "score": 54.94052144718428,
+      "change_from_base": -0.045117279407371313,
       "regime": "PREPARAR"
     },
     {
       "label": "Apalancamiento y reversión",
       "omitted_score": 57.767836344757825,
       "omitted_weight": 0.08,
-      "score": 57.308380137064354,
-      "change_from_base": 2.0793043059972973,
+      "score": 57.079305184508904,
+      "change_from_base": 2.0936664579172515,
       "regime": "PREPARAR"
     },
     {
       "label": "Oferta de nuevas acciones",
       "omitted_score": 70.0,
       "omitted_weight": 0.05,
-      "score": 55.68514162330142,
-      "change_from_base": 0.4560657922343623,
+      "score": 55.44978322928098,
+      "change_from_base": 0.4641445026893294,
       "regime": "PREPARAR"
     },
     {
       "label": "Crédito y financiamiento",
       "omitted_score": 0.0,
       "omitted_weight": 0.25,
-      "score": 72.72450150460514,
-      "change_from_base": 17.495425673538087,
+      "score": 72.29862104562648,
+      "change_from_base": 17.312982319034823,
       "regime": "ALERTA ALTA"
     },
     {
       "label": "Ruptura interna del mercado",
       "omitted_score": 72.22222222222223,
       "omitted_weight": 0.25,
-      "score": 43.38422372682736,
-      "change_from_base": -11.844852104239699,
+      "score": 42.95834326784869,
+      "change_from_base": -12.027295458742962,
       "regime": "VIGILAR"
     },
     {
       "label": "Volatilidad y presión vendedora",
-      "omitted_score": 66.24750348070245,
+      "omitted_score": 64.30144103266765,
       "omitted_weight": 0.15,
-      "score": 50.70861697562836,
-      "change_from_base": -4.520458855438697,
+      "score": 50.757089238358176,
+      "change_from_base": -4.228549488233476,
       "regime": "PREPARAR"
     }
   ],
@@ -149,15 +149,15 @@
       "base_weight": 0.12,
       "weight_minus_25pct": {
         "target_weight": 0.09,
-        "score": 53.89156216903451,
+        "score": 53.63982607236108,
         "regime": "PREPARAR",
-        "change_from_base": -1.3375136620325492
+        "change_from_base": -1.3458126542305706
       },
       "weight_plus_25pct": {
         "target_weight": 0.15,
-        "score": 56.5665894930996,
+        "score": 56.33145138082222,
         "regime": "PREPARAR",
-        "change_from_base": 1.337513662032542
+        "change_from_base": 1.3458126542305706
       }
     },
     {
@@ -165,15 +165,15 @@
       "base_weight": 0.1,
       "weight_minus_25pct": {
         "target_weight": 0.07500000000000001,
-        "score": 54.60226386644591,
+        "score": 54.33860010275457,
         "regime": "PREPARAR",
-        "change_from_base": -0.6268119646211474
+        "change_from_base": -0.6470386238370835
       },
       "weight_plus_25pct": {
         "target_weight": 0.125,
-        "score": 55.855887795688204,
+        "score": 55.63267735042874,
         "regime": "PREPARAR",
-        "change_from_base": 0.6268119646211474
+        "change_from_base": 0.6470386238370907
       }
     },
     {
@@ -181,15 +181,15 @@
       "base_weight": 0.08,
       "weight_minus_25pct": {
         "target_weight": 0.06,
-        "score": 55.17388538511725,
+        "score": 54.92515616967499,
         "regime": "PREPARAR",
-        "change_from_base": -0.05519044594980471
+        "change_from_base": -0.06048255691666071
       },
       "weight_plus_25pct": {
         "target_weight": 0.1,
-        "score": 55.284266277016854,
+        "score": 55.04612128350831,
         "regime": "PREPARAR",
-        "change_from_base": 0.055190445949797606
+        "change_from_base": 0.06048255691666071
       }
     },
     {
@@ -197,15 +197,15 @@
       "base_weight": 0.05,
       "weight_minus_25pct": {
         "target_weight": 0.037500000000000006,
-        "score": 55.03472156568637,
+        "score": 54.78808134141524,
         "regime": "PREPARAR",
-        "change_from_base": -0.19435426538068867
+        "change_from_base": -0.19755738517640964
       },
       "weight_plus_25pct": {
         "target_weight": 0.0625,
-        "score": 55.42343009644776,
+        "score": 55.18319611176808,
         "regime": "PREPARAR",
-        "change_from_base": 0.19435426538070288
+        "change_from_base": 0.19755738517643096
       }
     },
     {
@@ -213,15 +213,15 @@
       "base_weight": 0.25,
       "weight_minus_25pct": {
         "target_weight": 0.1875,
-        "score": 59.83149881698931,
+        "score": 59.56777528714096,
         "regime": "PREPARAR",
-        "change_from_base": 4.602422985922253
+        "change_from_base": 4.5821365605493085
       },
       "weight_plus_25pct": {
         "target_weight": 0.3125,
-        "score": 50.6266528451448,
+        "score": 50.403502166042344,
         "regime": "PREPARAR",
-        "change_from_base": -4.60242298592226
+        "change_from_base": -4.5821365605493085
       }
     },
     {
@@ -229,15 +229,15 @@
       "base_weight": 0.25,
       "weight_minus_25pct": {
         "target_weight": 0.1875,
-        "score": 53.81298029847079,
+        "score": 53.54925676862244,
         "regime": "PREPARAR",
-        "change_from_base": -1.416095532596266
+        "change_from_base": -1.4363819579692105
       },
       "weight_plus_25pct": {
         "target_weight": 0.3125,
-        "score": 56.645171363663316,
+        "score": 56.42202068456086,
         "regime": "PREPARAR",
-        "change_from_base": 1.416095532596259
+        "change_from_base": 1.4363819579692105
       }
     },
     {
@@ -245,15 +245,15 @@
       "base_weight": 0.15,
       "weight_minus_25pct": {
         "target_weight": 0.11249999999999999,
-        "score": 54.74296872887726,
+        "score": 54.57464744838243,
         "regime": "PREPARAR",
-        "change_from_base": -0.48610710218979847
+        "change_from_base": -0.41099127820922376
       },
       "weight_plus_25pct": {
         "target_weight": 0.1875,
-        "score": 55.715182933256855,
+        "score": 55.39663000480088,
         "regime": "PREPARAR",
-        "change_from_base": 0.48610710218979847
+        "change_from_base": 0.41099127820923087
       }
     }
   ],
@@ -282,7 +282,7 @@
     "one_at_a_time": "Se reduce o aumenta un peso 25% respecto de su valor base y se redistribuye el resto proporcionalmente."
   },
   "model_version": "2.0.0",
-  "generated_at": "2026-07-28T08:38:23-06:00",
+  "generated_at": "2026-07-28T21:41:19-06:00",
   "market_as_of": "2026-07-28",
   "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
   "historical_validation": {
