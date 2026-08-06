@@ -887,11 +887,11 @@
     }
   },
   "data_quality": {
-    "status": "Completa",
-    "warnings": [],
-    "source_fallback_count": 2,
-    "capex_coverage": 0.85,
-    "capex_status": "Suficiente"
+    "status": "Respaldo",
+    "warnings": [
+      "La actualización en vivo falló; se muestra la última lectura guardada."
+    ],
+    "capex_coverage": 0.85
   },
   "sources": [
     {
@@ -1017,5 +1017,8 @@
     "equity_supply": "2026-H1",
     "ebp": "2026-06"
   },
-  "privacy": "Sitio público sin posiciones, cuentas, órdenes, correos ni datos personales."
+  "privacy": "Sitio público sin posiciones, cuentas, órdenes, correos ni datos personales.",
+  "stale": true,
+  "stale_reason": "La actualización en vivo falló; se muestra la última lectura guardada.",
+  "served_at": "2026-08-06T08:35:27-06:00"
 }
