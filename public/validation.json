@@ -122,8 +122,8 @@
       "label": "Crédito y financiamiento",
       "omitted_score": 0.0,
       "omitted_weight": 0.25,
-      "score": 56.66029696789694,
-      "change_from_base": 10.807751166567279,
+      "score": 56.66029696789693,
+      "change_from_base": 10.807751166567272,
       "regime": "PREPARAR"
     },
     {
@@ -138,8 +138,8 @@
       "label": "Volatilidad y presión vendedora",
       "omitted_score": 51.80531285490687,
       "omitted_weight": 0.15,
-      "score": 40.93823035457511,
-      "change_from_base": -4.91431544675455,
+      "score": 40.93823035457512,
+      "change_from_base": -4.914315446754543,
       "regime": "VIGILAR"
     }
   ],
@@ -213,9 +213,9 @@
       "base_weight": 0.25,
       "weight_minus_25pct": {
         "target_weight": 0.1875,
-        "score": 49.67359128477379,
+        "score": 49.6735912847738,
         "regime": "VIGILAR",
-        "change_from_base": 3.8210454834441308
+        "change_from_base": 3.821045483444138
       },
       "weight_plus_25pct": {
         "target_weight": 0.3125,
@@ -282,7 +282,7 @@
     "one_at_a_time": "Se reduce o aumenta un peso 25% respecto de su valor base y se redistribuye el resto proporcionalmente."
   },
   "model_version": "2.0.0",
-  "generated_at": "2026-08-09T07:16:36-06:00",
+  "generated_at": "2026-08-09T20:35:19-06:00",
   "market_as_of": "2026-08-07",
   "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
   "historical_validation": {

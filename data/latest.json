@@ -4,9 +4,9 @@
   "radar_model_version": "2.0.0",
   "capex_model_version": "2.0.0",
   "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
-  "code_revision": "f7166b16ef5e57c93dbeb1b9d0bd5d1703514f09",
-  "observation_id": "github:31315346793",
-  "generated_at": "2026-08-09T07:16:36-06:00",
+  "code_revision": "e99e4b790c281eadfd505496796209ac7d10a652",
+  "observation_id": "github:31350154392",
+  "generated_at": "2026-08-09T20:35:19-06:00",
   "market_as_of": "2026-08-07",
   "macro_as_of": "2026-07-31",
   "bubble_score": 45.85254580132966,
@@ -187,8 +187,8 @@
         "label": "Crédito y financiamiento",
         "omitted_score": 0.0,
         "omitted_weight": 0.25,
-        "score": 56.66029696789694,
-        "change_from_base": 10.807751166567279,
+        "score": 56.66029696789693,
+        "change_from_base": 10.807751166567272,
         "regime": "PREPARAR"
       },
       {
@@ -203,8 +203,8 @@
         "label": "Volatilidad y presión vendedora",
         "omitted_score": 51.80531285490687,
         "omitted_weight": 0.15,
-        "score": 40.93823035457511,
-        "change_from_base": -4.91431544675455,
+        "score": 40.93823035457512,
+        "change_from_base": -4.914315446754543,
         "regime": "VIGILAR"
       }
     ],
@@ -278,9 +278,9 @@
         "base_weight": 0.25,
         "weight_minus_25pct": {
           "target_weight": 0.1875,
-          "score": 49.67359128477379,
+          "score": 49.6735912847738,
           "regime": "VIGILAR",
-          "change_from_base": 3.8210454834441308
+          "change_from_base": 3.821045483444138
         },
         "weight_plus_25pct": {
           "target_weight": 0.3125,
@@ -347,7 +347,7 @@
       "one_at_a_time": "Se reduce o aumenta un peso 25% respecto de su valor base y se redistribuye el resto proporcionalmente."
     },
     "model_version": "2.0.0",
-    "generated_at": "2026-08-09T07:16:36-06:00",
+    "generated_at": "2026-08-09T20:35:19-06:00",
     "market_as_of": "2026-08-07",
     "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
     "historical_validation": {
@@ -439,10 +439,10 @@
   "inputs": {
     "excess_return_pp": 120.2442438934534,
     "relative_returns_2y_pp": {
-      "QQQ": 14.271352483132937,
+      "QQQ": 14.271363671306524,
       "SMH": 120.2442438934534,
-      "SOXX": 117.35656594962194,
-      "NVDA": 60.586461842945916
+      "SOXX": 117.35660566488471,
+      "NVDA": 60.58647674117168
     },
     "vix": 14.899999618530273,
     "vix_5d_change": -0.06816761527143333,
@@ -605,8 +605,8 @@
         "weighted_median_growth_yoy_percent": 100.14256437672637,
         "capped_weights": {
           "GOOGL": 0.2897481376374601,
-          "MSFT": 0.23091360572736946,
           "AMZN": 0.2850978748105389,
+          "MSFT": 0.23091360572736946,
           "META": 0.19424038182463155
         },
         "score": 0.0,
@@ -650,14 +650,14 @@
       "score": 0.0,
       "formula": "clamp(50 - 2.5 × crecimiento interanual en puntos porcentuales)",
       "available_observations": 150,
-      "fetched_at": "2026-08-09T13:16:40+00:00",
+      "fetched_at": "2026-08-10T02:35:22+00:00",
       "note": "Proxy mensual de actividad de construcción de centros de datos. No observa cancelaciones individuales ni conexiones eléctricas."
     },
     "cloud_gpu_snapshot": {
       "source": "https://prices.azure.com/api/retail/prices",
       "sku": "Standard_ND96isr_H100_v5",
       "currency": "USD",
-      "fetched_at": "2026-08-09T13:16:40+00:00",
+      "fetched_at": "2026-08-10T02:35:22+00:00",
       "price_effective_as_of": "2026-01-01",
       "median_discount": 0.8151999999999999,
       "median_discount_percent": 81.52,
