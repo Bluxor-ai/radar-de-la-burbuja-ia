@@ -887,13 +887,11 @@
     }
   },
   "data_quality": {
-    "status": "Parcial",
+    "status": "Respaldo",
     "warnings": [
-      "Concentración del S&P 500 está vencida (32 días; máximo 30)."
+      "La actualización en vivo falló; se muestra la última lectura guardada."
     ],
-    "source_fallback_count": 3,
-    "capex_coverage": 0.85,
-    "capex_status": "Suficiente"
+    "capex_coverage": 0.85
   },
   "sources": [
     {
@@ -1019,5 +1017,8 @@
     "equity_supply": "2026-H1",
     "ebp": "2026-06"
   },
-  "privacy": "Sitio público sin posiciones, cuentas, órdenes, correos ni datos personales."
+  "privacy": "Sitio público sin posiciones, cuentas, órdenes, correos ni datos personales.",
+  "stale": true,
+  "stale_reason": "La actualización en vivo falló; se muestra la última lectura guardada.",
+  "served_at": "2026-08-22T07:01:21-06:00"
 }
