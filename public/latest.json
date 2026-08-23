@@ -4,9 +4,9 @@
   "radar_model_version": "2.0.0",
   "capex_model_version": "2.0.0",
   "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
-  "code_revision": "f76021298899413c85199a706f2b45603c49c589",
-  "observation_id": "github:32611712195",
-  "generated_at": "2026-08-22T20:00:46-06:00",
+  "code_revision": "b549bdbfe32624a0853a6cc7e7f770df014d7f75",
+  "observation_id": "github:32641123441",
+  "generated_at": "2026-08-23T07:03:03-06:00",
   "market_as_of": "2026-08-21",
   "macro_as_of": "2026-08-14",
   "bubble_score": 42.95339402497107,
@@ -347,7 +347,7 @@
       "one_at_a_time": "Se reduce o aumenta un peso 25% respecto de su valor base y se redistribuye el resto proporcionalmente."
     },
     "model_version": "2.0.0",
-    "generated_at": "2026-08-22T20:00:46-06:00",
+    "generated_at": "2026-08-23T07:03:03-06:00",
     "market_as_of": "2026-08-21",
     "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
     "historical_validation": {
@@ -439,10 +439,10 @@
   "inputs": {
     "excess_return_pp": 87.46459388788313,
     "relative_returns_2y_pp": {
-      "QQQ": 10.353942854602206,
+      "QQQ": 10.353933002539929,
       "SMH": 87.46459388788313,
-      "SOXX": 86.24074915007816,
-      "NVDA": 31.229657126731713
+      "SOXX": 86.24079476770964,
+      "NVDA": 31.22966771674276
     },
     "vix": 15.130000114440918,
     "vix_5d_change": 0.06175439399585381,
@@ -604,10 +604,10 @@
         "status": "available",
         "weighted_median_growth_yoy_percent": 100.14256437672637,
         "capped_weights": {
-          "MSFT": 0.23091360572736946,
           "GOOGL": 0.2897481376374601,
-          "META": 0.19424038182463155,
-          "AMZN": 0.2850978748105389
+          "AMZN": 0.2850978748105389,
+          "MSFT": 0.23091360572736946,
+          "META": 0.19424038182463155
         },
         "score": 0.0,
         "formula": "clamp(50 - 2.5 × crecimiento interanual ponderado en puntos porcentuales)"
@@ -650,14 +650,14 @@
       "score": 0.0,
       "formula": "clamp(50 - 2.5 × crecimiento interanual en puntos porcentuales)",
       "available_observations": 150,
-      "fetched_at": "2026-08-23T02:00:49+00:00",
+      "fetched_at": "2026-08-23T13:03:06+00:00",
       "note": "Proxy mensual de actividad de construcción de centros de datos. No observa cancelaciones individuales ni conexiones eléctricas."
     },
     "cloud_gpu_snapshot": {
       "source": "https://prices.azure.com/api/retail/prices",
       "sku": "Standard_ND96isr_H100_v5",
       "currency": "USD",
-      "fetched_at": "2026-08-23T02:00:49+00:00",
+      "fetched_at": "2026-08-23T13:03:06+00:00",
       "price_effective_as_of": "2026-01-01",
       "median_discount": 0.8151999999999999,
       "median_discount_percent": 81.52,
@@ -889,7 +889,7 @@
   "data_quality": {
     "status": "Parcial",
     "warnings": [
-      "Concentración del S&P 500 está vencida (33 días; máximo 30)."
+      "Concentración del S&P 500 está vencida (34 días; máximo 30)."
     ],
     "source_fallback_count": 3,
     "capex_coverage": 0.85,
@@ -963,7 +963,7 @@
       "as_of": "2026-07-17",
       "mode": "Manual fechado",
       "status": "Disponible",
-      "note": "Edad: 36 días; máximo: 45."
+      "note": "Edad: 37 días; máximo: 45."
     },
     {
       "label": "Capitalización bursátil / PIB",
@@ -972,7 +972,7 @@
       "as_of": "2026-07-02",
       "mode": "Manual fechado",
       "status": "Disponible",
-      "note": "Edad: 51 días; máximo: 90."
+      "note": "Edad: 52 días; máximo: 90."
     },
     {
       "label": "Concentración del S&P 500",
@@ -981,7 +981,7 @@
       "as_of": "2026-07-20",
       "mode": "Manual fechado",
       "status": "Vencida",
-      "note": "Edad: 33 días; máximo: 30."
+      "note": "Edad: 34 días; máximo: 30."
     },
     {
       "label": "Deuda de margen",
@@ -990,7 +990,7 @@
       "as_of": "2026-06",
       "mode": "Manual fechado",
       "status": "Disponible",
-      "note": "Edad: 53 días; máximo: 75."
+      "note": "Edad: 54 días; máximo: 75."
     },
     {
       "label": "Emisiones de acciones",
@@ -999,7 +999,7 @@
       "as_of": "2026-H1",
       "mode": "Manual fechado",
       "status": "Disponible",
-      "note": "Edad: 53 días; máximo: 220."
+      "note": "Edad: 54 días; máximo: 220."
     },
     {
       "label": "Prima por riesgo crediticio (EBP)",
@@ -1008,7 +1008,7 @@
       "as_of": "2026-06",
       "mode": "Manual fechado",
       "status": "Disponible",
-      "note": "Edad: 53 días; máximo: 75."
+      "note": "Edad: 54 días; máximo: 75."
     }
   ],
   "slow_inputs_as_of": {
