@@ -887,15 +887,11 @@
     }
   },
   "data_quality": {
-    "status": "Parcial",
+    "status": "Respaldo",
     "warnings": [
-      "CapEx: los estados financieros superan su edad máxima.",
-      "El mosaico de CapEx tiene 35% de cobertura; los faltantes se muestran como N/D.",
-      "Concentración del S&P 500 está vencida (41 días; máximo 30)."
+      "La actualización en vivo falló; se muestra la última lectura guardada."
     ],
-    "source_fallback_count": 4,
-    "capex_coverage": 0.35,
-    "capex_status": "Datos insuficientes"
+    "capex_coverage": 0.35
   },
   "sources": [
     {
@@ -1021,5 +1017,8 @@
     "equity_supply": "2026-H1",
     "ebp": "2026-06"
   },
-  "privacy": "Sitio público sin posiciones, cuentas, órdenes, correos ni datos personales."
+  "privacy": "Sitio público sin posiciones, cuentas, órdenes, correos ni datos personales.",
+  "stale": true,
+  "stale_reason": "La actualización en vivo falló; se muestra la última lectura guardada.",
+  "served_at": "2026-08-31T13:08:25-06:00"
 }
