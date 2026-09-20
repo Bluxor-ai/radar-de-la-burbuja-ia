@@ -245,15 +245,15 @@
       "base_weight": 0.15,
       "weight_minus_25pct": {
         "target_weight": 0.11249999999999999,
-        "score": 34.14422201882273,
+        "score": 34.14422201882274,
         "regime": "NORMAL",
-        "change_from_base": -0.29038704351675904
+        "change_from_base": -0.29038704351675193
       },
       "weight_plus_25pct": {
         "target_weight": 0.1875,
-        "score": 34.72499610585625,
+        "score": 34.72499610585624,
         "regime": "NORMAL",
-        "change_from_base": 0.29038704351675904
+        "change_from_base": 0.29038704351675193
       }
     }
   ],
@@ -282,7 +282,7 @@
     "one_at_a_time": "Se reduce o aumenta un peso 25% respecto de su valor base y se redistribuye el resto proporcionalmente."
   },
   "model_version": "2.0.0",
-  "generated_at": "2026-09-19T09:53:55-06:00",
+  "generated_at": "2026-09-19T22:55:12-06:00",
   "market_as_of": "2026-09-18",
   "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
   "historical_validation": {
