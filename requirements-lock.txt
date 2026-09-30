@@ -650,7 +650,7 @@ websockets==16.1.1 \
     --hash=sha256:fce6c48559c86d1ac3632ccb1bebc7d5442fbe79bd9bb0e40379ee54be2a4051 \
     --hash=sha256:fd46fff7eb62c24804d234f0051c7a8ea81285ad63e0337d3dcf33ca82aee58a
     # via yfinance
-yfinance==0.2.66 \
-    --hash=sha256:511a1a40a687f277aae3a02543009a8aeaa292fce5509671f58915078aebb5c7 \
-    --hash=sha256:fae354cc1649109444b2c84194724afcc52c2a7799551ce44c739424ded6af9c
+yfinance==1.5.2 \
+    --hash=sha256:197fc03485c246547a5a9184956c60150ea33b6f740d877e02a97f123d5cd2b9 \
+    --hash=sha256:5935d457fc62cf2f7e9bf1b2d019a8fec8fb0072f58a095eb53740b70a6a06ed
     # via -r requirements.txt
