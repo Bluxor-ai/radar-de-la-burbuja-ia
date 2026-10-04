@@ -4,9 +4,9 @@
   "radar_model_version": "2.0.0",
   "capex_model_version": "2.0.0",
   "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
-  "code_revision": "987998291767e3740c9b31a836770a7fd1924d1e",
-  "observation_id": "github:37136328902",
-  "generated_at": "2026-10-03T10:18:43-06:00",
+  "code_revision": "f683df9ae6eb4508b18b9833ab6c80993c91c3f2",
+  "observation_id": "github:37181173950",
+  "generated_at": "2026-10-03T23:54:25-06:00",
   "market_as_of": "2026-10-02",
   "macro_as_of": "2026-09-25",
   "bubble_score": 32.991306614217194,
@@ -347,7 +347,7 @@
       "one_at_a_time": "Se reduce o aumenta un peso 25% respecto de su valor base y se redistribuye el resto proporcionalmente."
     },
     "model_version": "2.0.0",
-    "generated_at": "2026-10-03T10:18:43-06:00",
+    "generated_at": "2026-10-03T23:54:25-06:00",
     "market_as_of": "2026-10-02",
     "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
     "historical_validation": {
@@ -439,10 +439,10 @@
   "inputs": {
     "excess_return_pp": 118.67950867709496,
     "relative_returns_2y_pp": {
-      "QQQ": 17.77027066732144,
+      "QQQ": 17.770250964299294,
       "SMH": 118.67950867709496,
-      "SOXX": 117.94232513734278,
-      "NVDA": 55.44188689534266
+      "SOXX": 117.9423420820331,
+      "NVDA": 55.44189907130457
     },
     "vix": 15.3100004196167,
     "vix_5d_change": 0.029589814219495914,
@@ -604,9 +604,9 @@
         "status": "available",
         "weighted_median_growth_yoy_percent": 100.14256437672637,
         "capped_weights": {
-          "GOOGL": 0.2897481376374601,
           "MSFT": 0.23091360572736946,
           "META": 0.19424038182463155,
+          "GOOGL": 0.2897481376374601,
           "AMZN": 0.2850978748105389
         },
         "score": 0.0,
@@ -650,14 +650,14 @@
       "score": 0.0,
       "formula": "clamp(50 - 2.5 × crecimiento interanual en puntos porcentuales)",
       "available_observations": 152,
-      "fetched_at": "2026-10-03T16:18:45+00:00",
+      "fetched_at": "2026-10-04T05:54:27+00:00",
       "note": "Proxy mensual de actividad de construcción de centros de datos. No observa cancelaciones individuales ni conexiones eléctricas."
     },
     "cloud_gpu_snapshot": {
       "source": "https://prices.azure.com/api/retail/prices",
       "sku": "Standard_ND96isr_H100_v5",
       "currency": "USD",
-      "fetched_at": "2026-10-03T16:18:49+00:00",
+      "fetched_at": "2026-10-04T05:54:27+00:00",
       "price_effective_as_of": "2026-01-01",
       "median_discount": 0.8151999999999999,
       "median_discount_percent": 81.52,
