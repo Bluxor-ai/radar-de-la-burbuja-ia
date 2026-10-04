@@ -887,19 +887,11 @@
     }
   },
   "data_quality": {
-    "status": "Parcial",
+    "status": "Respaldo",
     "warnings": [
-      "CapEx: los estados financieros superan su edad máxima.",
-      "El mosaico de CapEx tiene 35% de cobertura; los faltantes se muestran como N/D.",
-      "CAPE de Shiller está vencida (78 días; máximo 45).",
-      "Capitalización bursátil / PIB está vencida (93 días; máximo 90).",
-      "Concentración del S&P 500 está vencida (75 días; máximo 30).",
-      "Deuda de margen está vencida (95 días; máximo 75).",
-      "Prima por riesgo crediticio (EBP) está vencida (95 días; máximo 75)."
+      "La actualización en vivo falló; se muestra la última lectura guardada."
     ],
-    "source_fallback_count": 8,
-    "capex_coverage": 0.35,
-    "capex_status": "Datos insuficientes"
+    "capex_coverage": 0.35
   },
   "sources": [
     {
@@ -1025,5 +1017,8 @@
     "equity_supply": "2026-H1",
     "ebp": "2026-06"
   },
-  "privacy": "Sitio público sin posiciones, cuentas, órdenes, correos ni datos personales."
+  "privacy": "Sitio público sin posiciones, cuentas, órdenes, correos ni datos personales.",
+  "stale": true,
+  "stale_reason": "La actualización en vivo falló; se muestra la última lectura guardada.",
+  "served_at": "2026-10-04T10:51:08-06:00"
 }
