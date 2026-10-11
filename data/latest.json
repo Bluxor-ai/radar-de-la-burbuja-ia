@@ -4,9 +4,9 @@
   "radar_model_version": "2.0.0",
   "capex_model_version": "2.0.0",
   "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
-  "code_revision": "c8ec2e1e972fd0766214953051b295ac7cc9ce9a",
-  "observation_id": "github:38115916533",
-  "generated_at": "2026-10-10T23:48:09-06:00",
+  "code_revision": "93f7edb6e3e05f5998940becbf0d8d48711087b1",
+  "observation_id": "github:38160673774",
+  "generated_at": "2026-10-11T11:41:56-06:00",
   "market_as_of": "2026-10-09",
   "macro_as_of": "2026-10-02",
   "bubble_score": 33.12799497679232,
@@ -230,9 +230,9 @@
         "base_weight": 0.1,
         "weight_minus_25pct": {
           "target_weight": 0.07500000000000001,
-          "score": 31.623007864661204,
+          "score": 31.6230078646612,
           "regime": "NORMAL",
-          "change_from_base": -1.5049871121311185
+          "change_from_base": -1.504987112131122
         },
         "weight_plus_25pct": {
           "target_weight": 0.125,
@@ -262,9 +262,9 @@
         "base_weight": 0.05,
         "weight_minus_25pct": {
           "target_weight": 0.037500000000000006,
-          "score": 32.642837015960644,
+          "score": 32.64283701596064,
           "regime": "NORMAL",
-          "change_from_base": -0.4851579608316783
+          "change_from_base": -0.4851579608316854
         },
         "weight_plus_25pct": {
           "target_weight": 0.0625,
@@ -284,9 +284,9 @@
         },
         "weight_plus_25pct": {
           "target_weight": 0.3125,
-          "score": 30.37195835835592,
+          "score": 30.371958358355915,
           "regime": "NORMAL",
-          "change_from_base": -2.7560366184364042
+          "change_from_base": -2.756036618436408
         }
       },
       {
@@ -300,9 +300,9 @@
         },
         "weight_plus_25pct": {
           "target_weight": 0.3125,
-          "score": 30.413625025022586,
+          "score": 30.413625025022583,
           "regime": "NORMAL",
-          "change_from_base": -2.7143699517697364
+          "change_from_base": -2.71436995176974
         }
       },
       {
@@ -347,7 +347,7 @@
       "one_at_a_time": "Se reduce o aumenta un peso 25% respecto de su valor base y se redistribuye el resto proporcionalmente."
     },
     "model_version": "2.0.0",
-    "generated_at": "2026-10-10T23:48:09-06:00",
+    "generated_at": "2026-10-11T11:41:56-06:00",
     "market_as_of": "2026-10-09",
     "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
     "historical_validation": {
@@ -441,8 +441,8 @@
     "relative_returns_2y_pp": {
       "QQQ": 16.707235779444773,
       "SMH": 106.27824130067265,
-      "SOXX": 105.5826577632625,
-      "NVDA": 45.01733251225804
+      "SOXX": 105.58264144372353,
+      "NVDA": 45.01734378215168
     },
     "vix": 14.84000015258789,
     "vix_5d_change": -0.030698906214698507,
@@ -605,8 +605,8 @@
         "weighted_median_growth_yoy_percent": 100.14256437672637,
         "capped_weights": {
           "META": 0.19424038182463155,
-          "MSFT": 0.23091360572736946,
           "GOOGL": 0.2897481376374601,
+          "MSFT": 0.23091360572736946,
           "AMZN": 0.2850978748105389
         },
         "score": 0.0,
@@ -650,14 +650,14 @@
       "score": 0.0,
       "formula": "clamp(50 - 2.5 × crecimiento interanual en puntos porcentuales)",
       "available_observations": 152,
-      "fetched_at": "2026-10-11T05:48:11+00:00",
+      "fetched_at": "2026-10-11T17:41:59+00:00",
       "note": "Proxy mensual de actividad de construcción de centros de datos. No observa cancelaciones individuales ni conexiones eléctricas."
     },
     "cloud_gpu_snapshot": {
       "source": "https://prices.azure.com/api/retail/prices",
       "sku": "Standard_ND96isr_H100_v5",
       "currency": "USD",
-      "fetched_at": "2026-10-11T05:48:11+00:00",
+      "fetched_at": "2026-10-11T17:41:59+00:00",
       "price_effective_as_of": "2026-01-01",
       "median_discount": 0.8151999999999999,
       "median_discount_percent": 81.52,
@@ -891,11 +891,11 @@
     "warnings": [
       "CapEx: los estados financieros superan su edad máxima.",
       "El mosaico de CapEx tiene 35% de cobertura; los faltantes se muestran como N/D.",
-      "CAPE de Shiller está vencida (85 días; máximo 45).",
-      "Capitalización bursátil / PIB está vencida (100 días; máximo 90).",
-      "Concentración del S&P 500 está vencida (82 días; máximo 30).",
-      "Deuda de margen está vencida (102 días; máximo 75).",
-      "Prima por riesgo crediticio (EBP) está vencida (102 días; máximo 75)."
+      "CAPE de Shiller está vencida (86 días; máximo 45).",
+      "Capitalización bursátil / PIB está vencida (101 días; máximo 90).",
+      "Concentración del S&P 500 está vencida (83 días; máximo 30).",
+      "Deuda de margen está vencida (103 días; máximo 75).",
+      "Prima por riesgo crediticio (EBP) está vencida (103 días; máximo 75)."
     ],
     "source_fallback_count": 8,
     "capex_coverage": 0.35,
@@ -969,7 +969,7 @@
       "as_of": "2026-07-17",
       "mode": "Manual fechado",
       "status": "Vencida",
-      "note": "Edad: 85 días; máximo: 45."
+      "note": "Edad: 86 días; máximo: 45."
     },
     {
       "label": "Capitalización bursátil / PIB",
@@ -978,7 +978,7 @@
       "as_of": "2026-07-02",
       "mode": "Manual fechado",
       "status": "Vencida",
-      "note": "Edad: 100 días; máximo: 90."
+      "note": "Edad: 101 días; máximo: 90."
     },
     {
       "label": "Concentración del S&P 500",
@@ -987,7 +987,7 @@
       "as_of": "2026-07-20",
       "mode": "Manual fechado",
       "status": "Vencida",
-      "note": "Edad: 82 días; máximo: 30."
+      "note": "Edad: 83 días; máximo: 30."
     },
     {
       "label": "Deuda de margen",
@@ -996,7 +996,7 @@
       "as_of": "2026-06",
       "mode": "Manual fechado",
       "status": "Vencida",
-      "note": "Edad: 102 días; máximo: 75."
+      "note": "Edad: 103 días; máximo: 75."
     },
     {
       "label": "Emisiones de acciones",
@@ -1005,7 +1005,7 @@
       "as_of": "2026-H1",
       "mode": "Manual fechado",
       "status": "Disponible",
-      "note": "Edad: 102 días; máximo: 220."
+      "note": "Edad: 103 días; máximo: 220."
     },
     {
       "label": "Prima por riesgo crediticio (EBP)",
@@ -1014,7 +1014,7 @@
       "as_of": "2026-06",
       "mode": "Manual fechado",
       "status": "Vencida",
-      "note": "Edad: 102 días; máximo: 75."
+      "note": "Edad: 103 días; máximo: 75."
     }
   ],
   "slow_inputs_as_of": {

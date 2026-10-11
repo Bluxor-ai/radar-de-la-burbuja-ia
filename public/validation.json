@@ -165,9 +165,9 @@
       "base_weight": 0.1,
       "weight_minus_25pct": {
         "target_weight": 0.07500000000000001,
-        "score": 31.623007864661204,
+        "score": 31.6230078646612,
         "regime": "NORMAL",
-        "change_from_base": -1.5049871121311185
+        "change_from_base": -1.504987112131122
       },
       "weight_plus_25pct": {
         "target_weight": 0.125,
@@ -197,9 +197,9 @@
       "base_weight": 0.05,
       "weight_minus_25pct": {
         "target_weight": 0.037500000000000006,
-        "score": 32.642837015960644,
+        "score": 32.64283701596064,
         "regime": "NORMAL",
-        "change_from_base": -0.4851579608316783
+        "change_from_base": -0.4851579608316854
       },
       "weight_plus_25pct": {
         "target_weight": 0.0625,
@@ -219,9 +219,9 @@
       },
       "weight_plus_25pct": {
         "target_weight": 0.3125,
-        "score": 30.37195835835592,
+        "score": 30.371958358355915,
         "regime": "NORMAL",
-        "change_from_base": -2.7560366184364042
+        "change_from_base": -2.756036618436408
       }
     },
     {
@@ -235,9 +235,9 @@
       },
       "weight_plus_25pct": {
         "target_weight": 0.3125,
-        "score": 30.413625025022586,
+        "score": 30.413625025022583,
         "regime": "NORMAL",
-        "change_from_base": -2.7143699517697364
+        "change_from_base": -2.71436995176974
       }
     },
     {
@@ -282,7 +282,7 @@
     "one_at_a_time": "Se reduce o aumenta un peso 25% respecto de su valor base y se redistribuye el resto proporcionalmente."
   },
   "model_version": "2.0.0",
-  "generated_at": "2026-10-10T23:48:09-06:00",
+  "generated_at": "2026-10-11T11:41:56-06:00",
   "market_as_of": "2026-10-09",
   "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
   "historical_validation": {
