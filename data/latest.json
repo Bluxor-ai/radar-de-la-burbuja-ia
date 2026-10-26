@@ -4,14 +4,14 @@
   "radar_model_version": "2.0.0",
   "capex_model_version": "2.0.0",
   "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
-  "code_revision": "3409fb711d5f808400a775e01da9c66880c0c745",
-  "observation_id": "github:40211130557",
-  "generated_at": "2026-10-25T10:20:30-06:00",
+  "code_revision": "fd5f3b53b618d30d52ea1a16475d740006dd266c",
+  "observation_id": "github:40270888530",
+  "generated_at": "2026-10-25T22:48:42-06:00",
   "market_as_of": "2026-10-23",
   "macro_as_of": "2026-10-16",
-  "bubble_score": 52.283429342339396,
+  "bubble_score": 52.28342896349638,
   "bubble_regime": "PREPARAR",
-  "structural_score": 78.39685481812118,
+  "structural_score": 78.39685373571257,
   "confirmation_score": 38.2223540861492,
   "capex_score": 6.997257889184169,
   "capex_coverage": 0.35,
@@ -28,9 +28,9 @@
     },
     {
       "label": "Concentración y subida temática",
-      "score": 79.81935088679145,
+      "score": 79.81934709836126,
       "weight": 0.1,
-      "contribution": 7.981935088679146
+      "contribution": 7.981934709836127
     },
     {
       "label": "Apalancamiento y reversión",
@@ -70,7 +70,7 @@
     "seed": 20260723,
     "samples": 20000,
     "base": {
-      "score": 52.2834293423394,
+      "score": 52.28342896349638,
       "regime": "PREPARAR",
       "structural_weight": 0.35,
       "confirmation_weight": 0.65,
@@ -82,7 +82,7 @@
         },
         {
           "label": "Concentración y subida temática",
-          "score": 79.81935088679145,
+          "score": 79.81934709836126,
           "weight": 0.1
         },
         {
@@ -116,9 +116,9 @@
       "scenario_a_fixed_group_shares": {
         "method": "Cada peso recibe un multiplicador uniforme entre 0.75 y 1.25. Los primeros cuatro se renormalizan a 35% y los últimos tres a 65%.",
         "score_percentiles": {
-          "p5": 49.40321563499231,
-          "p50": 52.28803960820998,
-          "p95": 55.11884925278531
+          "p5": 49.40321530776335,
+          "p50": 52.288039195943114,
+          "p95": 55.118848835872164
         },
         "base_regime_retained_pct": 90.02,
         "regime_distribution_pct": {
@@ -128,15 +128,15 @@
           "ALERTA ALTA": 0.0,
           "ALERTA CRÍTICA": 0.0
         },
-        "minimum_score": 47.14448570125539,
-        "maximum_score": 57.42227593414878
+        "minimum_score": 47.144485364103346,
+        "maximum_score": 57.422275612107704
       },
       "scenario_b_variable_structural_share": {
         "method": "Usa los mismos multiplicadores por bloque; el peso estructural se sortea con distribución triangular 25%/35%/45% y confirmación recibe el resto.",
         "score_percentiles": {
-          "p5": 48.21008674490326,
-          "p50": 52.338478569931475,
-          "p95": 56.157636900297085
+          "p5": 48.21008644672745,
+          "p50": 52.33847823400825,
+          "p95": 56.15763651095446
         },
         "base_regime_retained_pct": 82.535,
         "regime_distribution_pct": {
@@ -146,8 +146,8 @@
           "ALERTA ALTA": 0.0,
           "ALERTA CRÍTICA": 0.0
         },
-        "minimum_score": 43.99244722994517,
-        "maximum_score": 59.45915568122748
+        "minimum_score": 43.99244698635802,
+        "maximum_score": 59.45915524639409
       }
     },
     "leave_one_out": [
@@ -155,39 +155,39 @@
         "label": "Valuación y expectativas",
         "omitted_score": 94.46280991735537,
         "omitted_weight": 0.12,
-        "score": 49.34964623726185,
-        "change_from_base": -2.933783105077552,
+        "score": 49.34964566076161,
+        "change_from_base": -2.933783302734767,
         "regime": "VIGILAR"
       },
       {
         "label": "Concentración y subida temática",
-        "omitted_score": 79.81935088679145,
+        "omitted_score": 79.81934709836126,
         "omitted_weight": 0.1,
         "score": 52.08427989272556,
-        "change_from_base": -0.1991494496138415,
+        "change_from_base": -0.19914907077081523,
         "regime": "PREPARAR"
       },
       {
         "label": "Apalancamiento y reversión",
         "omitted_score": 57.767836344757825,
         "omitted_weight": 0.08,
-        "score": 54.42273496179931,
-        "change_from_base": 2.139305619459904,
+        "score": 54.4227344707065,
+        "change_from_base": 2.139305507210125,
         "regime": "PREPARAR"
       },
       {
         "label": "Oferta de nuevas acciones",
         "omitted_score": 70.0,
         "omitted_weight": 0.05,
-        "score": 52.773245873396476,
-        "change_from_base": 0.48981653105707323,
+        "score": 52.773245431412946,
+        "change_from_base": 0.48981646791656885,
         "regime": "PREPARAR"
       },
       {
         "label": "Crédito y financiamiento",
         "omitted_score": 0.0,
         "omitted_weight": 0.25,
-        "score": 67.81126068983752,
+        "score": 67.8112603109945,
         "change_from_base": 15.527831347498122,
         "regime": "ALERTA ALTA"
       },
@@ -195,16 +195,16 @@
         "label": "Ruptura interna del mercado",
         "omitted_score": 61.111111111111114,
         "omitted_weight": 0.25,
-        "score": 42.984871800948625,
-        "change_from_base": -9.298557541390778,
+        "score": 42.984871422105606,
+        "change_from_base": -9.298557541390771,
         "regime": "VIGILAR"
       },
       {
         "label": "Volatilidad y presión vendedora",
         "omitted_score": 63.778349188128026,
         "omitted_weight": 0.15,
-        "score": 47.30001029745353,
-        "change_from_base": -4.983419044885871,
+        "score": 47.30000991861051,
+        "change_from_base": -4.9834190448858635,
         "regime": "VIGILAR"
       }
     ],
@@ -214,15 +214,15 @@
         "base_weight": 0.12,
         "weight_minus_25pct": {
           "target_weight": 0.09,
-          "score": 50.84549591364568,
+          "score": 50.84549552188756,
           "regime": "PREPARAR",
-          "change_from_base": -1.437933428693725
+          "change_from_base": -1.4379334416088199
         },
         "weight_plus_25pct": {
           "target_weight": 0.15,
-          "score": 53.72136277103312,
+          "score": 53.721362405105204,
           "regime": "PREPARAR",
-          "change_from_base": 1.437933428693718
+          "change_from_base": 1.437933441608827
         }
       },
       {
@@ -230,15 +230,15 @@
         "base_weight": 0.1,
         "weight_minus_25pct": {
           "target_weight": 0.07500000000000001,
-          "score": 51.51854263277129,
+          "score": 51.51854234863903,
           "regime": "PREPARAR",
-          "change_from_base": -0.7648867095681098
+          "change_from_base": -0.7648866148573461
         },
         "weight_plus_25pct": {
           "target_weight": 0.125,
-          "score": 53.048316051907506,
+          "score": 53.04831557835374,
           "regime": "PREPARAR",
-          "change_from_base": 0.7648867095681027
+          "change_from_base": 0.7648866148573603
         }
       },
       {
@@ -246,15 +246,15 @@
         "base_weight": 0.08,
         "weight_minus_25pct": {
           "target_weight": 0.06,
-          "score": 52.16420310315638,
+          "score": 52.16420271607765,
           "regime": "PREPARAR",
-          "change_from_base": -0.11922623918302122
+          "change_from_base": -0.11922624741873022
         },
         "weight_plus_25pct": {
           "target_weight": 0.1,
-          "score": 52.40265558152241,
+          "score": 52.40265521091511,
           "regime": "PREPARAR",
-          "change_from_base": 0.11922623918300701
+          "change_from_base": 0.11922624741873022
         }
       },
       {
@@ -262,15 +262,15 @@
         "base_weight": 0.05,
         "weight_minus_25pct": {
           "target_weight": 0.037500000000000006,
-          "score": 52.05031657052808,
+          "score": 52.050316186700286,
           "regime": "PREPARAR",
-          "change_from_base": -0.23311277181132084
+          "change_from_base": -0.23311277679609077
         },
         "weight_plus_25pct": {
           "target_weight": 0.0625,
-          "score": 52.51654211415073,
+          "score": 52.51654174029249,
           "regime": "PREPARAR",
-          "change_from_base": 0.23311277181132795
+          "change_from_base": 0.2331127767961121
         }
       },
       {
@@ -278,15 +278,15 @@
         "base_weight": 0.25,
         "weight_minus_25pct": {
           "target_weight": 0.1875,
-          "score": 56.640381787534345,
+          "score": 56.64038137712108,
           "regime": "PREPARAR",
-          "change_from_base": 4.356952445194942
+          "change_from_base": 4.356952413624704
         },
         "weight_plus_25pct": {
           "target_weight": 0.3125,
-          "score": 47.92647689714445,
+          "score": 47.92647654987168,
           "regime": "VIGILAR",
-          "change_from_base": -4.356952445194956
+          "change_from_base": -4.356952413624697
         }
       },
       {
@@ -294,15 +294,15 @@
         "base_weight": 0.25,
         "weight_minus_25pct": {
           "target_weight": 0.1875,
-          "score": 51.54778919494176,
+          "score": 51.547788784528485,
           "regime": "PREPARAR",
-          "change_from_base": -0.7356401473976462
+          "change_from_base": -0.7356401789678912
         },
         "weight_plus_25pct": {
           "target_weight": 0.3125,
-          "score": 53.019069489737035,
+          "score": 53.019069142464275,
           "regime": "PREPARAR",
-          "change_from_base": 0.735640147397632
+          "change_from_base": 0.7356401789678984
         }
       },
       {
@@ -310,15 +310,15 @@
         "base_weight": 0.15,
         "weight_minus_25pct": {
           "target_weight": 0.11249999999999999,
-          "score": 51.77630052561344,
+          "score": 51.77630013005676,
           "regime": "PREPARAR",
-          "change_from_base": -0.5071288167259596
+          "change_from_base": -0.5071288334396158
         },
         "weight_plus_25pct": {
           "target_weight": 0.1875,
-          "score": 52.79055815906537,
+          "score": 52.790557796936014,
           "regime": "PREPARAR",
-          "change_from_base": 0.5071288167259667
+          "change_from_base": 0.5071288334396371
         }
       }
     ],
@@ -347,7 +347,7 @@
       "one_at_a_time": "Se reduce o aumenta un peso 25% respecto de su valor base y se redistribuye el resto proporcionalmente."
     },
     "model_version": "2.0.0",
-    "generated_at": "2026-10-25T10:20:30-06:00",
+    "generated_at": "2026-10-25T22:48:42-06:00",
     "market_as_of": "2026-10-23",
     "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
     "historical_validation": {
@@ -407,7 +407,7 @@
       "label": "Caja y capacidad de financiar",
       "score": null,
       "weight": 0.15,
-      "reading": "El efectivo generado cubre 1.43 veces el gasto de inversión.",
+      "reading": "El efectivo generado cubre 1.34 veces el gasto de inversión.",
       "mode": "automatic",
       "available": false,
       "effective_weight": null,
@@ -437,12 +437,12 @@
     }
   ],
   "inputs": {
-    "excess_return_pp": 78.19756582546793,
+    "excess_return_pp": 78.19755161885473,
     "relative_returns_2y_pp": {
-      "QQQ": 10.896783486381679,
-      "SMH": 78.19756582546793,
-      "SOXX": 77.66179076787955,
-      "NVDA": 20.279184431787066
+      "QQQ": 10.896769279768481,
+      "SMH": 78.19755161885473,
+      "SOXX": 77.66179072195361,
+      "NVDA": 20.279187218933515
     },
     "vix": 19.450000762939453,
     "vix_5d_change": -0.02701345744680339,
@@ -565,33 +565,33 @@
         "META": {
           "errors": {},
           "spending": {
-            "latest_period": "2026-06-30",
-            "comparison_period": "2025-06-30",
-            "latest_quarter_capex": 30116000000.0,
-            "year_ago_quarter_capex": 16538000000.0,
-            "growth_yoy_percent": 82.1018260974725
+            "latest_period": "2026-09-30",
+            "comparison_period": "2025-09-30",
+            "latest_quarter_capex": 33942000000.0,
+            "year_ago_quarter_capex": 18829000000.0,
+            "growth_yoy_percent": 80.26448563386266
           },
           "cash_financing": {
             "periods": [
+              "2026-09-30",
               "2026-06-30",
               "2026-03-31",
-              "2025-12-31",
-              "2025-09-30"
+              "2025-12-31"
             ],
-            "operating_cash_flow_ttm": 130301000000.0,
-            "capex_ttm": 89325000000.0,
-            "ocf_to_capex": 1.4587293590820039
+            "operating_cash_flow_ttm": 133087000000.0,
+            "capex_ttm": 104438000000.0,
+            "ocf_to_capex": 1.2743158620425517
           },
           "roi_accounting": {
-            "current_period": "2026-06-30",
-            "comparison_period": "2025-06-30",
-            "incremental_operating_return": -0.10073769500544201,
+            "current_period": "2026-09-30",
+            "comparison_period": "2025-09-30",
+            "incremental_operating_return": -0.400817887301503,
             "incremental_return_risk": 100.0,
-            "ppe_turnover_current": 0.24348741935613052,
-            "ppe_turnover_year_ago": 0.29204491674912875,
-            "ppe_turnover_change": -0.16626722332136978,
-            "ppe_turnover_deterioration_risk": 66.50688932854791,
-            "score": 83.25344466427396,
+            "ppe_turnover_current": 0.23088442376285748,
+            "ppe_turnover_year_ago": 0.2884565586967046,
+            "ppe_turnover_change": -0.1995868466086116,
+            "ppe_turnover_deterioration_risk": 79.83473864344464,
+            "score": 89.91736932172232,
             "note": "Proxy contable de toda la empresa; no aísla el retorno de IA."
           },
           "status": "complete"
@@ -604,10 +604,10 @@
         "status": "available",
         "weighted_median_growth_yoy_percent": 100.14256437672637,
         "capped_weights": {
-          "AMZN": 0.2850978748105389,
-          "MSFT": 0.23091360572736946,
-          "GOOGL": 0.2897481376374601,
-          "META": 0.19424038182463155
+          "MSFT": 0.2253526445984478,
+          "META": 0.2136450327624299,
+          "GOOGL": 0.2827702979146603,
+          "AMZN": 0.278232024724462
         },
         "score": 0.0,
         "formula": "clamp(50 - 2.5 × crecimiento interanual ponderado en puntos porcentuales)"
@@ -616,8 +616,8 @@
         "available_companies": 4,
         "minimum_companies": 3,
         "status": "available",
-        "median_ocf_to_capex": 1.4305436647527057,
-        "score": 47.45469460394119,
+        "median_ocf_to_capex": 1.3383369162329797,
+        "score": 55.138590313918364,
         "formula": "100 - scale(mediana OCF TTM / CapEx TTM, 0.8, 2.0)"
       },
       "roi_accounting": {
@@ -650,14 +650,14 @@
       "score": 0.0,
       "formula": "clamp(50 - 2.5 × crecimiento interanual en puntos porcentuales)",
       "available_observations": 152,
-      "fetched_at": "2026-10-25T16:20:32+00:00",
+      "fetched_at": "2026-10-26T04:48:44+00:00",
       "note": "Proxy mensual de actividad de construcción de centros de datos. No observa cancelaciones individuales ni conexiones eléctricas."
     },
     "cloud_gpu_snapshot": {
       "source": "https://prices.azure.com/api/retail/prices",
       "sku": "Standard_ND96isr_H100_v5",
       "currency": "USD",
-      "fetched_at": "2026-10-25T16:20:32+00:00",
+      "fetched_at": "2026-10-26T04:48:44+00:00",
       "price_effective_as_of": "2026-01-01",
       "median_discount": 0.8151999999999999,
       "median_discount_percent": 81.52,
