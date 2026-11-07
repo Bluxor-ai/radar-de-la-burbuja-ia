@@ -4,16 +4,16 @@
   "radar_model_version": "2.0.0",
   "capex_model_version": "2.0.0",
   "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
-  "code_revision": "adb1d800963870b488443b3cd7702ce1eb7b5032",
-  "observation_id": "github:42279340602",
-  "generated_at": "2026-11-06T13:25:21-06:00",
+  "code_revision": "0750a1379c4a89f20c88db54d45ee5eb064bfa3f",
+  "observation_id": "github:42344936390",
+  "generated_at": "2026-11-06T23:59:19-06:00",
   "market_as_of": "2026-11-06",
   "macro_as_of": "2026-10-30",
-  "bubble_score": 63.57686127577481,
+  "bubble_score": 63.9354393347223,
   "bubble_regime": "PREPARAR",
-  "structural_score": 76.90228617568245,
-  "confirmation_score": 56.401632483516856,
-  "capex_score": 38.14056867849152,
+  "structural_score": 76.95419577110808,
+  "confirmation_score": 56.925339715129965,
+  "capex_score": 37.143986196541064,
   "capex_coverage": 0.85,
   "structural_weight": 0.35,
   "confirmation_weight": 0.65,
@@ -28,9 +28,9 @@
     },
     {
       "label": "Concentración y subida temática",
-      "score": 74.58836063825582,
+      "score": 74.77004422224556,
       "weight": 0.1,
-      "contribution": 7.458836063825583
+      "contribution": 7.477004422224557
     },
     {
       "label": "Apalancamiento y reversión",
@@ -58,9 +58,9 @@
     },
     {
       "label": "Volatilidad y presión vendedora",
-      "score": 77.74040742857304,
+      "score": 80.00980543222983,
       "weight": 0.15,
-      "contribution": 11.661061114285955
+      "contribution": 12.001470814834473
     }
   ],
   "weight_sensitivity": {
@@ -70,7 +70,7 @@
     "seed": 20260723,
     "samples": 20000,
     "base": {
-      "score": 63.57686127577481,
+      "score": 63.935439334722304,
       "regime": "PREPARAR",
       "structural_weight": 0.35,
       "confirmation_weight": 0.65,
@@ -82,7 +82,7 @@
         },
         {
           "label": "Concentración y subida temática",
-          "score": 74.58836063825582,
+          "score": 74.77004422224556,
           "weight": 0.1
         },
         {
@@ -107,7 +107,7 @@
         },
         {
           "label": "Volatilidad y presión vendedora",
-          "score": 77.74040742857304,
+          "score": 80.00980543222983,
           "weight": 0.15
         }
       ]
@@ -116,38 +116,38 @@
       "scenario_a_fixed_group_shares": {
         "method": "Cada peso recibe un multiplicador uniforme entre 0.75 y 1.25. Los primeros cuatro se renormalizan a 35% y los últimos tres a 65%.",
         "score_percentiles": {
-          "p5": 59.15847583014415,
-          "p50": 63.56133899280755,
-          "p95": 67.96602986768539
+          "p5": 59.510113539545515,
+          "p50": 63.927110595114215,
+          "p95": 68.34104219915916
         },
-        "base_regime_retained_pct": 69.255,
+        "base_regime_retained_pct": 64.69,
         "regime_distribution_pct": {
           "NORMAL": 0.0,
           "VIGILAR": 0.0,
-          "PREPARAR": 69.255,
-          "ALERTA ALTA": 30.745,
+          "PREPARAR": 64.69,
+          "ALERTA ALTA": 35.31,
           "ALERTA CRÍTICA": 0.0
         },
-        "minimum_score": 56.347217454822385,
-        "maximum_score": 70.87963326069325
+        "minimum_score": 56.67216284215735,
+        "maximum_score": 71.2937428405577
       },
       "scenario_b_variable_structural_share": {
         "method": "Usa los mismos multiplicadores por bloque; el peso estructural se sortea con distribución triangular 25%/35%/45% y confirmación recibe el resto.",
         "score_percentiles": {
-          "p5": 58.876022718951916,
-          "p50": 63.612069218175705,
-          "p95": 68.09112210583557
+          "p5": 59.24592351430686,
+          "p50": 63.9680856647373,
+          "p95": 68.4498515944449
         },
-        "base_regime_retained_pct": 68.05,
+        "base_regime_retained_pct": 63.49,
         "regime_distribution_pct": {
           "NORMAL": 0.0,
           "VIGILAR": 0.0,
-          "PREPARAR": 68.05,
-          "ALERTA ALTA": 31.95,
+          "PREPARAR": 63.49,
+          "ALERTA ALTA": 36.51,
           "ALERTA CRÍTICA": 0.0
         },
-        "minimum_score": 54.813677134197405,
-        "maximum_score": 71.44124613335153
+        "minimum_score": 55.1707862809409,
+        "maximum_score": 71.8309020751355
       }
     },
     "leave_one_out": [
@@ -155,56 +155,56 @@
         "label": "Valuación y expectativas",
         "omitted_score": 94.46280991735537,
         "omitted_weight": 0.12,
-        "score": 60.37015694033889,
-        "change_from_base": -3.206704335435923,
+        "score": 60.73821414279888,
+        "change_from_base": -3.1972251919234225,
         "regime": "PREPARAR"
       },
       {
         "label": "Concentración y subida temática",
-        "omitted_score": 74.58836063825582,
+        "omitted_score": 74.77004422224556,
         "omitted_weight": 0.1,
-        "score": 63.90081085101453,
-        "change_from_base": 0.32394957523972323,
+        "score": 64.24122055156305,
+        "change_from_base": 0.30578121684074233,
         "regime": "PREPARAR"
       },
       {
         "label": "Apalancamiento y reversión",
         "omitted_score": 57.767836344757825,
         "omitted_weight": 0.08,
-        "score": 65.5611745915744,
-        "change_from_base": 1.9843133157995894,
+        "score": 65.92513586782529,
+        "change_from_base": 1.989696533102986,
         "regime": "ALERTA ALTA"
       },
       {
         "label": "Oferta de nuevas acciones",
         "omitted_score": 70.0,
         "omitted_weight": 0.05,
-        "score": 63.97949463602295,
-        "change_from_base": 0.40263336024813867,
+        "score": 64.3411007547036,
+        "change_from_base": 0.4056614199812998,
         "regime": "PREPARAR"
       },
       {
         "label": "Crédito y financiamiento",
         "omitted_score": 0.0,
         "omitted_weight": 0.25,
-        "score": 86.49002447220353,
-        "change_from_base": 22.91316319642872,
+        "score": 87.06135859399384,
+        "change_from_base": 23.12591925927154,
         "regime": "ALERTA CRÍTICA"
       },
       {
         "label": "Ruptura interna del mercado",
         "omitted_score": 100.0,
         "omitted_weight": 0.25,
-        "score": 45.86502447220353,
-        "change_from_base": -17.71183680357128,
+        "score": 46.436358593993845,
+        "change_from_base": -17.49908074072846,
         "regime": "VIGILAR"
       },
       {
         "label": "Volatilidad y presión vendedora",
-        "omitted_score": 77.74040742857304,
+        "omitted_score": 80.00980543222983,
         "omitted_weight": 0.15,
-        "score": 59.41580016148885,
-        "change_from_base": -4.161061114285957,
+        "score": 59.43396851988783,
+        "change_from_base": -4.501470814834477,
         "regime": "PREPARAR"
       }
     ],
@@ -214,15 +214,15 @@
         "base_weight": 0.12,
         "weight_minus_25pct": {
           "target_weight": 0.09,
-          "score": 62.523931208448204,
+          "score": 62.89473351940527,
           "regime": "PREPARAR",
-          "change_from_base": -1.0529300673266064
+          "change_from_base": -1.0407058153170325
         },
         "weight_plus_25pct": {
           "target_weight": 0.15,
-          "score": 64.62979134310142,
+          "score": 64.97614515003933,
           "regime": "PREPARAR",
-          "change_from_base": 1.0529300673266064
+          "change_from_base": 1.0407058153170254
         }
       },
       {
@@ -230,15 +230,15 @@
         "base_weight": 0.1,
         "weight_minus_25pct": {
           "target_weight": 0.07500000000000001,
-          "score": 63.27098629348367,
+          "score": 63.63447808784666,
           "regime": "PREPARAR",
-          "change_from_base": -0.30587498229113663
+          "change_from_base": -0.3009612468756444
         },
         "weight_plus_25pct": {
           "target_weight": 0.125,
-          "score": 63.88273625806595,
+          "score": 64.23640058159793,
           "regime": "PREPARAR",
-          "change_from_base": 0.30587498229113663
+          "change_from_base": 0.3009612468756302
         }
       },
       {
@@ -246,15 +246,15 @@
         "base_weight": 0.08,
         "weight_minus_25pct": {
           "target_weight": 0.06,
-          "score": 63.703144426449086,
+          "score": 64.06951766059109,
           "regime": "PREPARAR",
-          "change_from_base": 0.12628315067427565
+          "change_from_base": 0.134078325868785
         },
         "weight_plus_25pct": {
           "target_weight": 0.1,
-          "score": 63.45057812510053,
+          "score": 63.801361008853505,
           "regime": "PREPARAR",
-          "change_from_base": -0.12628315067428275
+          "change_from_base": -0.1340783258687992
         }
       },
       {
@@ -262,15 +262,15 @@
         "base_weight": 0.05,
         "weight_minus_25pct": {
           "target_weight": 0.037500000000000006,
-          "score": 63.49234629256133,
+          "score": 63.85564248386339,
           "regime": "PREPARAR",
-          "change_from_base": -0.08451498321348083
+          "change_from_base": -0.0797968508589122
         },
         "weight_plus_25pct": {
           "target_weight": 0.0625,
-          "score": 63.6613762589883,
+          "score": 64.01523618558122,
           "regime": "PREPARAR",
-          "change_from_base": 0.08451498321348794
+          "change_from_base": 0.0797968508589122
         }
       },
       {
@@ -278,15 +278,15 @@
         "base_weight": 0.25,
         "weight_minus_25pct": {
           "target_weight": 0.1875,
-          "score": 68.87493304875603,
+          "score": 69.26339261261582,
           "regime": "ALERTA ALTA",
-          "change_from_base": 5.298071772981224
+          "change_from_base": 5.3279532778935135
         },
         "weight_plus_25pct": {
           "target_weight": 0.3125,
-          "score": 58.27878950279357,
+          "score": 58.60748605682876,
           "regime": "PREPARAR",
-          "change_from_base": -5.298071772981238
+          "change_from_base": -5.327953277893542
         }
       },
       {
@@ -294,15 +294,15 @@
         "base_weight": 0.25,
         "weight_minus_25pct": {
           "target_weight": 0.1875,
-          "score": 60.541599715422706,
+          "score": 60.930059279282496,
           "regime": "PREPARAR",
-          "change_from_base": -3.0352615603521045
+          "change_from_base": -3.005380055439808
         },
         "weight_plus_25pct": {
           "target_weight": 0.3125,
-          "score": 66.6121228361269,
+          "score": 66.9408193901621,
           "regime": "ALERTA ALTA",
-          "change_from_base": 3.0352615603520903
+          "change_from_base": 3.005380055439801
         }
       },
       {
@@ -310,15 +310,15 @@
         "base_weight": 0.15,
         "weight_minus_25pct": {
           "target_weight": 0.11249999999999999,
-          "score": 62.95199894550431,
+          "score": 63.22627612453816,
           "regime": "PREPARAR",
-          "change_from_base": -0.6248623302705028
+          "change_from_base": -0.7091632101841441
         },
         "weight_plus_25pct": {
           "target_weight": 0.1875,
-          "score": 64.20172360604532,
+          "score": 64.64460254490646,
           "regime": "PREPARAR",
-          "change_from_base": 0.6248623302705099
+          "change_from_base": 0.7091632101841583
         }
       }
     ],
@@ -347,7 +347,7 @@
       "one_at_a_time": "Se reduce o aumenta un peso 25% respecto de su valor base y se redistribuye el resto proporcionalmente."
     },
     "model_version": "2.0.0",
-    "generated_at": "2026-11-06T13:25:21-06:00",
+    "generated_at": "2026-11-06T23:59:19-06:00",
     "market_as_of": "2026-11-06",
     "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
     "historical_validation": {
@@ -372,13 +372,13 @@
     {
       "key": "suppliers",
       "label": "Pulso de proveedores y semiconductores",
-      "score": 62.834174791671614,
+      "score": 58.59869924338218,
       "weight": 0.2,
-      "reading": "En 20 días, semiconductores rindieron 14.4 puntos menos que las grandes tecnológicas.",
+      "reading": "En 20 días, semiconductores rindieron 13.8 puntos menos que las grandes tecnológicas.",
       "mode": "automatic",
       "available": true,
       "effective_weight": 0.23529411764705885,
-      "contribution": 14.78451171568744
+      "contribution": 13.787929233736985
     },
     {
       "key": "physical_buildout",
@@ -396,7 +396,7 @@
       "label": "Precios públicos de GPU H100 en nube",
       "score": null,
       "weight": 0.1,
-      "reading": "24 regiones; descuento Spot mediano 81.5%. Se archiva sin puntuar; todavía no existe una metodología aprobada.",
+      "reading": "Se archiva sin puntuar; todavía no existe una metodología aprobada.",
       "mode": "collector",
       "available": false,
       "effective_weight": null,
@@ -437,27 +437,27 @@
     }
   ],
   "inputs": {
-    "excess_return_pp": 58.58135239345934,
+    "excess_return_pp": 59.262665833420854,
     "relative_returns_2y_pp": {
-      "QQQ": 4.255399535849769,
-      "SMH": 58.58135239345934,
-      "SOXX": 55.181168483721656,
-      "NVDA": 6.40204071048498
+      "QQQ": 4.231403044063953,
+      "SMH": 59.262665833420854,
+      "SOXX": 55.88478609940495,
+      "NVDA": 6.478434186487347
     },
-    "vix": 24.510000228881836,
-    "vix_5d_change": 0.26210093370706367,
+    "vix": 25.639999389648438,
+    "vix_5d_change": 0.3202883258969327,
     "nfci": -0.459,
     "nfci_4w_change": 0.03899999999999998,
-    "curve_10y_2y": 0.3799999999999999,
+    "curve_10y_2y": 0.35000000000000053,
     "pct_below_50dma": 0.7777777777777778,
     "pct_below_200dma": 0.7777777777777778,
     "qqq_below_200dma": true,
     "smh_below_200dma": true,
-    "distribution_days_average": 8.555555555555555,
+    "distribution_days_average": 8.666666666666666,
     "distribution_days_max": 11.0,
     "large_down_days_average": 4.888888888888889,
     "distribution_score": 100.0,
-    "regime_score": 66.37259199911773,
+    "regime_score": 69.62801726451826,
     "capex_fundamentals": {
       "companies": {
         "MSFT": {
@@ -606,8 +606,8 @@
         "capped_weights": {
           "AMZN": 0.35,
           "META": 0.17697410639799782,
-          "MSFT": 0.2052601392543156,
-          "GOOGL": 0.26776575434768657
+          "GOOGL": 0.26776575434768657,
+          "MSFT": 0.2052601392543156
         },
         "score": 0.0,
         "formula": "clamp(50 - 2.5 × crecimiento interanual ponderado en puntos porcentuales)"
@@ -650,245 +650,15 @@
       "score": 0.0,
       "formula": "clamp(50 - 2.5 × crecimiento interanual en puntos porcentuales)",
       "available_observations": 153,
-      "fetched_at": "2026-11-06T19:25:24+00:00",
+      "fetched_at": "2026-11-07T05:59:22+00:00",
       "note": "Proxy mensual de actividad de construcción de centros de datos. No observa cancelaciones individuales ni conexiones eléctricas."
     },
-    "cloud_gpu_snapshot": {
-      "source": "https://prices.azure.com/api/retail/prices",
-      "sku": "Standard_ND96isr_H100_v5",
-      "currency": "USD",
-      "fetched_at": "2026-11-06T19:25:24+00:00",
-      "price_effective_as_of": "2026-01-01",
-      "median_discount": 0.8151999999999999,
-      "median_discount_percent": 81.52,
-      "median_pay_as_you_go_usd_per_hour": 127.816,
-      "median_spot_usd_per_hour": 23.620397,
-      "price_fingerprint_sha256": "60256898fb058195b6804f387f27706489d7cc1660a88dcb52d9babf89786ad1",
-      "paired_region_count": 24,
-      "regions": [
-        {
-          "region": "australiaeast",
-          "pay_as_you_go_usd_per_hour": 142.6,
-          "spot_usd_per_hour": 26.35248,
-          "discount": 0.8151999999999999,
-          "discount_percent": 81.52,
-          "pay_as_you_go_effective_from": "2024-06-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        },
-        {
-          "region": "canadacentral",
-          "pay_as_you_go_usd_per_hour": 117.984,
-          "spot_usd_per_hour": 21.803443,
-          "discount": 0.8152000016951451,
-          "discount_percent": 81.5200001695145,
-          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        },
-        {
-          "region": "centralus",
-          "pay_as_you_go_usd_per_hour": 120.934,
-          "spot_usd_per_hour": 22.348603,
-          "discount": 0.8152000016537946,
-          "discount_percent": 81.52000016537946,
-          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        },
-        {
-          "region": "eastus",
-          "pay_as_you_go_usd_per_hour": 98.32,
-          "spot_usd_per_hour": 18.169536,
-          "discount": 0.8151999999999999,
-          "discount_percent": 81.52,
-          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
-          "spot_effective_from": "2026-01-01T00:00:00Z"
-        },
-        {
-          "region": "eastus2",
-          "pay_as_you_go_usd_per_hour": 98.32,
-          "spot_usd_per_hour": 18.169536,
-          "discount": 0.8151999999999999,
-          "discount_percent": 81.52,
-          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
-          "spot_effective_from": "2026-01-01T00:00:00Z"
-        },
-        {
-          "region": "japaneast",
-          "pay_as_you_go_usd_per_hour": 142.564,
-          "spot_usd_per_hour": 26.345827,
-          "discount": 0.8152000014028787,
-          "discount_percent": 81.52000014028788,
-          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        },
-        {
-          "region": "japanwest",
-          "pay_as_you_go_usd_per_hour": 152.396,
-          "spot_usd_per_hour": 28.162781,
-          "discount": 0.8151999986876296,
-          "discount_percent": 81.51999986876297,
-          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        },
-        {
-          "region": "koreacentral",
-          "pay_as_you_go_usd_per_hour": 132.732,
-          "spot_usd_per_hour": 24.528874,
-          "discount": 0.8151999969864088,
-          "discount_percent": 81.51999969864087,
-          "pay_as_you_go_effective_from": "2025-01-01T00:00:00Z",
-          "spot_effective_from": "2025-12-01T00:00:00Z"
-        },
-        {
-          "region": "northcentralus",
-          "pay_as_you_go_usd_per_hour": 117.984,
-          "spot_usd_per_hour": 21.803443,
-          "discount": 0.8152000016951451,
-          "discount_percent": 81.5200001695145,
-          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        },
-        {
-          "region": "polandcentral",
-          "pay_as_you_go_usd_per_hour": 127.816,
-          "spot_usd_per_hour": 23.620397,
-          "discount": 0.8151999984352507,
-          "discount_percent": 81.51999984352507,
-          "pay_as_you_go_effective_from": "2025-03-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        },
-        {
-          "region": "southafricanorth",
-          "pay_as_you_go_usd_per_hour": 168.672,
-          "spot_usd_per_hour": 31.170586,
-          "discount": 0.8151999976285335,
-          "discount_percent": 81.51999976285335,
-          "pay_as_you_go_effective_from": "2024-02-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        },
-        {
-          "region": "southafricawest",
-          "pay_as_you_go_usd_per_hour": 186.608,
-          "spot_usd_per_hour": 34.485158,
-          "discount": 0.8152000021435308,
-          "discount_percent": 81.52000021435309,
-          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        },
-        {
-          "region": "southcentralus",
-          "pay_as_you_go_usd_per_hour": 117.968,
-          "spot_usd_per_hour": 21.800486,
-          "discount": 0.81520000339075,
-          "discount_percent": 81.52000033907501,
-          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        },
-        {
-          "region": "spaincentral",
-          "pay_as_you_go_usd_per_hour": 127.816,
-          "spot_usd_per_hour": 23.620397,
-          "discount": 0.8151999984352507,
-          "discount_percent": 81.51999984352507,
-          "pay_as_you_go_effective_from": "2024-06-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        },
-        {
-          "region": "swedencentral",
-          "pay_as_you_go_usd_per_hour": 127.816,
-          "spot_usd_per_hour": 23.620397,
-          "discount": 0.8151999984352507,
-          "discount_percent": 81.51999984352507,
-          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        },
-        {
-          "region": "switzerlandnorth",
-          "pay_as_you_go_usd_per_hour": 140.598,
-          "spot_usd_per_hour": 25.98251,
-          "discount": 0.8152000028449907,
-          "discount_percent": 81.52000028449908,
-          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        },
-        {
-          "region": "uaenorth",
-          "pay_as_you_go_usd_per_hour": 140.598,
-          "spot_usd_per_hour": 25.98251,
-          "discount": 0.8152000028449907,
-          "discount_percent": 81.52000028449908,
-          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        },
-        {
-          "region": "uksouth",
-          "pay_as_you_go_usd_per_hour": 122.9,
-          "spot_usd_per_hour": 22.71192,
-          "discount": 0.8152,
-          "discount_percent": 81.52000000000001,
-          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        },
-        {
-          "region": "usgovarizona",
-          "pay_as_you_go_usd_per_hour": 122.9,
-          "spot_usd_per_hour": 22.71192,
-          "discount": 0.8152,
-          "discount_percent": 81.52000000000001,
-          "pay_as_you_go_effective_from": "2025-03-01T00:00:00Z",
-          "spot_effective_from": "2025-09-01T00:00:00Z"
-        },
-        {
-          "region": "westcentralus",
-          "pay_as_you_go_usd_per_hour": 117.984,
-          "spot_usd_per_hour": 21.803443,
-          "discount": 0.8152000016951451,
-          "discount_percent": 81.5200001695145,
-          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        },
-        {
-          "region": "westeurope",
-          "pay_as_you_go_usd_per_hour": 127.816,
-          "spot_usd_per_hour": 23.620397,
-          "discount": 0.8151999984352507,
-          "discount_percent": 81.51999984352507,
-          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
-          "spot_effective_from": "2025-12-01T00:00:00Z"
-        },
-        {
-          "region": "westus",
-          "pay_as_you_go_usd_per_hour": 127.816,
-          "spot_usd_per_hour": 23.620397,
-          "discount": 0.8151999984352507,
-          "discount_percent": 81.51999984352507,
-          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        },
-        {
-          "region": "westus2",
-          "pay_as_you_go_usd_per_hour": 98.32,
-          "spot_usd_per_hour": 18.169536,
-          "discount": 0.8151999999999999,
-          "discount_percent": 81.52,
-          "pay_as_you_go_effective_from": "2025-01-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        },
-        {
-          "region": "westus3",
-          "pay_as_you_go_usd_per_hour": 98.32,
-          "spot_usd_per_hour": 18.169536,
-          "discount": 0.8151999999999999,
-          "discount_percent": 81.52,
-          "pay_as_you_go_effective_from": "2023-12-01T00:00:00Z",
-          "spot_effective_from": "2025-10-01T00:00:00Z"
-        }
-      ],
-      "note": "Instantánea de precios públicos de lista. No mide inventario, disponibilidad en tiempo real ni frecuencia de desalojo."
-    }
+    "cloud_gpu_snapshot": {}
   },
   "data_quality": {
     "status": "Parcial",
     "warnings": [
+      "CapEx: no se pudo archivar el precio H100 de Azure.",
       "CAPE de Shiller está vencida (112 días; máximo 45).",
       "Capitalización bursátil / PIB está vencida (127 días; máximo 90).",
       "Concentración del S&P 500 está vencida (109 días; máximo 30).",
@@ -929,7 +699,7 @@
       "label": "Curva del Tesoro 10Y–2Y",
       "provider": "Departamento del Tesoro de EE. UU.",
       "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve",
-      "as_of": "2026-11-05",
+      "as_of": "2026-11-06",
       "mode": "Automático",
       "status": "Fuente alterna"
     },
@@ -955,10 +725,9 @@
       "label": "Precios públicos de GPU H100",
       "provider": "Microsoft Azure Retail Prices API",
       "url": "https://learn.microsoft.com/rest/api/cost-management/retail-prices/azure-retail-prices",
-      "as_of": "2026-01-01",
+      "as_of": "N/D",
       "mode": "Colector automático",
-      "status": "En observación",
-      "note": "Se archiva, pero no se puntúa: el precio de lista no demuestra disponibilidad de capacidad."
+      "status": "No disponible"
     },
     {
       "label": "CAPE de Shiller",
