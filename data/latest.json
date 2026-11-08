@@ -4,9 +4,9 @@
   "radar_model_version": "2.0.0",
   "capex_model_version": "2.0.0",
   "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
-  "code_revision": "8c927b050d22a052250a304cca4a5f8b93bdb23a",
-  "observation_id": "github:42397781993",
-  "generated_at": "2026-11-07T11:45:25-06:00",
+  "code_revision": "e200494c65e207d26fc4a1d48000c10a71264b2d",
+  "observation_id": "github:42452994395",
+  "generated_at": "2026-11-08T00:01:55-06:00",
   "market_as_of": "2026-11-06",
   "macro_as_of": "2026-10-30",
   "bubble_score": 63.93543971886399,
@@ -347,7 +347,7 @@
       "one_at_a_time": "Se reduce o aumenta un peso 25% respecto de su valor base y se redistribuye el resto proporcionalmente."
     },
     "model_version": "2.0.0",
-    "generated_at": "2026-11-07T11:45:25-06:00",
+    "generated_at": "2026-11-08T00:01:55-06:00",
     "market_as_of": "2026-11-06",
     "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
     "historical_validation": {
@@ -441,7 +441,7 @@
     "relative_returns_2y_pp": {
       "QQQ": 4.231417449377206,
       "SMH": 59.26268023873411,
-      "SOXX": 55.884780834077574,
+      "SOXX": 55.8848005047182,
       "NVDA": 6.478464209423973
     },
     "vix": 25.639999389648438,
@@ -605,8 +605,8 @@
         "weighted_median_growth_yoy_percent": 114.39903143656326,
         "capped_weights": {
           "AMZN": 0.35,
-          "GOOGL": 0.26776575434768657,
           "MSFT": 0.2052601392543156,
+          "GOOGL": 0.26776575434768657,
           "META": 0.17697410639799782
         },
         "score": 0.0,
@@ -650,14 +650,14 @@
       "score": 0.0,
       "formula": "clamp(50 - 2.5 × crecimiento interanual en puntos porcentuales)",
       "available_observations": 153,
-      "fetched_at": "2026-11-07T17:45:28+00:00",
+      "fetched_at": "2026-11-08T06:01:57+00:00",
       "note": "Proxy mensual de actividad de construcción de centros de datos. No observa cancelaciones individuales ni conexiones eléctricas."
     },
     "cloud_gpu_snapshot": {
       "source": "https://prices.azure.com/api/retail/prices",
       "sku": "Standard_ND96isr_H100_v5",
       "currency": "USD",
-      "fetched_at": "2026-11-07T17:45:28+00:00",
+      "fetched_at": "2026-11-08T06:01:57+00:00",
       "price_effective_as_of": "2026-01-01",
       "median_discount": 0.8151999999999999,
       "median_discount_percent": 81.52,
@@ -889,11 +889,11 @@
   "data_quality": {
     "status": "Parcial",
     "warnings": [
-      "CAPE de Shiller está vencida (113 días; máximo 45).",
-      "Capitalización bursátil / PIB está vencida (128 días; máximo 90).",
-      "Concentración del S&P 500 está vencida (110 días; máximo 30).",
-      "Deuda de margen está vencida (130 días; máximo 75).",
-      "Prima por riesgo crediticio (EBP) está vencida (130 días; máximo 75)."
+      "CAPE de Shiller está vencida (114 días; máximo 45).",
+      "Capitalización bursátil / PIB está vencida (129 días; máximo 90).",
+      "Concentración del S&P 500 está vencida (111 días; máximo 30).",
+      "Deuda de margen está vencida (131 días; máximo 75).",
+      "Prima por riesgo crediticio (EBP) está vencida (131 días; máximo 75)."
     ],
     "source_fallback_count": 7,
     "capex_coverage": 0.85,
@@ -967,7 +967,7 @@
       "as_of": "2026-07-17",
       "mode": "Manual fechado",
       "status": "Vencida",
-      "note": "Edad: 113 días; máximo: 45."
+      "note": "Edad: 114 días; máximo: 45."
     },
     {
       "label": "Capitalización bursátil / PIB",
@@ -976,7 +976,7 @@
       "as_of": "2026-07-02",
       "mode": "Manual fechado",
       "status": "Vencida",
-      "note": "Edad: 128 días; máximo: 90."
+      "note": "Edad: 129 días; máximo: 90."
     },
     {
       "label": "Concentración del S&P 500",
@@ -985,7 +985,7 @@
       "as_of": "2026-07-20",
       "mode": "Manual fechado",
       "status": "Vencida",
-      "note": "Edad: 110 días; máximo: 30."
+      "note": "Edad: 111 días; máximo: 30."
     },
     {
       "label": "Deuda de margen",
@@ -994,7 +994,7 @@
       "as_of": "2026-06",
       "mode": "Manual fechado",
       "status": "Vencida",
-      "note": "Edad: 130 días; máximo: 75."
+      "note": "Edad: 131 días; máximo: 75."
     },
     {
       "label": "Emisiones de acciones",
@@ -1003,7 +1003,7 @@
       "as_of": "2026-H1",
       "mode": "Manual fechado",
       "status": "Disponible",
-      "note": "Edad: 130 días; máximo: 220."
+      "note": "Edad: 131 días; máximo: 220."
     },
     {
       "label": "Prima por riesgo crediticio (EBP)",
@@ -1012,7 +1012,7 @@
       "as_of": "2026-06",
       "mode": "Manual fechado",
       "status": "Vencida",
-      "note": "Edad: 130 días; máximo: 75."
+      "note": "Edad: 131 días; máximo: 75."
     }
   ],
   "slow_inputs_as_of": {
