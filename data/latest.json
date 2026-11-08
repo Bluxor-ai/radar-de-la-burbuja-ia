@@ -4,9 +4,9 @@
   "radar_model_version": "2.0.0",
   "capex_model_version": "2.0.0",
   "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
-  "code_revision": "e200494c65e207d26fc4a1d48000c10a71264b2d",
-  "observation_id": "github:42452994395",
-  "generated_at": "2026-11-08T00:01:55-06:00",
+  "code_revision": "38d8ff0feb4415a3d12580f4d318e2d9b2506782",
+  "observation_id": "github:42507372303",
+  "generated_at": "2026-11-08T11:56:28-06:00",
   "market_as_of": "2026-11-06",
   "macro_as_of": "2026-10-30",
   "bubble_score": 63.93543971886399,
@@ -214,9 +214,9 @@
         "base_weight": 0.12,
         "weight_minus_25pct": {
           "target_weight": 0.09,
-          "score": 62.89473391664269,
+          "score": 62.8947339166427,
           "regime": "PREPARAR",
-          "change_from_base": -1.0407058022212965
+          "change_from_base": -1.0407058022212894
         },
         "weight_plus_25pct": {
           "target_weight": 0.15,
@@ -236,9 +236,9 @@
         },
         "weight_plus_25pct": {
           "target_weight": 0.125,
-          "score": 64.23640106177506,
+          "score": 64.23640106177504,
           "regime": "PREPARAR",
-          "change_from_base": 0.3009613429110658
+          "change_from_base": 0.3009613429110516
         }
       },
       {
@@ -252,9 +252,9 @@
         },
         "weight_plus_25pct": {
           "target_weight": 0.1,
-          "score": 63.80136138464429,
+          "score": 63.801361384644295,
           "regime": "PREPARAR",
-          "change_from_base": -0.1340783342197014
+          "change_from_base": -0.13407833421969428
         }
       },
       {
@@ -262,9 +262,9 @@
         "base_weight": 0.05,
         "weight_minus_25pct": {
           "target_weight": 0.037500000000000006,
-          "score": 63.85564287305957,
+          "score": 63.85564287305958,
           "regime": "PREPARAR",
-          "change_from_base": -0.0797968458044167
+          "change_from_base": -0.0797968458044096
         },
         "weight_plus_25pct": {
           "target_weight": 0.0625,
@@ -316,9 +316,9 @@
         },
         "weight_plus_25pct": {
           "target_weight": 0.1875,
-          "score": 64.64460291210072,
+          "score": 64.64460291210071,
           "regime": "PREPARAR",
-          "change_from_base": 0.7091631932367335
+          "change_from_base": 0.7091631932367193
         }
       }
     ],
@@ -347,7 +347,7 @@
       "one_at_a_time": "Se reduce o aumenta un peso 25% respecto de su valor base y se redistribuye el resto proporcionalmente."
     },
     "model_version": "2.0.0",
-    "generated_at": "2026-11-08T00:01:55-06:00",
+    "generated_at": "2026-11-08T11:56:28-06:00",
     "market_as_of": "2026-11-06",
     "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
     "historical_validation": {
@@ -439,10 +439,10 @@
   "inputs": {
     "excess_return_pp": 59.26268023873411,
     "relative_returns_2y_pp": {
-      "QQQ": 4.231417449377206,
+      "QQQ": 4.231400251603867,
       "SMH": 59.26268023873411,
-      "SOXX": 55.8848005047182,
-      "NVDA": 6.478464209423973
+      "SOXX": 55.884780834077574,
+      "NVDA": 6.478479827050898
     },
     "vix": 25.639999389648438,
     "vix_5d_change": 0.3202883258969327,
@@ -605,9 +605,9 @@
         "weighted_median_growth_yoy_percent": 114.39903143656326,
         "capped_weights": {
           "AMZN": 0.35,
+          "META": 0.17697410639799782,
           "MSFT": 0.2052601392543156,
-          "GOOGL": 0.26776575434768657,
-          "META": 0.17697410639799782
+          "GOOGL": 0.26776575434768657
         },
         "score": 0.0,
         "formula": "clamp(50 - 2.5 × crecimiento interanual ponderado en puntos porcentuales)"
@@ -650,14 +650,14 @@
       "score": 0.0,
       "formula": "clamp(50 - 2.5 × crecimiento interanual en puntos porcentuales)",
       "available_observations": 153,
-      "fetched_at": "2026-11-08T06:01:57+00:00",
+      "fetched_at": "2026-11-08T17:56:30+00:00",
       "note": "Proxy mensual de actividad de construcción de centros de datos. No observa cancelaciones individuales ni conexiones eléctricas."
     },
     "cloud_gpu_snapshot": {
       "source": "https://prices.azure.com/api/retail/prices",
       "sku": "Standard_ND96isr_H100_v5",
       "currency": "USD",
-      "fetched_at": "2026-11-08T06:01:57+00:00",
+      "fetched_at": "2026-11-08T17:56:30+00:00",
       "price_effective_as_of": "2026-01-01",
       "median_discount": 0.8151999999999999,
       "median_discount_percent": 81.52,

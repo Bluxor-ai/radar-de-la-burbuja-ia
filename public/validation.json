@@ -149,9 +149,9 @@
       "base_weight": 0.12,
       "weight_minus_25pct": {
         "target_weight": 0.09,
-        "score": 62.89473391664269,
+        "score": 62.8947339166427,
         "regime": "PREPARAR",
-        "change_from_base": -1.0407058022212965
+        "change_from_base": -1.0407058022212894
       },
       "weight_plus_25pct": {
         "target_weight": 0.15,
@@ -171,9 +171,9 @@
       },
       "weight_plus_25pct": {
         "target_weight": 0.125,
-        "score": 64.23640106177506,
+        "score": 64.23640106177504,
         "regime": "PREPARAR",
-        "change_from_base": 0.3009613429110658
+        "change_from_base": 0.3009613429110516
       }
     },
     {
@@ -187,9 +187,9 @@
       },
       "weight_plus_25pct": {
         "target_weight": 0.1,
-        "score": 63.80136138464429,
+        "score": 63.801361384644295,
         "regime": "PREPARAR",
-        "change_from_base": -0.1340783342197014
+        "change_from_base": -0.13407833421969428
       }
     },
     {
@@ -197,9 +197,9 @@
       "base_weight": 0.05,
       "weight_minus_25pct": {
         "target_weight": 0.037500000000000006,
-        "score": 63.85564287305957,
+        "score": 63.85564287305958,
         "regime": "PREPARAR",
-        "change_from_base": -0.0797968458044167
+        "change_from_base": -0.0797968458044096
       },
       "weight_plus_25pct": {
         "target_weight": 0.0625,
@@ -251,9 +251,9 @@
       },
       "weight_plus_25pct": {
         "target_weight": 0.1875,
-        "score": 64.64460291210072,
+        "score": 64.64460291210071,
         "regime": "PREPARAR",
-        "change_from_base": 0.7091631932367335
+        "change_from_base": 0.7091631932367193
       }
     }
   ],
@@ -282,7 +282,7 @@
     "one_at_a_time": "Se reduce o aumenta un peso 25% respecto de su valor base y se redistribuye el resto proporcionalmente."
   },
   "model_version": "2.0.0",
-  "generated_at": "2026-11-08T00:01:55-06:00",
+  "generated_at": "2026-11-08T11:56:28-06:00",
   "market_as_of": "2026-11-06",
   "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
   "historical_validation": {
