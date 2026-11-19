@@ -887,17 +887,11 @@
     }
   },
   "data_quality": {
-    "status": "Parcial",
+    "status": "Respaldo",
     "warnings": [
-      "CAPE de Shiller está vencida (125 días; máximo 45).",
-      "Capitalización bursátil / PIB está vencida (140 días; máximo 90).",
-      "Concentración del S&P 500 está vencida (122 días; máximo 30).",
-      "Deuda de margen está vencida (142 días; máximo 75).",
-      "Prima por riesgo crediticio (EBP) está vencida (142 días; máximo 75)."
+      "La actualización en vivo falló; se muestra la última lectura guardada."
     ],
-    "source_fallback_count": 7,
-    "capex_coverage": 0.85,
-    "capex_status": "Suficiente"
+    "capex_coverage": 0.85
   },
   "sources": [
     {
@@ -1023,5 +1017,8 @@
     "equity_supply": "2026-H1",
     "ebp": "2026-06"
   },
-  "privacy": "Sitio público sin posiciones, cuentas, órdenes, correos ni datos personales."
+  "privacy": "Sitio público sin posiciones, cuentas, órdenes, correos ni datos personales.",
+  "stale": true,
+  "stale_reason": "La actualización en vivo falló; se muestra la última lectura guardada.",
+  "served_at": "2026-11-19T14:38:03-06:00"
 }
