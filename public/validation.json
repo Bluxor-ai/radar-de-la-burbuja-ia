@@ -98,8 +98,8 @@
       "label": "Concentración y subida temática",
       "omitted_score": 74.06437107567673,
       "omitted_weight": 0.1,
-      "score": 67.23974973672857,
-      "change_from_base": 0.3763485314976265,
+      "score": 67.23974973672858,
+      "change_from_base": 0.3763485314976407,
       "regime": "ALERTA ALTA"
     },
     {
@@ -187,9 +187,9 @@
       },
       "weight_plus_25pct": {
         "target_weight": 0.1,
-        "score": 66.6656715343511,
+        "score": 66.66567153435109,
         "regime": "ALERTA ALTA",
-        "change_from_base": -0.19772967087983773
+        "change_from_base": -0.19772967087985194
       }
     },
     {
@@ -213,9 +213,9 @@
       "base_weight": 0.25,
       "weight_minus_25pct": {
         "target_weight": 0.1875,
-        "score": 72.43535130566684,
+        "score": 72.43535130566686,
         "regime": "ALERTA ALTA",
-        "change_from_base": 5.571950100435899
+        "change_from_base": 5.571950100435913
       },
       "weight_plus_25pct": {
         "target_weight": 0.3125,
@@ -282,7 +282,7 @@
     "one_at_a_time": "Se reduce o aumenta un peso 25% respecto de su valor base y se redistribuye el resto proporcionalmente."
   },
   "model_version": "2.0.0",
-  "generated_at": "2026-11-21T13:16:40-06:00",
+  "generated_at": "2026-11-22T00:49:10-06:00",
   "market_as_of": "2026-11-20",
   "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
   "historical_validation": {
