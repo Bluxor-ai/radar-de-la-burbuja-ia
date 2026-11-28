@@ -5,7 +5,7 @@
   "seed": 20260723,
   "samples": 20000,
   "base": {
-    "score": 63.133913176321705,
+    "score": 63.1339131763217,
     "regime": "PREPARAR",
     "structural_weight": 0.35,
     "confirmation_weight": 0.65,
@@ -91,14 +91,14 @@
       "omitted_score": 94.46280991735537,
       "omitted_weight": 0.12,
       "score": 59.98261781959086,
-      "change_from_base": -3.1512953567308486,
+      "change_from_base": -3.1512953567308415,
       "regime": "PREPARAR"
     },
     {
       "label": "Concentración y subida temática",
       "omitted_score": 75.65036606343662,
       "omitted_weight": 0.1,
-      "score": 63.35166220904335,
+      "score": 63.35166220904334,
       "change_from_base": 0.2177490327216418,
       "regime": "PREPARAR"
     },
@@ -107,7 +107,7 @@
       "omitted_score": 57.767836344757825,
       "omitted_weight": 0.08,
       "score": 65.14969331953405,
-      "change_from_base": 2.0157801432123463,
+      "change_from_base": 2.0157801432123534,
       "regime": "ALERTA ALTA"
     },
     {
@@ -115,7 +115,7 @@
       "omitted_score": 70.0,
       "omitted_weight": 0.05,
       "score": 63.554246626989524,
-      "change_from_base": 0.4203334506678189,
+      "change_from_base": 0.420333450667826,
       "regime": "PREPARAR"
     },
     {
@@ -123,7 +123,7 @@
       "omitted_score": 0.0,
       "omitted_weight": 0.25,
       "score": 85.70385847151843,
-      "change_from_base": 22.569945295196725,
+      "change_from_base": 22.56994529519673,
       "regime": "ALERTA CRÍTICA"
     },
     {
@@ -131,7 +131,7 @@
       "omitted_score": 100.0,
       "omitted_weight": 0.25,
       "score": 45.07885847151843,
-      "change_from_base": -18.055054704803275,
+      "change_from_base": -18.05505470480327,
       "regime": "VIGILAR"
     },
     {
@@ -139,7 +139,7 @@
       "omitted_score": 74.07941648209845,
       "omitted_weight": 0.15,
       "score": 59.522000704006935,
-      "change_from_base": -3.6119124723147706,
+      "change_from_base": -3.6119124723147635,
       "regime": "PREPARAR"
     }
   ],
@@ -151,13 +151,13 @@
         "target_weight": 0.09,
         "score": 62.06588260560465,
         "regime": "PREPARAR",
-        "change_from_base": -1.068030570717056
+        "change_from_base": -1.068030570717049
       },
       "weight_plus_25pct": {
         "target_weight": 0.15,
         "score": 64.20194374703875,
         "regime": "PREPARAR",
-        "change_from_base": 1.068030570717049
+        "change_from_base": 1.068030570717056
       }
     },
     {
@@ -165,13 +165,13 @@
       "base_weight": 0.1,
       "weight_minus_25pct": {
         "target_weight": 0.07500000000000001,
-        "score": 62.7862339294574,
+        "score": 62.78623392945741,
         "regime": "PREPARAR",
-        "change_from_base": -0.3476792468643026
+        "change_from_base": -0.3476792468642884
       },
       "weight_plus_25pct": {
         "target_weight": 0.125,
-        "score": 63.48159242318601,
+        "score": 63.481592423186,
         "regime": "PREPARAR",
         "change_from_base": 0.3476792468643026
       }
@@ -181,15 +181,15 @@
       "base_weight": 0.08,
       "weight_minus_25pct": {
         "target_weight": 0.06,
-        "score": 63.25056702048612,
+        "score": 63.25056702048613,
         "regime": "PREPARAR",
-        "change_from_base": 0.11665384416441782
+        "change_from_base": 0.11665384416443203
       },
       "weight_plus_25pct": {
         "target_weight": 0.1,
         "score": 63.01725933215727,
         "regime": "PREPARAR",
-        "change_from_base": -0.11665384416443203
+        "change_from_base": -0.11665384416442492
       }
     },
     {
@@ -199,13 +199,13 @@
         "target_weight": 0.037500000000000006,
         "score": 63.04356992864173,
         "regime": "PREPARAR",
-        "change_from_base": -0.09034324767997504
+        "change_from_base": -0.09034324767996793
       },
       "weight_plus_25pct": {
         "target_weight": 0.0625,
         "score": 63.22425642400168,
         "regime": "PREPARAR",
-        "change_from_base": 0.09034324767997504
+        "change_from_base": 0.09034324767998214
       }
     },
     {
@@ -215,13 +215,13 @@
         "target_weight": 0.1875,
         "score": 68.39507260768184,
         "regime": "ALERTA ALTA",
-        "change_from_base": 5.261159431360134
+        "change_from_base": 5.2611594313601415
       },
       "weight_plus_25pct": {
         "target_weight": 0.3125,
-        "score": 57.87275374496155,
+        "score": 57.87275374496156,
         "regime": "PREPARAR",
-        "change_from_base": -5.261159431360156
+        "change_from_base": -5.2611594313601415
       }
     },
     {
@@ -229,15 +229,15 @@
       "base_weight": 0.25,
       "weight_minus_25pct": {
         "target_weight": 0.1875,
-        "score": 60.061739274348504,
+        "score": 60.06173927434851,
         "regime": "PREPARAR",
-        "change_from_base": -3.0721739019732013
+        "change_from_base": -3.072173901973187
       },
       "weight_plus_25pct": {
         "target_weight": 0.3125,
         "score": 66.20608707829489,
         "regime": "ALERTA ALTA",
-        "change_from_base": 3.07217390197318
+        "change_from_base": 3.072173901973187
       }
     },
     {
@@ -247,13 +247,13 @@
         "target_weight": 0.11249999999999999,
         "score": 62.65102332459627,
         "regime": "PREPARAR",
-        "change_from_base": -0.48288985172543875
+        "change_from_base": -0.48288985172543164
       },
       "weight_plus_25pct": {
         "target_weight": 0.1875,
         "score": 63.616803028047144,
         "regime": "PREPARAR",
-        "change_from_base": 0.48288985172543875
+        "change_from_base": 0.48288985172544585
       }
     }
   ],
@@ -282,7 +282,7 @@
     "one_at_a_time": "Se reduce o aumenta un peso 25% respecto de su valor base y se redistribuye el resto proporcionalmente."
   },
   "model_version": "2.0.0",
-  "generated_at": "2026-11-27T15:17:52-06:00",
+  "generated_at": "2026-11-28T01:50:04-06:00",
   "market_as_of": "2026-11-27",
   "config_sha256": "bfb664c53d9a498eb60633187ee9f34092474d27be4d9fb877d922cf15736f5b",
   "historical_validation": {
